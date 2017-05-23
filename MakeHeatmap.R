@@ -1,4 +1,4 @@
-MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',RowGroupsScheme=FALSE,select_rows=NULL,select_groups_to_keep=NULL,rev_c_dend=FALSE,label_rows=TRUE,sep_char=c('\t','\t','\t'))
+MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',RowGroupsScheme=FALSE,select_rows=NULL,select_groups_to_keep=NULL,rev_c_dend=FALSE,label_rows=TRUE,label_cols=TRUE)
 #data is a data frame or the filename (including pathway) of where the data is stored
   #if data is a file name, it should be arranged in a tab delimited table such that table headings are across the top with row names in the 1st column:
     # Genes   Patient1    Patient2    Patient3    Patient4
@@ -6,7 +6,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
     # Gene2   value       value       value       value
   #if it is a data frame, it should have the patients as column names and the genes as row names
 #group_designations_file is a file (including pathway) containing the group assignments of each sample
-  #The first row of the file will be the sample (patient) names 
+  #The first row of the file will be the sample (patient) names
   #The subsequent rows will be the corresponding group names.
   #Each row contains a group designation scheme, e.g. the second row is the PAM50 classification and the third the proteome-based classification
   #The group assignment names must be identical to those in the group_color_designations_file
@@ -41,11 +41,8 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
 #rev_c_dend reverses the column dendrogram if TRUE
 #label_rows specifies whether the rows should be labeled. If TRUE, all rows are labeled, if FALSE, no rows are labeled.
   #If it is a vector of strings, only rows with names within the vector of strings are labeled.
-#sep_char is a vector containing the character separating the information in the text files.
-  #the first entry is for the data file, the second for the color file, and the last for the groupings file.
-  # they are all tabs ('\t') by default
 #This function also prints the heatmap as a pdf into the specified folder
-#This function returns a list (dendrograms - or any name you specify) with the row and column dendrograms. 
+#This function returns a list (dendrograms - or any name you specify) with the row and column dendrograms.
 #The row dendrogram is called by dendrograms[[1]]
 
 {
@@ -63,7 +60,7 @@ group_designations_file <- paste(data_location,'group_key.txt',sep='')
 group_color_designations_file <- paste(data_location,'group_color_key.txt',sep='')
 
 #Import the data
-if (is.character(data)) {DATA <- read_txt_to_df(data,sep_char[1])} #If the input, data, is provided as a string it is the directory to the text file with the data
+if (is.character(data)) {DATA <- read_txt_to_df(data)} #If the input, data, is provided as a string it is the directory to the text file with the data
 if (is.data.frame(data)) {DATA <- data} #If the input, data, is provided as a data frame, it is the data
 
 #remove any rows with NA as an entry
@@ -71,9 +68,9 @@ has_no_na_row_indices <- apply(DATA,1,NoNA)
 DATA <- DATA[has_no_na_row_indices,]
 
 #Select rows from the data frame
-if (!is.null(select_rows)) {DATA <- DATA[rownames(DATA) %in% select_rows,]} 
+if (!is.null(select_rows)) {DATA <- DATA[rownames(DATA) %in% select_rows,]}
 #selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
-#is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level. 
+#is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
 
 #Determine if there is column or row grouping
 ColGroups <- FALSE
@@ -85,12 +82,12 @@ if (ColGroups || RowGroups)
 {
   #Assign group memberships (ie: those that grow, those that live, those in HER2 cluster, etc.)
   #Read the file containing the group designations
-  GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep=sep_char[2],stringsAsFactors=FALSE) #check.names=FALSE prevents changing special characters
+  GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE) #check.names=FALSE prevents changing special characters
   rownames(GROUP_KEY) <- GROUP_KEY[,1]
   GROUP_KEY <- GROUP_KEY[,-1] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
   GROUP_KEY <- GROUP_KEY[ColGroupsScheme,] #the group key rows corresponding to the grouping schemes considered are selected
   #Get the vector of colors corresponding to the group membership of each patient
-  GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme,sep_char[3])
+  GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
   GroupColorMatrix <- GroupColorListReturn[[1]]
   groups_corresponding <- GroupColorListReturn[[2]]
   #group_colors <- GroupColorListReturn[[3]]
@@ -152,7 +149,7 @@ if (DistanceMethod == 'pearson' || DistanceMethod == 'spearman')
 #This function computes the distance matrix where the rows are points. This is the desired output in this instance.
 
 #A distance matrix looks like the following where 1->2 indicates distance from the point
-#indicated by row 1 to that indicated by row 2. It is a lower left triangular matrix. A 
+#indicated by row 1 to that indicated by row 2. It is a lower left triangular matrix. A
 #distance matrix is not actually a matrix object, rather a distance object.
 # 1->2  ---- ---- ----
 # 1->3  2->3 ---- ----
@@ -193,20 +190,9 @@ colnames(DifExpMatx)<-colnames(DATA) #name the columns of the numeric matrix so 
 #The group color matrix for the columns is returned with columns corresponding to columns, this is the transpose of what it needs to be
 GroupColorMatrix <- t(GroupColorMatrix)
 
-#Provide all of the rownames if label_rows in put is TRUE
-if (is.logical(label_rows))
-{
-  if(label_rows){label_rows <- rownames(DifExpMatx)}
-}
-
-#If there are rownames specified to be labeled, ensure those are the only ones that are labeled
-if (is.character(label_rows))
-{
-  heatmap_rownames <- rownames(DifExpMatx)
-  heatmap_rowname_indices_to_remove <- !(heatmap_rownames %in% label_rows)
-  heatmap_rownames[heatmap_rowname_indices_to_remove] <- ''
-  label_rows <- heatmap_rownames
-}
+#Get the row names and column names for the heatmap
+label_rows <- FindRowLabels(label_rows,DifExpMatx)
+label_cols <- FindColLabels(label_cols,DifExpMatx)
 
 n_colors = length(break_seq)-1
 break_seq_0 <- break_seq #save the originally specified break_seq to use in the color key creation
@@ -218,7 +204,7 @@ PDF_file <- paste(HeatmapDirectory,HeatmapName,sep='')
 PdfW = 7
 PdfH = 7
 pdf(PDF_file,height=PdfH,width=PdfW) #not sure of the units of width and height
-heatmap <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colors,break_seq,label_rows)
+heatmap <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colors,break_seq,label_rows,label_cols)
 dev.off()
 MakeColorKey(break_seq_0,heat_map_colors,HeatmapDirectory)
 MakeGroupLegend(groups_corresponding,t(GroupColorMatrix),ColGroupsScheme,HeatmapDirectory)
@@ -234,12 +220,52 @@ NoNA <- function(vector)
 }
 
 #Function to read a tab delimited text file into a data frame
-read_txt_to_df <- function(txt_directory,sep_char)
+read_txt_to_df <- function(txt_directory)
 {
-  DF <- read.table(file=txt_directory,head=TRUE,check.names=FALSE,sep=sep_char) #check.names=FALSE prevents an 'X' from being added to the numeric column names
+  DF <- read.table(file=txt_directory,head=TRUE,check.names=FALSE,sep='\t') #check.names=FALSE prevents an 'X' from being added to the numeric column names
   #Name the rows of the data frame as the genes given in the first column of the data frame
   RowNames <- as.character(DF[,1])
   rownames(DF) <- RowNames
   DF[,1] <- NULL #remove the first column of the data frame as it is no longer needed
   return(DF)
+}
+
+#Function to return row label_rows
+FindRowLabels <- function(label_rows,DifExpMatx)
+{
+  #Provide all of the rownames if label_rows input is TRUE
+  if (is.logical(label_rows))
+  {
+    if(label_rows){label_rows <- rownames(DifExpMatx)}
+  }
+
+  #If there are rownames specified to be labeled, ensure those are the only ones that are labeled
+  if (is.character(label_rows))
+  {
+    heatmap_rownames <- rownames(DifExpMatx)
+    heatmap_rowname_indices_to_remove <- !(heatmap_rownames %in% label_rows)
+    heatmap_rownames[heatmap_rowname_indices_to_remove] <- ''
+    label_rows <- heatmap_rownames
+  }
+return(label_rows)
+}
+
+#Function to return label_cols
+FindColLabels <- function(label_cols,DifExpMatx)
+{
+  #Provide all of the colnames if label_cols input is TRUE
+  if (is.logical(label_cols))
+  {
+    if(label_cols){label_cols <- colnames(DifExpMatx)}
+  }
+
+  #If there are colnames specified to be labeled, ensure those are the only ones that are labeled
+  if (is.character(label_cols))
+  {
+    heatmap_colnames <- colnames(DifExpMatx)
+    heatmap_colname_indices_to_remove <- !(heatmap_colnames %in% label_cols)
+    heatmap_colnames[heatmap_colname_indices_to_remove] <- ''
+    label_cols <- heatmap_colnames
+  }
+return(label_cols)
 }

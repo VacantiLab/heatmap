@@ -1,7 +1,7 @@
-assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colors,break_seq,label_rows)
+assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colors,break_seq,label_rows,label_cols)
 #This function is needed because heatmap.plus cannot handle only a single grouping scheme, it must be provided at least two
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
-  
+
 {
   if (dim(GroupColorMatrix)[2]>1)
   {
@@ -15,9 +15,10 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colo
                             breaks=break_seq,
                             margins=c(5,10),
                             scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
-                            labRow=label_rows)
+                            labRow=label_rows,
+                            labCol=label_cols)
   }
-  
+
   if (dim(GroupColorMatrix)[2]==1)
   {
     heatmap <- heatmap(x=DifExpMatx,
@@ -30,7 +31,8 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colo
                       breaks=break_seq,
                       margins=c(5,10),
                       scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
-                      labRow=label_rows)
+                      labRow=label_rows,
+                      labCol=label_cols)
   }
-  
+
 }
