@@ -52,7 +52,7 @@ library(heatmap.plus)
 #Input where the heatmap is stored
 working_directory <- getwd()
 working_directory_up1 <- gsub('/[^/]*$','/',working_directory) #matches '/' followed by 0 or more characters other than '/' followed by the end of the string, and replaces with '/'
-HeatmapDirectory <- paste(working_directory_up1,'/output/',sep='')
+HeatmapDirectory <- paste(working_directory_up1,'output/',sep='')
 dir.create(HeatmapDirectory) #creates the directory for the output
 
 #Input data
