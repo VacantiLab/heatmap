@@ -1,4 +1,4 @@
-MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',RowGroupsScheme=FALSE,select_rows=NULL,select_groups_to_keep=NULL,rev_c_dend=FALSE,label_rows=TRUE,label_cols=TRUE)
+MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',select_rows=NULL,select_groups=NULL,label_rows=TRUE,label_cols=TRUE,rev_c_dend=FALSE)
 #data is a data frame or the filename (including pathway) of where the data is stored
   #if data is a file name, it should be arranged in a tab delimited table such that table headings are across the top with row names in the 1st column:
     # Genes   Patient1    Patient2    Patient3    Patient4
@@ -35,7 +35,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
   #The default is FALSE where no scaling occurs.
 #select_rows are the rows of the data frame you want considered
   #the default is NULL and the function considers all of the rows
-#select_groups_to_keep is a list of group designations that you want to consider in the heatmap (corresponding to the column names)
+#select_groups is a list of group designations that you want to consider in the heatmap (corresponding to the column names)
   #if NULL, all columns are considered
   #This is not operable yet
 #rev_c_dend reverses the column dendrogram if TRUE
@@ -46,227 +46,61 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
 #The row dendrogram is called by dendrograms[[1]]
 
 {
-library(gplots)
-library(heatmap.plus)
+    #Include pertinent libraries
+    library(gplots)
+    library(heatmap.plus)
 
-#Input where the heatmap is stored
-working_directory <- getwd()
-working_directory_up1 <- gsub('/[^/]*$','/',working_directory) #matches '/' followed by 0 or more characters other than '/' followed by the end of the string, and replaces with '/'
-HeatmapDirectory <- paste(working_directory_up1,'output/',sep='')
-dir.create(HeatmapDirectory) #creates the directory for the output
+    #create the directory 'output' one level above the current directory for storing the heatmap
+    HeatmapDirectory <- StoreHeatmap()
 
-#Input data
-data <- paste(data_location,'quantities.txt',sep='')
-group_designations_file <- paste(data_location,'group_key.txt',sep='')
-group_color_designations_file <- paste(data_location,'group_color_key.txt',sep='')
+    #Input data
+    if (is.character(data)){data <- paste(data_location,'quantities.txt',sep='')}
+    group_designations_file <- paste(data_location,'group_key.txt',sep='')
+    group_color_designations_file <- paste(data_location,'group_color_key.txt',sep='')
 
-#Import the data
-if (is.character(data)) {DATA <- read_txt_to_df(data)} #If the input, data, is provided as a string it is the directory to the text file with the data
-if (is.data.frame(data)) {DATA <- data} #If the input, data, is provided as a data frame, it is the data
+    #Import the data and only keep selected rows if specified
+    DATA <- OpenDataFile(data,select_rows)
 
-#remove any rows with NA as an entry
-has_no_na_row_indices <- apply(DATA,1,NoNA)
-DATA <- DATA[has_no_na_row_indices,]
+    #Retrieve the corresponding column groupings and keep only those specified
+    #Also take the medians if there is a replicate scheme provided (this may not work if the replicate scheme is the only grouping scheme used)
+    RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme,group_designations_file,group_color_designations_file,select_groups,replicate_scheme)
+    DATA <- RetrieveGroups_return[[1]]
+    groups_corresponding <- RetrieveGroups_return[[2]]
+    GroupColorMatrix <- RetrieveGroups_return[[3]]
 
-#Select rows from the data frame
-if (!is.null(select_rows)) {DATA <- DATA[rownames(DATA) %in% select_rows,]}
-#selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
-#is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
+    #Transform the data as specified
+    DATA <- transform_data(DATA,transformation)
 
-#Determine if there is column or row grouping
-ColGroups <- FALSE
-if (is.character(ColGroupsScheme)) {ColGroups <- TRUE}
-RowGroups <- FALSE
-if (is.numeric(RowGroupsScheme)) {RowGroups <- TRUE}
+    #The rows with zero variance must be removed because likely because this causes NAs to be generated when calculating correlations
+    #Most of the time this won't be an issue because all samples are not likely to have identical values for a measurement
+        #However in measruing 10k protein abundances across few samples, this could happen by chance
+    DATA <- remove_zero_var_rows(DATA)
 
-if (ColGroups || RowGroups)
-{
-  #Assign group memberships (ie: those that grow, those that live, those in HER2 cluster, etc.)
-  #Read the file containing the group designations
-  GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE) #check.names=FALSE prevents changing special characters
-  rownames(GROUP_KEY) <- GROUP_KEY[,1]
-  GROUP_KEY <- GROUP_KEY[,-1] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
-  GROUP_KEY <- GROUP_KEY[ColGroupsScheme,] #the group key rows corresponding to the grouping schemes considered are selected
-  #Get the vector of colors corresponding to the group membership of each patient
-  GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
-  GroupColorMatrix <- GroupColorListReturn[[1]]
-  groups_corresponding <- GroupColorListReturn[[2]]
-  #group_colors <- GroupColorListReturn[[3]]
-  #group_names <- GroupColorListReturn[[4]]
-}
+    #Retrieve the clusters for creating the dendrograms
+    ClusterData_return <- ClusterData(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
+    colv <- ClusterData_return[[1]]
+    rowv <- ClusterData_return[[2]]
+    C_col <- ClusterData_return[[3]]
+    C_row <- ClusterData_return[[4]]
 
-#Select the specified group names (if applicable)
-#This must occur before scaling below!
-if (is.character(select_groups_to_keep))
-{
-  DATA2 <- DATA #make a copy of the DATA data frame because appending non-numeric rows changes the numeric class of its contents
-  DATA2[ColGroupsScheme,sort(colnames(DATA))] <- groups_corresponding[ColGroupsScheme,sort(colnames(DATA))] #add rows corresponding to the group classifications of each sample
-  DATA2[paste(ColGroupsScheme,'- color'),sort(colnames(DATA))] <- GroupColorMatrix[ColGroupsScheme,sort(colnames(DATA))] #add rows corresponding to the group color assignments of each sample
-  inclusion_grouping_scheme_indices <- apply(DATA2[ColGroupsScheme,], 1, function(r) any(r %in% select_groups_to_keep)) #find which group classification scheme is being used to make the selection - this gives the indices of the rows in DATA2
-  inclusion_grouping_scheme <- rownames(DATA2[ColGroupsScheme,])[inclusion_grouping_scheme_indices] #this gives the classification scheme used to make the selection of groups to include
-  col_to_keep_indices <- DATA2[inclusion_grouping_scheme,] %in% select_groups_to_keep #find the columns to keep - this gives the indices
-  DATA2 <- DATA2[,col_to_keep_indices] #keep the specified columns, this is done in DATA2 so the GroupColorMatrix and groups_corresponding matrix can be updated
-  DATA <- DATA[,col_to_keep_indices] #keep the specified columns in the data frame to be plotted
-  GroupColorMatrix <- as.matrix(DATA2[paste(ColGroupsScheme,'- color'),]) #update the GroupColorMatrix
-  rownames(GroupColorMatrix) <- ColGroupsScheme #restore the rownames to their original (without the '- color')
-  groups_corresponding <- as.matrix(DATA2[ColGroupsScheme,]) #update the groups_corresponding matrix
-  rm(DATA2) #remove the now unnecessary DATA2 data frame from memory
-}
+    #make numeric matrix out of data frame
+    DifExpMatx=matrix(as.numeric(unlist(DATA)),nrow=nrow(DATA))
+    rownames(DifExpMatx)<-rownames(DATA) #name the rows of the numeric matrix so they are transfered to the dendrogram in the heat map
+    colnames(DifExpMatx)<-colnames(DATA) #name the columns of the numeric matrix so they are transfered to the dendrogram in the heat map
 
-#If data is presented in duplicates or triplicates, one may want to consider the medians while clustering
-#Replicates must be specified as a grouping scheme, and this replicates grouping scheme
-if (is.character(replicate_scheme))
-{
-  StatTransformByGroup_return <- StatTransformByGroup(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme)
-  DATA <- StatTransformByGroup_return[[1]]
-  groups_corresponding <- StatTransformByGroup_return[[2]]
-  GroupColorMatrix <- StatTransformByGroup_return[[3]]
-}
+    #Get the row names and column names for the heatmap
+    label_rows <- FindRowLabels(label_rows,DifExpMatx)
+    label_cols <- FindColLabels(label_cols,DifExpMatx)
 
-#Transform the data as specified
-DATA <- transform_data(DATA,transformation)
+    #Draw and save the heatmap
+    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colors,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod)
+    heat_map_colors <- assemble_heatmap_return[[1]]
+    dev.off() #turn off printing to the specified pdf
 
-#The rows with zero variance must be removed because likely because this causes NAs to be generated when calculating correlations
-#Most of the time this won't be an issue because all samples are not likely to have identical values for a measurement
-  #However in measruing 10k protein abundances across few samples, this could happen by chance
-DATA <- remove_zero_var_rows(DATA)
+    #Draw and save the legends
+    MakeColorKey(break_seq,heat_map_colors,HeatmapDirectory)
+    MakeGroupLegend(groups_corresponding,t(GroupColorMatrix),ColGroupsScheme,HeatmapDirectory)
 
-#compute the distance matrix depending on the desired method (euclidan, pearson, or spearman)
-if (DistanceMethod == 'euclidian')
-{
-  D_col <- dist(t(DATA)) #This function computes the distance matrix where the rows are points, but in this instance the columns should be points, so use the transpose of the data matrix.
-  D_row <- dist(DATA) #This function computes the distance matrix where the rows are points. This is the desired output in this instance.
-}
-
-if (DistanceMethod == 'pearson' || DistanceMethod == 'spearman')
-{
-  Cor_col <- cor(DATA,method=DistanceMethod) #transpose oppsitely as when using dist() function?
-  D_col <- (1-Cor_col)/2 #this is actually dissimilarity, zero is least dissimilar (correlation of 1) and 1 is most dissimilar (correlation of -1)
-  D_col <- as.dist(D_col) #make a distance object so it can be input into hclust, clustering is performed on dissimilarity
-  Cor_row <- cor(t(DATA),method=DistanceMethod)
-  D_row <- (1-Cor_row)/2
-  D_row <- as.dist(D_row)
-}
-#This function computes the distance matrix where the rows are points. This is the desired output in this instance.
-
-#A distance matrix looks like the following where 1->2 indicates distance from the point
-#indicated by row 1 to that indicated by row 2. It is a lower left triangular matrix. A
-#distance matrix is not actually a matrix object, rather a distance object.
-# 1->2  ---- ---- ----
-# 1->3  2->3 ---- ----
-# 1->4  2->4 3->4 ----
-# 1->5  2->5 3->5 4->5
-#Note the function dist() is not to be confused with as.dist(). as.dist() takes a square matrix
-#and returns the lower triangular portion as a distance object.
-
-#A correlation matrix looks like the following where 1->2 indicates distance from the point
-#indicated by column 1 to that indicated by column 2. It is a lower left triangular matrix.
-#Use as.dist to convert a correlation matrix to a distance object by taking the lower triangular matrix.
-# 1->1  2->1  3->1  4->1
-# 1->2  2->2  3->2  4->2
-# 1->3  2->3  3->3  4->3
-# 1->4  2->4  3->4  4->4
-# 1->5  2->5  3->5  4->5
-
-#cluster the data by feeding the distance matrices to hclust().
-#This clusters the columns of the data matrix
-C_col <- hclust(D_col, method=ClusterMethod,members=NULL)
-#This clusters the rows of the data matrix
-C_row <- hclust(D_row, method=ClusterMethod,members=NULL)
-
-#create a dendrogram objects to specify the order and dendrogram labeling of the columns and rows in the heatmap
-colv <- as.dendrogram(C_col)
-rowv <- as.dendrogram(C_row)
-#the default places the higher "next level" branch point on the right side of a branch point. At the end of the tree where the end points are
-#of equal heights, and the right/left position is dictated by position in the dist object (ultimately dictated by position in the original data frame)
-
-#reverse colum dendrogram if specified to do so
-if (rev_c_dend) {colv <- rev(colv)}
-
-#make numeric matrix out of data frame
-DifExpMatx=matrix(as.numeric(unlist(DATA)),nrow=nrow(DATA))
-rownames(DifExpMatx)<-rownames(DATA) #name the rows of the numeric matrix so they are transfered to the dendrogram in the heat map
-colnames(DifExpMatx)<-colnames(DATA) #name the columns of the numeric matrix so they are transfered to the dendrogram in the heat map
-
-#The group color matrix for the columns is returned with columns corresponding to columns, this is the transpose of what it needs to be
-GroupColorMatrix <- t(GroupColorMatrix)
-
-#Get the row names and column names for the heatmap
-label_rows <- FindRowLabels(label_rows,DifExpMatx)
-label_cols <- FindColLabels(label_cols,DifExpMatx)
-
-n_colors = length(break_seq)-1
-break_seq_0 <- break_seq #save the originally specified break_seq to use in the color key creation
-if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
-if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
-heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-HeatmapName <- paste('heatmap',DistanceMethod,paste(ClusterMethod,'.pdf',sep=''),sep='_')
-PDF_file <- paste(HeatmapDirectory,HeatmapName,sep='')
-PdfW = 7
-PdfH = 7
-pdf(PDF_file,height=PdfH,width=PdfW) #not sure of the units of width and height
-heatmap <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,heat_map_colors,break_seq,label_rows,label_cols)
-dev.off()
-MakeColorKey(break_seq_0,heat_map_colors,HeatmapDirectory)
-MakeGroupLegend(groups_corresponding,t(GroupColorMatrix),ColGroupsScheme,HeatmapDirectory)
-
-return(list(C_col,C_row,groups_corresponding,DATA))
-}
-################################################################################################
-
-#Function to return TRUE if the row does not have any NAs
-NoNA <- function(vector)
-{
-  NoNA <- !is.na(sum(vector))
-}
-
-#Function to read a tab delimited text file into a data frame
-read_txt_to_df <- function(txt_directory)
-{
-  DF <- read.table(file=txt_directory,head=TRUE,check.names=FALSE,sep='\t') #check.names=FALSE prevents an 'X' from being added to the numeric column names
-  #Name the rows of the data frame as the genes given in the first column of the data frame
-  RowNames <- as.character(DF[,1])
-  rownames(DF) <- RowNames
-  DF[,1] <- NULL #remove the first column of the data frame as it is no longer needed
-  return(DF)
-}
-
-#Function to return row label_rows
-FindRowLabels <- function(label_rows,DifExpMatx)
-{
-  #Provide all of the rownames if label_rows input is TRUE
-  if (is.logical(label_rows))
-  {
-    if(label_rows){label_rows <- rownames(DifExpMatx)}
-  }
-
-  #If there are rownames specified to be labeled, ensure those are the only ones that are labeled
-  if (is.character(label_rows))
-  {
-    heatmap_rownames <- rownames(DifExpMatx)
-    heatmap_rowname_indices_to_remove <- !(heatmap_rownames %in% label_rows)
-    heatmap_rownames[heatmap_rowname_indices_to_remove] <- ''
-    label_rows <- heatmap_rownames
-  }
-return(label_rows)
-}
-
-#Function to return label_cols
-FindColLabels <- function(label_cols,DifExpMatx)
-{
-  #Provide all of the colnames if label_cols input is TRUE
-  if (is.logical(label_cols))
-  {
-    if(label_cols){label_cols <- colnames(DifExpMatx)}
-  }
-
-  #If there are colnames specified to be labeled, ensure those are the only ones that are labeled
-  if (is.character(label_cols))
-  {
-    heatmap_colnames <- colnames(DifExpMatx)
-    heatmap_colname_indices_to_remove <- !(heatmap_colnames %in% label_cols)
-    heatmap_colnames[heatmap_colname_indices_to_remove] <- ''
-    label_cols <- heatmap_colnames
-  }
-return(label_cols)
+    #Return what could be used
+    return(list(C_col,C_row,groups_corresponding,DATA))
 }
