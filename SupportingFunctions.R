@@ -49,6 +49,7 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
         GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
         GroupColorMatrix <- GroupColorListReturn[[1]]
         groups_corresponding <- GroupColorListReturn[[2]]
+        COLOR_KEY <- GroupColorListReturn[[3]]
         #group_colors <- GroupColorListReturn[[3]]
         #group_names <- GroupColorListReturn[[4]]
     }
@@ -85,7 +86,7 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
     GroupColorMatrix <- t(GroupColorMatrix)
 
     #return used variables
-    RetrieveGroups_return <- list(DATA,groups_corresponding,GroupColorMatrix)
+    RetrieveGroups_return <- list(DATA,groups_corresponding,GroupColorMatrix,COLOR_KEY)
 }
 
 ###############################################################################

@@ -23,6 +23,6 @@ GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGr
   color_matrix <- as.matrix(color_df)
   group_name_matrix <- as.matrix(group_name_df)
 
-  GroupColorListReturn <- list(color_matrix,group_name_matrix) #create list to return all that is required by MakeHeatmap() function
+  GroupColorListReturn <- list(color_matrix,group_name_matrix,COLOR_KEY) #create list to return all that is required by MakeHeatmap() function
   return(GroupColorListReturn)
 }

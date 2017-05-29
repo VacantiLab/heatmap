@@ -1,4 +1,4 @@
-MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',select_rows=NULL,select_groups=NULL,label_rows=TRUE,label_cols=TRUE,rev_c_dend=FALSE)
+MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=TRUE,label_cols=TRUE,rev_c_dend=FALSE)
 #data is a data frame or the filename (including pathway) of where the data is stored
   #if data is a file name, it should be arranged in a tab delimited table such that table headings are across the top with row names in the 1st column:
     # Genes   Patient1    Patient2    Patient3    Patient4
@@ -54,7 +54,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
     HeatmapDirectory <- StoreHeatmap()
 
     #Input data
-    if (is.character(data)){data <- paste(data_location,'quantities.txt',sep='')}
+    if (!(class(data)=='data.frame')){data <- paste(data_location,'quantities.txt',sep='')}
     group_designations_file <- paste(data_location,'group_key.txt',sep='')
     group_color_designations_file <- paste(data_location,'group_color_key.txt',sep='')
 
