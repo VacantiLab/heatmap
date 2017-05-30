@@ -1,4 +1,4 @@
-MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=NULL,select_rows='all',select_groups=NULL,replicate_scheme=NULL)
+MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
 # data_file: A text file where the rows are patients and the columns are genes, includes the directory of where the file is located
 # box_plot_directory: The location of where the output box plot will be saved, has a "/" at the end
 # group_designations_file: A tab delimited text file where each entry corresponds to the group each column in the data_file belongs to
@@ -34,10 +34,6 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     #put the data in long data frame format for plotting
     DATA_long <- FatToLongDF(DATA,groups_corresponding)
 
-    YLabel <- 'Expression'
-    XLabel <- ''
-    TextSize = 12
-
 
     group_order_original_plus <- colnames(COLOR_KEY)
     groups <- unique(groups_corresponding)
@@ -58,9 +54,19 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     y_var <- 'value'
     color_var <- 'group'
 
+    YLabel <- 'Abundance'
+    XLabel <- ''
+    TextSize = 8
+
+    y_lim <- c(-1,4)
+    bar_width <- 0.40
+    inter_group_spacing <- 0.55
+    pdf_width <- 3
+    pdf_height <- 4
+
 
     b <- ggplot(DATA_long,aes_string(x=x_var, y=y_var)) +
-         geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=0.3,position=position_dodge(width=0.45),outlier.shape=NA) +
+         geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA) +
          theme(axis.text.y=element_text(color='black',size=TextSize)) +
          theme(axis.ticks.y=element_line(colour='black',size=0.5)) +
          theme(axis.ticks.x=element_line(colour='black',size=0.5)) +
@@ -74,14 +80,15 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
          theme(legend.title=element_blank()) +
          theme(legend.key=element_rect(fill=NA)) + #No background color in legend
          theme(legend.text = element_text(colour="black", size=(TextSize-2))) +
-         theme(legend.position=c(0.08,0.80)) +
+         theme(legend.position=c(0.15,0.9)) +
          scale_fill_manual(values=FillColors) +
          #theme(legend.key.size = unit(0.2, "cm")) +
          labs(x = XLabel) +
-         labs(y = YLabel)
+         labs(y = YLabel) +
+         coord_cartesian(ylim=y_lim) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
 
-    ggsave(paste(BoxDirectory,'boxplot.pdf',sep=''), width = 8, height = 4, dpi = 300, limitsize=FALSE)
+    ggsave(paste(BoxDirectory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
 
     return(b)
 }

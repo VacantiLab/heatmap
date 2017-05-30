@@ -2,8 +2,8 @@ OpenDataFile <- function(data,select_rows)
 #Takes a data file location and reads the data into a data frame compatible with the MakeHeatMap function
 {
     #Import the data
-    if (is.character(data)) {DATA <- read_txt_to_df(data)} #If the input, data, is provided as a string it is the directory to the text file with the data
     if (is.data.frame(data)) {DATA <- data} #If the input, data, is provided as a data frame, it is the data
+    if (is.character(data)) {DATA <- read_txt_to_df(data)} #If the input, data, is provided as a string it is the directory to the text file with the data
 
     #remove any rows with NA as an entry
     has_no_na_row_indices <- apply(DATA,1,NoNA)
@@ -13,7 +13,7 @@ OpenDataFile <- function(data,select_rows)
     if (!is.null(select_rows)) {DATA <- DATA[rownames(DATA) %in% select_rows,]}
     #selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
     #is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
-
+    
     return(DATA)
 }
 
@@ -61,9 +61,9 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
         DATA2 <- DATA #make a copy of the DATA data frame because appending non-numeric rows changes the numeric class of its contents
         DATA2[ColGroupsScheme,sort(colnames(DATA))] <- groups_corresponding[ColGroupsScheme,sort(colnames(DATA))] #add rows corresponding to the group classifications of each sample
         DATA2[paste(ColGroupsScheme,'- color'),sort(colnames(DATA))] <- GroupColorMatrix[ColGroupsScheme,sort(colnames(DATA))] #add rows corresponding to the group color assignments of each sample
-        inclusion_grouping_scheme_indices <- apply(DATA2[ColGroupsScheme,], 1, function(r) any(r %in% select_groups_to_keep)) #find which group classification scheme is being used to make the selection - this gives the indices of the rows in DATA2
+        inclusion_grouping_scheme_indices <- apply(DATA2[ColGroupsScheme,], 1, function(r) any(r %in% select_groups)) #find which group classification scheme is being used to make the selection - this gives the indices of the rows in DATA2
         inclusion_grouping_scheme <- rownames(DATA2[ColGroupsScheme,])[inclusion_grouping_scheme_indices] #this gives the classification scheme used to make the selection of groups to include
-        col_to_keep_indices <- DATA2[inclusion_grouping_scheme,] %in% select_groups_to_keep #find the columns to keep - this gives the indices
+        col_to_keep_indices <- DATA2[inclusion_grouping_scheme,] %in% select_groups #find the columns to keep - this gives the indices
         DATA2 <- DATA2[,col_to_keep_indices] #keep the specified columns, this is done in DATA2 so the GroupColorMatrix and groups_corresponding matrix can be updated
         DATA <- DATA[,col_to_keep_indices] #keep the specified columns in the data frame to be plotted
         GroupColorMatrix <- as.matrix(DATA2[paste(ColGroupsScheme,'- color'),]) #update the GroupColorMatrix

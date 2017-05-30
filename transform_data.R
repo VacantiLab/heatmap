@@ -6,7 +6,7 @@ transform_data <- function(DATA,transformation)
     DATA <- log2(DATA)
     DATA[DATA < -3] <- -3
   }
-  
+
   #Center and scale the rows if indicated
   if (transformation == 'median_center_iqr_norm')
   {
@@ -16,7 +16,7 @@ transform_data <- function(DATA,transformation)
     DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
     colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
   }
-  
+
   #Normalize rows to row median and log2 transform if indicated
   if (transformation == 'median_norm_log2_transform')
   {
@@ -26,7 +26,7 @@ transform_data <- function(DATA,transformation)
     DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
     colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
   }
-  
+
   return(DATA)
 }
 
