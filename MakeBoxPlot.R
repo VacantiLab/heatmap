@@ -22,11 +22,28 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 
     #Retrieve the corresponding column groupings and keep only those specified
     #Also take the medians if there is a replicate scheme provided (this may not work if the replicate scheme is the only grouping scheme used)
+    group_concatonation = is.list(select_groups)
+    group_divisions = NULL
+    if (group_concatonation)
+    {
+        group_divisions = select_groups
+        select_groups = do.call(c,select_groups)
+    }
     RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme,group_designations_file,group_color_designations_file,select_groups,replicate_scheme)
     DATA <- RetrieveGroups_return[[1]]
     groups_corresponding <- t(RetrieveGroups_return[[2]])
     GroupColorMatrix <- RetrieveGroups_return[[3]]
     COLOR_KEY <- RetrieveGroups_return[[4]]
+
+    groups_concatonated <- lapply(group_divisions,paste,collapse=' : ')
+    groups_concatonated <- unlist(groups_concatonated)
+    n_groups_concatonated <- length(groups_concatonated)
+    for (i in 1:n_groups_concatonated)
+    {
+        concatonate_indices <- groups_corresponding %in% group_divisions[[i]]
+        groups_corresponding[concatonate_indices] <- groups_concatonated[i]
+        GroupColorMatrix[concatonate_indices,1] <- COLOR_KEY[1,group_divisions[[i]][1]]
+    }
 
     #Transform the data as specified
     DATA <- transform_data(DATA,transformation)
@@ -47,13 +64,24 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
         indices_to_keep = group_order_original %in% select_groups
         group_order_original = group_order_original[indices_to_keep]
     }
-    n_groups <- length(group_order_original)
 
     FillColors <- matrix(as.character(COLOR_KEY[group_order_original]),ncol=1)
+
+    #the group list and corresponding FillColors for ordering must reflect the combined groups if there are combined groups
+    if (is.list(group_divisions))
+    {
+        group_order_original <- unique(groups_corresponding)
+        FillColors <- as.matrix(unique(GroupColorMatrix[,1]),ncol=1)
+    }
+
+
     DATA_long$group <- factor(DATA_long$group,group_order_original) #this sets the order of the groups to match group_order_original
+
+
 
     #calculate p-values: currently can only do if there are 2 groups
     #retunrs a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
+    n_groups <- length(group_order_original)
     p_val_df <- data.frame(matrix(nrow=1,ncol=n_gene))
     if (n_groups==2){p_val_df <- GetPs(group_order_original,n_gene,gene_name,DATA_long)}
 
