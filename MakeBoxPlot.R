@@ -30,6 +30,8 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 
     #Transform the data as specified
     DATA <- transform_data(DATA,transformation)
+    gene_name <- rownames(DATA)
+    n_gene <- length(gene_name)
 
     #put the data in long data frame format for plotting
     DATA_long <- FatToLongDF(DATA,groups_corresponding)
@@ -45,12 +47,21 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
         indices_to_keep = group_order_original %in% select_groups
         group_order_original = group_order_original[indices_to_keep]
     }
+    n_groups <- length(group_order_original)
 
     FillColors <- matrix(as.character(COLOR_KEY[group_order_original]),ncol=1)
     DATA_long$group <- factor(DATA_long$group,group_order_original) #this sets the order of the groups to match group_order_original
 
+    #calculate p-values: currently can only do if there are 2 groups
+    #retunrs a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
+    p_val_df <- data.frame(matrix(nrow=1,ncol=n_gene))
+    if (n_groups==2){p_val_df <- GetPs(group_order_original,n_gene,gene_name,DATA_long)}
+
     #Make the plot
     b <- assemble_box_plot(DATA_long,FillColors,BoxDirectory)
 
-    return(b)
+    #assemble variables to return
+    MakeBoxPlot_return <- list(b,p_val_df)
+
+    return(MakeBoxPlot_return)
 }
