@@ -1,13 +1,20 @@
 MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
-# data_file: A text file where the rows are patients and the columns are genes, includes the directory of where the file is located
+# data_location: a pathway to where the text file containing the data is stored
+#    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
+#    There must also be a group_key.txt file with the sample names across the columns and the grouping schemes down the rowss
+#        The group names within each grouping scheme must not match any of those of another grouping scheme
+#    There must also be a group_color_key.txt file with the group names across the columns and the colors beneath them
+#        All of the group names are listed across the column headers with no indication of their scheme membership (thus the names must be unique)
 # box_plot_directory: The location of where the output box plot will be saved, has a "/" at the end
-# group_designations_file: A tab delimited text file where each entry corresponds to the group each column in the data_file belongs to
-# SelectGenes: A list of the genes, as strings, that are plotted along the x-axis. The default value of 'all' will plot every gene in data_file
-# TakeLog2: If TRUE all expression values are log2 transformed, if false values are not log2 transformed
+# ColGroupsScheme: the name of the grouping scheme used, indicates which row to take from group_key.txt
+# transformation:
+# data:
+# select_rows:
+# select_groups:
+# replicate_scheme:
 {
     #Include pertinent libraries
-    library(ggplot2) #from ggplot2 package
-    library(tidyr) #from tidyr package
+    library(ggplot2) #from ggplot2 package, allows the boxplot to be made
 
     #create the directory 'output' one level above the current directory for storing the heatmap
     BoxDirectory <- StoreHeatmap()
@@ -21,7 +28,8 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     DATA <- OpenDataFile(data,select_rows)
 
     #Retrieve the corresponding column groupings and keep only those specified
-    #Also take the medians if there is a replicate scheme provided (this may not work if the replicate scheme is the only grouping scheme used)
+    #Also take the medians if there is a replicate scheme provided (this will not work if the replicate scheme is the only grouping scheme used)
+    #There must be a ColGroupsScheme specified, as of now it cannot be FALSE
     group_concatonation = is.list(select_groups)
     group_divisions = NULL
     if (group_concatonation)
@@ -83,13 +91,19 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     #returns a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
     n_groups <- length(group_order_original)
     p_val_df <- data.frame(matrix(nrow=1,ncol=n_gene))
-    if (n_groups==2){p_val_df <- GetPs(group_order_original,n_gene,gene_name,DATA_long)}
+    if (n_groups==2)
+    {
+        p_val_df <- GetPs(group_order_original,n_gene,gene_name,DATA_long)
+    }
+
+    #Find the y-limits for the boxplot based on the data
+    y_bounds <- get_y_bounds(group_order_original,gene_name,DATA_long)
 
     #Make the plot
-    b <- assemble_box_plot(DATA_long,FillColors,BoxDirectory)
+    b <- assemble_box_plot(DATA_long,FillColors,BoxDirectory,y_bounds)
 
     #assemble variables to return
-    MakeBoxPlot_return <- list(b,p_val_df)
+    MakeBoxPlot_return <- list(p_val_df)
 
     return(MakeBoxPlot_return)
 }

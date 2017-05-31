@@ -1,4 +1,4 @@
-assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory)
+assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
 {
     #set what is grouped and what is along the x-axis (these can be switched)
     x_var <- 'gene'
@@ -9,12 +9,11 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory)
     XLabel <- ''
     TextSize = 8
 
-    y_lim <- c(-1,4)
-
     pdf_width <- 3
     pdf_height <- 4
     bar_width <- 0.50
     inter_group_spacing <- NULL
+    legend_position <- c(0.25,0.9)
 
 
     b <- ggplot(DATA_long,aes_string(x=x_var, y=y_var)) +
@@ -32,12 +31,12 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory)
          theme(legend.title=element_blank()) +
          theme(legend.key=element_rect(fill=NA)) + #No background color in legend
          theme(legend.text = element_text(colour="black", size=(TextSize-2))) +
-         theme(legend.position=c(0.15,0.9)) +
+         theme(legend.position=legend_position) +
          scale_fill_manual(values=FillColors) +
          #theme(legend.key.size = unit(0.2, "cm")) +
          labs(x = XLabel) +
          labs(y = YLabel) +
-         coord_cartesian(ylim=y_lim) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+         coord_cartesian(ylim=y_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
 
     ggsave(paste(BoxDirectory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)

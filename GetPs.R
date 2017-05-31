@@ -4,6 +4,8 @@ GetPs <- function(group_order_original,n_gene,gene_name,DATA_long)
     p_val_df <- data.frame(matrix(nrow=1,ncol=n_gene))
     rownames(p_val_df) <- group_test
     colnames(p_val_df) <- gene_name
+    set_min <- NULL
+    set_max <- NULL
     for (i in 1:n_gene)
     {
         current_gene <- gene_name[i]
@@ -15,5 +17,6 @@ GetPs <- function(group_order_original,n_gene,gene_name,DATA_long)
         p_val_df[group_test,current_gene] <- t_test_result[3]
     }
 
+    y_bounds <- c(set_min,set_max)
     return(p_val_df)
 }
