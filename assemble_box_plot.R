@@ -1,6 +1,6 @@
 assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
 {
-    #set what is grouped and what is along the x-axis (these can be switched)
+    #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
     x_var <- 'gene'
     y_var <- 'value'
     color_var <- 'group'
@@ -9,7 +9,7 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- 3
+    pdf_width <- 5
     pdf_height <- 4
     bar_width <- 0.50
     inter_group_spacing <- NULL
