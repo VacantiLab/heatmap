@@ -9,10 +9,16 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 # ColGroupsScheme: the name of the grouping scheme used, indicates which row to take from group_key.txt
 # transformation:
 # data:
-# select_rows:
+# select_rows: These are the genes that you want to plot
+#    #If it is NULL, all genes are plotted
 # select_groups: This can be an array of the group names (from the provided ColGroupsScheme) that are to be plotted or a list of arrays of group names or NULL
-#    
-# replicate_scheme:
+#    If it is an array of group names, those groups are the only ones plotted
+#    If it is a list of arrays of group names, groups in the same array are combined into a single group
+#    If it is NULL, all groups in the ColGroupsScheme are plotted
+# replicate_scheme: This specifies the ColGroupsScheme that is used to specify groups of replicates
+#    More than one A second ColGroupsScheme must be specified in addition to the replicate_scheme
+#    If this is specified, all members of a single group are treated as a single sample and the median values are used
+#    This is untested for MakeBoxPlot 
 {
     #Include pertinent libraries
     library(ggplot2) #from ggplot2 package, allows the boxplot to be made
