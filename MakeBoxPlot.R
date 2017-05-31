@@ -10,7 +10,8 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 # transformation:
 # data:
 # select_rows:
-# select_groups:
+# select_groups: This can be an array of the group names (from the provided ColGroupsScheme) that are to be plotted or a list of arrays of group names or NULL
+#    
 # replicate_scheme:
 {
     #Include pertinent libraries
