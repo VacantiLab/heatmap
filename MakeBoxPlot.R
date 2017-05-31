@@ -35,7 +35,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     GroupColorMatrix <- RetrieveGroups_return[[3]]
     COLOR_KEY <- RetrieveGroups_return[[4]]
 
-    groups_concatonated <- lapply(group_divisions,paste,collapse=' : ')
+    groups_concatonated <- lapply(group_divisions,paste,collapse=':')
     groups_concatonated <- unlist(groups_concatonated)
     n_groups_concatonated <- length(groups_concatonated)
     for (i in 1:n_groups_concatonated)
@@ -76,11 +76,11 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 
 
     DATA_long$group <- factor(DATA_long$group,group_order_original) #this sets the order of the groups to match group_order_original
-
+    DATA_long$gene <- factor(DATA_long$gene,gene_name)
 
 
     #calculate p-values: currently can only do if there are 2 groups
-    #retunrs a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
+    #returns a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
     n_groups <- length(group_order_original)
     p_val_df <- data.frame(matrix(nrow=1,ncol=n_gene))
     if (n_groups==2){p_val_df <- GetPs(group_order_original,n_gene,gene_name,DATA_long)}

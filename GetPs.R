@@ -1,6 +1,6 @@
 GetPs <- function(group_order_original,n_gene,gene_name,DATA_long)
 {
-    group_test <- paste(group_order_original[1],group_order_original[2],sep='-')
+    group_test <- paste(group_order_original[1],group_order_original[2],sep=' - ')
     p_val_df <- data.frame(matrix(nrow=1,ncol=n_gene))
     rownames(p_val_df) <- group_test
     colnames(p_val_df) <- gene_name
