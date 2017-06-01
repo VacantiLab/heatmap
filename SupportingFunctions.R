@@ -13,7 +13,7 @@ OpenDataFile <- function(data,select_rows)
     if (!is.null(select_rows)) {DATA <- DATA[rownames(DATA) %in% select_rows,]}
     #selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
     #is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
-    
+
     return(DATA)
 }
 
@@ -212,4 +212,55 @@ FindColLabels <- function(label_cols,DifExpMatx)
         label_cols <- heatmap_colnames
     }
 return(label_cols)
+}
+
+###############################################################################
+
+UnpackGroups <- function(select_groups)
+#If passed a list of arrays of strings, this function returns a single array with the arrays in each list concatonated
+{
+    group_concatonation = is.list(select_groups)
+    group_divisions = NULL
+
+    #Unpack the group names if they are packed in a list of arrays to be concatonated
+    #If you are concatonating groups, you need to have an un-concatonated array of them to match to the group_key
+    if (group_concatonation)
+    {
+        group_divisions = select_groups
+        select_groups = do.call(c,select_groups)
+    }
+
+    #return desired variables
+    UnpackGroups_return <- list(select_groups,group_divisions)
+    return(UnpackGroups_return)
+}
+
+###############################################################################
+
+ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMatrix)
+{
+    group_concatonation = is.list(group_divisions)
+
+    if (group_concatonation)
+    {
+        #get a list of the new group names
+        groups_concatonated <- lapply(group_divisions,paste,collapse=':')
+
+        #make that list an array
+        groups_concatonated <- unlist(groups_concatonated)
+
+        #replace the group names with their corresponding concatonated names
+        #do likewise for the colors
+        n_groups_concatonated <- length(groups_concatonated)
+        for (i in 1:n_groups_concatonated)
+        {
+            concatonate_indices <- groups_corresponding %in% group_divisions[[i]]
+            groups_corresponding[concatonate_indices] <- groups_concatonated[i]
+            GroupColorMatrix[concatonate_indices,1] <- COLOR_KEY[1,group_divisions[[i]][1]] #The corresponding color for each contatonated group is the corresponding color to the first member sub-group
+        }
+     }
+
+     #return desired variables
+     ConcatonateGroups_return <- list(groups_corresponding,GroupColorMatrix)
+     return(ConcatonateGroups_return)
 }

@@ -39,16 +39,12 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     #Retrieve the corresponding column groupings and keep only those specified
     #Also take the medians if there is a replicate scheme provided (this will not work if the replicate scheme is the only grouping scheme used)
     #There must be a ColGroupsScheme specified, as of now it cannot be FALSE
-    group_concatonation = is.list(select_groups)
-    group_divisions = NULL
 
-    #Unpack the group names if they are packed in a list of arrays to be concatonated
-    #If you are concatonating groups, you need to have an un-concatonated array of them to match to the group_key
-    if (group_concatonation)
-    {
-        group_divisions = select_groups
-        select_groups = do.call(c,select_groups)
-    }
+    #If the groups are packaged into lists, unpack them into a single array
+        #This function does not affect the input if it is an array
+    UnpackGroups_return <- UnpackGroups(select_groups)
+    select_groups <- UnpackGroups_return[[1]]
+    group_divisions <- UnpackGroups_return[[2]]
 
     #Match the group names to the samples by referencing the group_key
     RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme,group_designations_file,group_color_designations_file,select_groups,replicate_scheme)
@@ -57,26 +53,12 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     GroupColorMatrix <- RetrieveGroups_return[[3]]
     COLOR_KEY <- RetrieveGroups_return[[4]]
 
-    #If you are concatonating groups, name the new groups and replace all of the groups they map to with those names
+    #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
     #Also get corresponding colors for those new groups by taking the color that maps to the first sub-group of each concatonated group
-    if (group_concatonation)
-    {
-        #get a list of the new group names
-        groups_concatonated <- lapply(group_divisions,paste,collapse=':')
-
-        #make that list an array
-        groups_concatonated <- unlist(groups_concatonated)
-
-        #replace the group names with their corresponding concatonated names
-        #do likewise for the colors
-        n_groups_concatonated <- length(groups_concatonated)
-        for (i in 1:n_groups_concatonated)
-        {
-            concatonate_indices <- groups_corresponding %in% group_divisions[[i]]
-            groups_corresponding[concatonate_indices] <- groups_concatonated[i]
-            GroupColorMatrix[concatonate_indices,1] <- COLOR_KEY[1,group_divisions[[i]][1]] #The corresponding color for each contatonated group is the corresponding color to the first member sub-group
-        }
-    }
+    #This function does not affect the input if group_divisions is NULL (i.e. select_groups was not passed as a list to the original function)
+    ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix)
+    groups_corresponding <- ConcatonateGroups_return[[1]]
+    GroupColorMatrix <- ConcatonateGroups_return[[2]]
 
     #Transform the data as specified
     DATA <- transform_data(DATA,transformation)
@@ -88,7 +70,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 
     #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
     group_order <- matrix(as.character(unique(groups_corresponding)),ncol=1)
-    FillColors <- matrix(as.character(COLOR_KEY[group_order]),ncol=1)
+    FillColors <- matrix(as.character(COLOR_KEY[,group_order]),ncol=1)
 
     #If groups to be plotted are specified, their order specifies the order they will be plotted in
     #This allows the user to control the order groups are plotted in
