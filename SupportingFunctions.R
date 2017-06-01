@@ -74,19 +74,22 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
 
     #If data is presented in duplicates or triplicates, one may want to consider the medians while clustering
     #Replicates must be specified as a grouping scheme, and this replicates grouping scheme
+    remaining_grouping_scheme <- TRUE #whether there are grouping schemes besides one used to mark replicates
     if (is.character(replicate_scheme))
     {
         StatTransformByGroup_return <- StatTransformByGroup(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme)
         DATA <- StatTransformByGroup_return[[1]]
         groups_corresponding <- StatTransformByGroup_return[[2]]
         GroupColorMatrix <- StatTransformByGroup_return[[3]]
+        group_values <- StatTransformByGroup_return[[4]]
+        remaining_grouping_scheme <- StatTransformByGroup_return[[5]]
     }
 
     #The group color matrix for the columns is returned with columns corresponding to columns, this is the transpose of what it needs to be
-    GroupColorMatrix <- t(GroupColorMatrix)
+    if (remaining_grouping_scheme){GroupColorMatrix <- t(GroupColorMatrix)}
 
     #return used variables
-    RetrieveGroups_return <- list(DATA,groups_corresponding,GroupColorMatrix,COLOR_KEY)
+    RetrieveGroups_return <- list(DATA,groups_corresponding,GroupColorMatrix,COLOR_KEY,group_values)
 }
 
 ###############################################################################
@@ -237,7 +240,7 @@ UnpackGroups <- function(select_groups)
 
 ###############################################################################
 
-ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMatrix)
+ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY)
 {
     group_concatonation = is.list(group_divisions)
 
