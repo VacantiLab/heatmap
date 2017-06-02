@@ -88,7 +88,7 @@ SelectGroups <- function(select_groups,DATA,ColGroupsScheme,groups_corresponding
 
 ###############################################################################
 
-ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY)
+ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY,concat_group_scheme)
 # Inputs:
 # group_divisions is a list of arrays where each array is a group of groups to be concatonated
 # groups_corresponding is a column matrix containing the un-concatonated group assignments for each sample corresponding to the rows
@@ -108,7 +108,7 @@ ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMat
     if (group_concatonation)
     {
         #get a list of the new group names
-        groups_concatonated <- lapply(group_divisions,paste,collapse=':')
+        groups_concatonated <- lapply(group_divisions,paste,collapse=' : ')
 
         #make that list an array
         n_groups_concatonated <- length(groups_concatonated)
@@ -118,12 +118,13 @@ ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMat
         #do likewise for the colors
         colors_concatonated <- matrix(ncol=1,nrow=n_groups_concatonated)
         rownames(colors_concatonated) <- groups_concatonated
+
         for (i in 1:n_groups_concatonated)
         {
             current_group_concatonated <- groups_concatonated[i]
-            concatonate_indices <- groups_corresponding %in% group_divisions[[i]]
-            groups_corresponding[concatonate_indices] <- groups_concatonated[i]
-            GroupColorMatrix[concatonate_indices,1] <- COLOR_KEY[1,group_divisions[[i]][1]] #The corresponding color for each contatonated group is the corresponding color to the first member sub-group
+            concatonate_indices <- groups_corresponding[,concat_group_scheme] %in% group_divisions[[i]]
+            groups_corresponding[concatonate_indices,concat_group_scheme] <- groups_concatonated[i]
+            GroupColorMatrix[concatonate_indices,concat_group_scheme] <- COLOR_KEY[1,group_divisions[[i]][1]] #The corresponding color for each contatonated group is the corresponding color to the first member sub-group
             colors_concatonated[current_group_concatonated,1] <- COLOR_KEY[1,group_divisions[[i]][1]]
         }
      }

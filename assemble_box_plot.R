@@ -10,10 +10,10 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- 5
-    pdf_height <- 4
+    pdf_width <- unit(2.5,'cm')
+    pdf_height <- unit(4,'cm')
     bar_width <- 0.50
-    inter_group_spacing <- NULL
+    inter_group_spacing <- 0.55
     legend_position <- c(0.25,0.9)
 
     #If there are groups, the group color is specified by the color_var
@@ -42,7 +42,8 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
          theme(axis.line.y=element_line(colour='black',size=0.5,linetype='solid')) +
          theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank()) + #removes gridlines
          theme(legend.title=element_blank()) +
-         theme(legend.key=element_rect(fill=NA)) + #No background color in legend
+         theme(legend.background=element_rect(fill=NA)) + #No background color in legend
+         theme(legend.key.size=unit(0.3,'cm')) +
          theme(legend.text = element_text(colour="black", size=(TextSize-2))) +
          theme(legend.position=legend_position) +
          scale_fill_manual(values=FillColors) +

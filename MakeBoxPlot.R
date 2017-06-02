@@ -71,7 +71,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation,data=N
     }
 
     #Select the groups that are considered for this box plot
-    inclusion_grouping_scheme <- ColGroupsScheme_as_input
+    inclusion_grouping_scheme <- ColGroupsScheme_as_input #It has to be the input ColGroupsScheme because a boxplot can only have one ColGroupsScheme
     SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
@@ -80,7 +80,8 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation,data=N
     #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
     #Also get corresponding colors for those new groups by taking the color that maps to the first sub-group of each concatonated group
     #This function does not affect the input if group_divisions is NULL (i.e. select_groups was not passed as a list to the original function)
-    ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY)
+    concat_group_scheme <- ColGroupsScheme_as_input #It has to be the input ColGroupsScheme because a boxplot can only have one ColGroupsScheme
+    ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY,concat_group_scheme)
     groups_corresponding <- ConcatonateGroups_return[[1]]
     GroupColorMatrix <- ConcatonateGroups_return[[2]]
     groups_concatonated <- ConcatonateGroups_return[[3]]
@@ -102,6 +103,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation,data=N
     DATA_long <- FatToLongDF(DATA,groups_corresponding)
 
     #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
+    if (is.character(select_rows)){gene_name <- select_rows}
     OrderGroups_return <- OrderGroups(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
     DATA_long <- OrderGroups_return[[1]]
     FillColors <- OrderGroups_return[[2]]
