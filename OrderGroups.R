@@ -2,8 +2,13 @@ OrderGroups <- function(select_groups,group_concationation,groups_corresponding,
 {
   #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
   #If there is nothing specified in select_groups, the order is by the order of appearance in the data
-  group_order <- matrix(as.character(unique(groups_corresponding)),ncol=1)
-  FillColors <- matrix(as.character(unique(GroupColorMatrix)),ncol=1)
+  group_order = NULL
+  FillColors = NULL
+  if (!is.null(groups_corresponding))
+  {
+      group_order <- matrix(as.character(unique(groups_corresponding)),ncol=1)
+      FillColors <- matrix(as.character(unique(GroupColorMatrix)),ncol=1)
+  }
 
   #If groups to be plotted are specified, their order specifies the order they will be plotted in
   #This allows the user to control the order groups are plotted
@@ -22,7 +27,7 @@ OrderGroups <- function(select_groups,group_concationation,groups_corresponding,
   }
 
   #Implement the group ordering
-  DATA_long$group <- factor(DATA_long$group,group_order) #this sets the order of the groups to match group_order
+  if (!is.null(groups_corresponding)){DATA_long$group <- factor(DATA_long$group,group_order)} #this sets the order of the groups to match group_order
   DATA_long$gene <- factor(DATA_long$gene,gene_name) #this sets the order of the genes to match gene_names
 
   #assemble variables to return

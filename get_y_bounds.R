@@ -4,6 +4,7 @@ get_y_bounds <- function(group_order,gene_name,DATA_long)
 {
     n_gene <- length(gene_name)
     n_group <- length(group_order)
+    if (is.null(group_order)){n_group=1}
 
     set_min <- NULL
     set_max <- NULL
@@ -13,7 +14,8 @@ get_y_bounds <- function(group_order,gene_name,DATA_long)
           for (j in 1:n_group)
           {
               #For each gene-group combination, get arrays of values
-              indices <- DATA_long[,'gene']==gene_name[i] & DATA_long[,'group']==group_order[j]
+              if (!is.null(group_order)){indices <- DATA_long[,'gene']==gene_name[i] & DATA_long[,'group']==group_order[j]}
+              if (is.null(group_order)){indices <- DATA_long[,'gene']==gene_name[i]}
               value <- DATA_long[indices,'value']
 
               #Find value corresponding to the bottom of the whisker - the smallest value >= 25th percentile - 1.5*IQR

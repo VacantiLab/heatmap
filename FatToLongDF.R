@@ -16,7 +16,10 @@ FatToLongDF <- function(DATA,groups_corresponding)
         DATA_long[start_iteration:end_iteration,'gene'] <- rownames(DATA)
         DATA_long[start_iteration:end_iteration,'sample'] <- rep(current_sample,n_row_DATA)
         DATA_long[start_iteration:end_iteration,'value'] <- DATA[,current_sample]
-        DATA_long[start_iteration:end_iteration,'group'] <- rep(groups_corresponding[current_sample,1],n_row_DATA)
+        if (!is.null(groups_corresponding))
+        {
+            DATA_long[start_iteration:end_iteration,'group'] <- rep(groups_corresponding[current_sample,1],n_row_DATA)
+        }
     }
 
     return(DATA_long)

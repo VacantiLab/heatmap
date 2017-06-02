@@ -2,7 +2,10 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
 {
     #Determine if there is column or row grouping
     ColGroups <- FALSE
-    if (is.character(ColGroupsScheme)) {ColGroups <- TRUE}
+    groups_corresponding <- NULL
+    GroupColorMatrix <- NULL
+    COLOR_KEY <- NULL
+    if (is.character(ColGroupsScheme)) {ColGroups <- TRUE} #this will be true if the input of ColGroupsScheme was NULL and there is a replicate_scheme
 
     if (ColGroups)
     {
@@ -10,6 +13,9 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
         #Read the file containing the group designations
         GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE) #check.names=FALSE prevents changing special characters
         rownames(GROUP_KEY) <- GROUP_KEY[,1]
+        possible_group_schemes <- rownames(GROUP_KEY)
+        all_ColGroupScheme_real <- CheckAllIn(ColGroupsScheme,possible_group_schemes)
+        if (!all_ColGroupScheme_real){stop('custom message: a specified ColGroupsScheme or the replicate_scheme does not exist.')}
         GROUP_KEY <- GROUP_KEY[,-1] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
         GROUP_KEY <- GROUP_KEY[ColGroupsScheme,] #the group key rows corresponding to the grouping schemes considered are selected
         #Get the vector of colors corresponding to the group membership of each patient
@@ -56,16 +62,17 @@ GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGr
 
 ###############################################################################
 
-SelectGroups <- function(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix)
+SelectGroups <- function(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
 #Select the specified group names (if applicable)
 {
     if (is.character(select_groups))
     {
+        select_groups_in_same_scheme <- CheckAllIn(select_groups,groups_corresponding[,inclusion_grouping_scheme])
+        if (!select_groups_in_same_scheme){stop('custom message: Not all select_groups are in the same ColGroupsScheme. You cannot specify to consider only group members from multiple grouping schemes.')}
+        #not really relevant for boxplots - check for heatmaps
         DATA2 <- DATA #make a copy of the DATA data frame because appending non-numeric rows changes the numeric class of its contents
-        DATA2[ColGroupsScheme,sort(colnames(DATA))] <- groups_corresponding[sort(colnames(DATA)),ColGroupsScheme] #add rows corresponding to the group classifications of each sample
-        DATA2[paste(ColGroupsScheme,'- color'),sort(colnames(DATA))] <- GroupColorMatrix[sort(colnames(DATA)),ColGroupsScheme] #add rows corresponding to the group color assignments of each sample
-        inclusion_grouping_scheme_indices <- apply(DATA2[ColGroupsScheme,], 1, function(r) any(r %in% select_groups)) #find which group classification scheme is being used to make the selection - this gives the indices of the rows in DATA2
-        inclusion_grouping_scheme <- rownames(DATA2[ColGroupsScheme,])[inclusion_grouping_scheme_indices] #this gives the classification scheme used to make the selection of groups to include
+        DATA2[ColGroupsScheme,sort(colnames(DATA))] <- t(groups_corresponding[sort(colnames(DATA)),ColGroupsScheme]) #add rows corresponding to the group classifications of each sample
+        DATA2[paste(ColGroupsScheme,'- color'),sort(colnames(DATA))] <- t(GroupColorMatrix[sort(colnames(DATA)),ColGroupsScheme]) #add rows corresponding to the group color assignments of each sample
         col_to_keep_indices <- DATA2[inclusion_grouping_scheme,] %in% select_groups #find the columns to keep - this gives the indices
         DATA2 <- DATA2[,col_to_keep_indices] #keep the specified columns, this is done in DATA2 so the GroupColorMatrix and groups_corresponding matrix can be updated
         DATA <- DATA[,col_to_keep_indices] #keep the specified columns in the data frame to be plotted
@@ -82,6 +89,17 @@ SelectGroups <- function(select_groups,DATA,ColGroupsScheme,groups_corresponding
 ###############################################################################
 
 ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY)
+# Inputs:
+# group_divisions is a list of arrays where each array is a group of groups to be concatonated
+# groups_corresponding is a column matrix containing the un-concatonated group assignments for each sample corresponding to the rows
+# GroupColorMatrix is a column matrix containing the un-concatonated color assignments for each sample corresponding to the rows
+# COLOR_KEY is a data frame containing the group names across the columns and in its single row are the corresponding colors
+#     These are the color assignments for unique group names, NOT for samples
+# Outputs:
+# groups_corresponding is a column matrix containing the concatonated group assignments for each sample corresponding to the rows
+# GroupColorMatrix is a column matrix containing the concatonated group assignments for each sample corresponding to the rows
+# groups_concatonated is a column matrix containing the unique group names, ordered as they were input in group_divisions
+# colors_concatonated is a column matrix containing the unique color assignments, ordered as corresponding to groups_concatonated
 {
     group_concatonation = is.list(group_divisions)
     groups_concatonated = NULL
@@ -128,6 +146,13 @@ if (is.character(replicate_scheme))
     groups_corresponding <- StatTransformByGroup_return[[2]]
     GroupColorMatrix <- StatTransformByGroup_return[[3]]
 }
+
+#If the replicate scheme was the only ColGroupsScheme, then the returned groups_corresponding and GroupColorMatrix will be empty column matrices
+if (length(groups_corresponding)==0)
+    {
+        groups_corresponding = NULL
+        GroupColorMatrix = NULL
+    }
 
 MedianGroup_return <- list(DATA,groups_corresponding,GroupColorMatrix)
 return(MedianGroup_return)

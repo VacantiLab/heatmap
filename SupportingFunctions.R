@@ -177,3 +177,10 @@ UnpackGroups <- function(select_groups)
 }
 
 ###############################################################################
+
+CheckAllIn <- function(array1,array2)
+{
+    TrueIndices <- array1 %in% array2
+    all_in <- sum(TrueIndices) == length(array1)
+    return(all_in)
+}

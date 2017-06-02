@@ -1,10 +1,13 @@
 transform_data <- function(DATA,transformation)
 {
+  transformed = FALSE
+
   #Log transform the data if specified to do so
   if (transformation == 'log2')
   {
     DATA <- log2(DATA)
     DATA[DATA < -3] <- -3
+    transformed = TRUE
   }
 
   #Center and scale the rows if indicated
@@ -15,6 +18,7 @@ transform_data <- function(DATA,transformation)
     DATA <- data.frame(lapply(Transposed_DATA, median_center_iqr_norm))
     DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
     colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+    transformed = TRUE
   }
 
   #Normalize rows to row median and log2 transform if indicated
@@ -25,7 +29,10 @@ transform_data <- function(DATA,transformation)
     DATA <- data.frame(lapply(Transposed_DATA, median_norm_log2_transform))
     DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
     colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+    transformed = TRUE
   }
+
+  if (transformed==FALSE && !is.null(transformation)){stop('custom message: You have specified a transformation that does not exist.')}
 
   return(DATA)
 }

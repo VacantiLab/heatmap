@@ -4,6 +4,7 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
     x_var <- 'gene'
     y_var <- 'value'
     color_var <- 'group'
+    no_groups_color <- 'grey'
 
     YLabel <- 'Abundance'
     XLabel <- ''
@@ -15,9 +16,21 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
     inter_group_spacing <- NULL
     legend_position <- c(0.25,0.9)
 
+    #If there are groups, the group color is specified by the color_var
+    if(!is.null(FillColors))
+    {
+        gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2)
+    }
+
+    #If there are no groups, the group color is specified by no_groups_color
+    if(is.null(FillColors))
+    {
+        gbp <- geom_boxplot(outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2,fill=no_groups_color)
+    }
+
 
     b <- ggplot(DATA_long,aes_string(x=x_var, y=y_var)) +
-         geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2) +
+         gbp +
          theme(axis.text.y=element_text(color='black',size=TextSize)) +
          theme(axis.ticks.y=element_line(colour='black',size=0.5)) +
          theme(axis.ticks.x=element_line(colour='black',size=0.5)) +

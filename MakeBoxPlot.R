@@ -1,4 +1,4 @@
-MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
+MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
 # data_location: a pathway to where the text file containing the data is stored
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names across the columns and the grouping schemes down the rowss
@@ -7,7 +7,6 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 #        All of the group names are listed across the column headers with no indication of their scheme membership (thus the names must be unique)
 # box_plot_directory: The location of where the output box plot will be saved, has a "/" at the end
 # ColGroupsScheme: the name of the grouping scheme used, indicates which row to take from group_key.txt
-#    This needs to be specified, currently this cannot be run without a grouping scheme
 # transformation: This specifies how the rows should be transformed.
 #    Options include: 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform'
 # data: Is a data frame containing the data to be plotted if the data is passed as a data frame instead of through the quantities.txt file in data_location
@@ -17,10 +16,21 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 #    If it is an array of group names, those groups are the only ones plotted
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
 #    If it is NULL, all groups in the ColGroupsScheme are plotted
-# replicate_scheme: This specifies the ColGroupsScheme that is used to specify groups of replicates
-#    Another ColGroupsScheme must be specified in addition to the replicate_scheme
+# replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
+#    This must NOT be a member of ColGroupsScheme
 #    If this is specified, all members of a single group are treated as a single sample and the median values are used
 {
+    #Stop the program if the replicate scheme is in the ColGroupsScheme
+    if (!is.null(ColGroupsScheme) && !is.null(replicate_scheme))
+    {
+        replicate_scheme_unique = sum(replicate_scheme %in% ColGroupsScheme)==0
+        if(!replicate_scheme_unique){stop('custom message: The replicate_scheme is in the ColGroupsScheme. These should be mutually exclusive.')}
+    }
+
+    #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
+    if (length(ColGroupsScheme)>1 || length(replicate_scheme)>1){stop('custom message: Cannot have more than one ColGroupsScheme or replicate_scheme for a boxplot')}
+
+
     #Include pertinent libraries
     library(ggplot2) #from ggplot2 package, allows the boxplot to be made
 
@@ -46,13 +56,23 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     group_divisions <- UnpackGroups_return[[2]] #this is the original input if it was a list, NULL if the input was not a list
 
     #Match the group names to the samples by referencing the group_key
+    ColGroupsScheme_as_input <- ColGroupsScheme
+    ColGroupsScheme <- c(ColGroupsScheme,replicate_scheme)
     RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme,group_designations_file,group_color_designations_file,select_groups,replicate_scheme)
     groups_corresponding <- RetrieveGroups_return[[1]]
     GroupColorMatrix <- RetrieveGroups_return[[2]]
     COLOR_KEY <- RetrieveGroups_return[[3]]
 
+    #CUSTOM STOP CHECK: see if all of the specified input groups are actually specified in group_key.txt file
+    if (!is.null(select_groups) && !is.null(groups_corresponding))
+    {
+        all_select_groups_used <- sum(select_groups %in% groups_corresponding) == length(select_groups)
+        if (!all_select_groups_used){stop('custom message: select_groups contains a member that no sample is assinged to in the specified ColGroupsScheme - check spelling')}
+    }
+
     #Select the groups that are considered for this box plot
-    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix)
+    inclusion_grouping_scheme <- ColGroupsScheme_as_input
+    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
     GroupColorMatrix <- SelectGroups_return[[3]]
