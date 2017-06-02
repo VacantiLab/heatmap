@@ -18,9 +18,8 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
 #    If it is NULL, all groups in the ColGroupsScheme are plotted
 # replicate_scheme: This specifies the ColGroupsScheme that is used to specify groups of replicates
-#    More than one A second ColGroupsScheme must be specified in addition to the replicate_scheme
+#    Another ColGroupsScheme must be specified in addition to the replicate_scheme
 #    If this is specified, all members of a single group are treated as a single sample and the median values are used
-#    This is untested for MakeBoxPlot
 {
     #Include pertinent libraries
     library(ggplot2) #from ggplot2 package, allows the boxplot to be made
@@ -43,22 +42,36 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     #If the groups are packaged into lists, unpack them into a single array
         #This function does not affect the input if it is an array
     UnpackGroups_return <- UnpackGroups(select_groups)
-    select_groups <- UnpackGroups_return[[1]]
-    group_divisions <- UnpackGroups_return[[2]]
+    select_groups <- UnpackGroups_return[[1]] #this is now an array of the groups if it were input as a list
+    group_divisions <- UnpackGroups_return[[2]] #this is the original input if it was a list, NULL if the input was not a list
 
     #Match the group names to the samples by referencing the group_key
     RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme,group_designations_file,group_color_designations_file,select_groups,replicate_scheme)
-    DATA <- RetrieveGroups_return[[1]]
-    groups_corresponding <- t(RetrieveGroups_return[[2]])
-    GroupColorMatrix <- RetrieveGroups_return[[3]]
-    COLOR_KEY <- RetrieveGroups_return[[4]]
+    groups_corresponding <- RetrieveGroups_return[[1]]
+    GroupColorMatrix <- RetrieveGroups_return[[2]]
+    COLOR_KEY <- RetrieveGroups_return[[3]]
+
+    #Select the groups that are considered for this box plot
+    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix)
+    DATA <- SelectGroups_return[[1]]
+    groups_corresponding <- SelectGroups_return[[2]]
+    GroupColorMatrix <- SelectGroups_return[[3]]
 
     #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
     #Also get corresponding colors for those new groups by taking the color that maps to the first sub-group of each concatonated group
     #This function does not affect the input if group_divisions is NULL (i.e. select_groups was not passed as a list to the original function)
-    ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix)
+    ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY)
     groups_corresponding <- ConcatonateGroups_return[[1]]
     GroupColorMatrix <- ConcatonateGroups_return[[2]]
+    groups_concatonated <- ConcatonateGroups_return[[3]]
+    colors_concatonated <- ConcatonateGroups_return[[4]]
+    group_concationation <- is.list(group_divisions)
+
+    #return median of replicates if specified to do so
+    MedianGroup_return <- MedianGroup(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme)
+    DATA <- MedianGroup_return[[1]]
+    groups_corresponding <- MedianGroup_return[[2]]
+    GroupColorMatrix <- MedianGroup_return[[3]]
 
     #Transform the data as specified
     DATA <- transform_data(DATA,transformation)
@@ -69,36 +82,18 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     DATA_long <- FatToLongDF(DATA,groups_corresponding)
 
     #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
-    group_order <- matrix(as.character(unique(groups_corresponding)),ncol=1)
-    FillColors <- matrix(as.character(COLOR_KEY[,group_order]),ncol=1)
-
-    #If groups to be plotted are specified, their order specifies the order they will be plotted in
-    #This allows the user to control the order groups are plotted in
-    if (is.character(select_groups))
-    {
-        group_order <- matrix(as.character(select_groups),ncol=1)
-        FillColors <- matrix(as.character(COLOR_KEY[select_groups]),ncol=1)
-    }
-
-    #The group list and corresponding FillColors for ordering must reflect the combined groups if there are combined groups
-    #If there are combined groups, their order of plotting cannot be specifed (yet) and it follows from where their members appear in the data
-    if (is.list(group_divisions))
-    {
-        group_order <- unique(groups_corresponding)
-        FillColors <- as.matrix(unique(GroupColorMatrix[,1]),ncol=1)
-    }
-
-    #Implement the group ordering
-    DATA_long$group <- factor(DATA_long$group,group_order) #this sets the order of the groups to match group_order
-    DATA_long$gene <- factor(DATA_long$gene,gene_name) #this sets the order of the genes to match gene_names
+    OrderGroups_return <- OrderGroups(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
+    DATA_long <- OrderGroups_return[[1]]
+    FillColors <- OrderGroups_return[[2]]
+    group_order <- OrderGroups_return[[3]]
 
     #calculate p-values: currently can only do if there are 2 groups with an equal-variance t-test
     #returns a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
     n_groups <- length(group_order)
-    p_val_df <- data.frame(matrix(nrow=1,ncol=n_gene))
+    p_val <- data.frame(matrix(nrow=1,ncol=n_gene))
     if (n_groups==2)
     {
-        p_val_df <- GetPs(group_order,n_gene,gene_name,DATA_long)
+        p_val <- GetPs(group_order,n_gene,gene_name,DATA_long)
     }
 
     #Find the y-limits for the boxplot based on the data
@@ -108,7 +103,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=FALSE,transformation,data=
     b <- assemble_box_plot(DATA_long,FillColors,BoxDirectory,y_bounds)
 
     #assemble variables to return
-    MakeBoxPlot_return <- list(p_val_df)
+    MakeBoxPlot_return <- list(p_val)
 
     return(MakeBoxPlot_return)
 }
