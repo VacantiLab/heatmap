@@ -1,128 +1,106 @@
-ls
-ls()
-cd <- getwd()#
-r_scripts <- list.files(cd)#
-initialize_fun_index <- match('initialize_heatmap.R',r_scripts)#
-r_scripts <- r_scripts[-initialize_fun_index]#
-r_scripts_pathways <- paste(cd,r_scripts[],sep='/')#
-for (i in 1:length(r_scripts_pathways)) {source(r_scripts_pathways[[i]])}
+cwd()
 getwd()
+ls()
 setwd('/Users/nate/git_hub_projects/heatmap/')
 getwd()
-cd <- getwd()#
-r_scripts <- list.files(cd)#
-initialize_fun_index <- match('initialize_heatmap.R',r_scripts)#
-r_scripts <- r_scripts[-initialize_fun_index]#
-r_scripts_pathways <- paste(cd,r_scripts[],sep='/')#
-for (i in 1:length(r_scripts_pathways)) {source(r_scripts_pathways[[i]])}
 data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
-ColGroupSchemes <- c('cell_type','PAM50')
+ColGroupsScheme <- 'PAM50'
 transformation <- 'log2'
-break_seq <- seq(-2,2,0.5)
-break_seq
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
+select_rows <- c('TYMS','SLC25A44')
+replicate_scheme <- 'cell_type'
+source('initialize_heatmap.R')
+MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type')
+b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type')
+gene_name
+Q
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=c('basal b','luminal'))
+b
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
 traceback()
-source(GetGroupColorList)
-source(GetGroupColorList.R)
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-traceback()
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-n_samples
-sample_name <- colnames(DATA)[i]
-sample_name <- colnames(DATA)[1]
-sample_name
-group_name_df[,sample_name] <- GROUP_KEY[,sample_name]
-group_name_df[,sample_name]
-current_groups <- group_name_df[,sample_name]
-current_groups
-source('GetGroupColorList.R')
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+group_divisions
+groups_corresponding
 c
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
 c
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-traceback()
-source('GetGroupColorList.R')
-traceback()
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-sample_name <- colnames(DATA)[i]#
-    group_name_df[,sample_name] <- GROUP_KEY[,sample_name]#
-    current_groups <- group_name_df[,sample_name]
-current_groups
-color_df
-sample_name
-color_df[,sample_name]
-as.character(COLOR_KEY[current_groups])
-COLOR_KEY
-q
-quit()
-exit()
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+current_group_concatonated <- groups_concatonated[i]
+groups_concatonated
+current_group_concatonated
+concatonate_indices <- groups_corresponding %in% group_divisions[[i]]
+concatonate_indices
+groups_corresponding[concatonate_indices] <- groups_concatonated[i]
+groups_corresponding
+GroupColorMatrix[concatonate_indices,1] <- COLOR_KEY[1,group_divisions[[i]][1]]
+GroupColorMatrix[concatonate_indices,1]
+concatonate_indices
 Q
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-traceback()
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-source(''assemble_heatmap.R'')
-source('assemble_heatmap.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+current_group_concatonated <- groups_concatonated[i]
+current_group_concatonated
+concatonate_indices <- groups_corresponding[,concat_group_scheme] %in% group_divisions[[i]]
+groups_corresponding
+concatonate_indices
+GroupColorMatrix[concatonate_indices,concat_group_scheme] <- COLOR_KEY[1,group_divisions[[i]][1]]
+groups_corresponding
+groups_corresponding[concatonate_indices,concat_group_scheme] <- groups_concatonated[i]
+groups_corresponding
 GroupColorMatrix
+colors_concatonated[current_group_concatonated,1] <- COLOR_KEY[1,group_divisions[[i]][1]]
 Q
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-GroupColorMatrix
-GroupColorMatrix[1,1]
-Q
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Patient_Tumors/Metabolomics/Tumors with Proteome Quantification/'
-ColGroupsScheme <- c('PAM50','Consensus Proteome')
-transformation <- 'median_center_iqr_norm'
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-traceback()
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupSchemes,transformation=transformation,break_seq=break_seq)
-color_df
-ColGroupSchemes
-ColGroupScheme
-Q
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-Q
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-c
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-GroupColorMatrix
-Q
-source('assemble_heatmap.R')
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-color_matrix
-Q
-data_location_mets <- data_location
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
-ColGroupsScheme
-ColGroupsScheme_mets <- ColGroupsScheme
-ColGroupsScheme <- c('cell_type','PAM50')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-color_matrix
-Q
-source('GetGroupColorList.R')
-source('GetGroupColorList.R')
-source('MakeHeatmap.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-GROUP_KEY
-Q
-source('MakeHeatmap.R')
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-COLOR_KEY
-group_color_designations_file
-Q
-source('GetGroupColorList.R')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation=transformation,break_seq=break_seq)
-transformation
-ColGrroupsScheme
-ColGroupsScheme
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation='log2',break_seq=break_seq)
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation='log2',break_seq=break_seq,replicate_scheme='cell_type')
-heatmap <- MakeHeatMap(data_location=data_location,ColGroupsScheme=ColGroupsScheme,transformation='log2',break_seq=break_seq,replicate_scheme='cell_type',label_rows=F)
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,replicate_scheme='cell_type',select_groups=list(c('basal b','basal a'),c('luminal')))
