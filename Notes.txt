@@ -1,3 +1,4 @@
 sample names consistnet in the quantities file and the group designations file
 group names consistent in group designations and group color key
+check if group names are unique (can add this to the check if group colors are unique)
 ask if sure want to plot >100 variables on x-axis
