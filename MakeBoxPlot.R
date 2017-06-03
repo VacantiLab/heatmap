@@ -22,7 +22,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation,data=N
 {
     #Stop the program if the replicate scheme is in the ColGroupsScheme
     #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
-    CheckStop(1)
+    CheckStop(1,parameters=list(ColGroupsScheme,replicate_scheme))
 
     #Include pertinent libraries
     library(ggplot2) #from ggplot2 package, allows the boxplot to be made
@@ -55,13 +55,10 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation,data=N
     groups_corresponding <- RetrieveGroups_return[[1]]
     GroupColorMatrix <- RetrieveGroups_return[[2]]
     COLOR_KEY <- RetrieveGroups_return[[3]]
+    CheckStop(5,parameters=list(COLOR_KEY))
 
-    #CUSTOM STOP CHECK: see if all of the specified input groups are actually specified in group_key.txt file
-    if (!is.null(select_groups) && !is.null(groups_corresponding))
-    {
-        all_select_groups_used <- sum(select_groups %in% groups_corresponding) == length(select_groups)
-        if (!all_select_groups_used){stop('custom message: select_groups contains a member that no sample is assinged to in the specified ColGroupsScheme - check spelling')}
-    }
+    #See if all of the specified input groups are actually specified in group_key.txt file
+    CheckStop(2,parameters=list(select_groups,groups_corresponding))
 
     #Select the groups that are considered for this box plot
     inclusion_grouping_scheme <- ColGroupsScheme_as_input #It has to be the input ColGroupsScheme because a boxplot can only have one ColGroupsScheme

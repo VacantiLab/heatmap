@@ -13,9 +13,7 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
         #Read the file containing the group designations
         GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE) #check.names=FALSE prevents changing special characters
         rownames(GROUP_KEY) <- GROUP_KEY[,1]
-        possible_group_schemes <- rownames(GROUP_KEY)
-        all_ColGroupScheme_real <- CheckAllIn(ColGroupsScheme,possible_group_schemes)
-        if (!all_ColGroupScheme_real){stop('custom message: a specified ColGroupsScheme or the replicate_scheme does not exist.')}
+        CheckStop(3,parameters=list(GROUP_KEY,ColGroupsScheme)) #make sure the ColGroupsScheme and replicate_scheme specified all exist
         GROUP_KEY <- GROUP_KEY[,-1] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
         GROUP_KEY <- GROUP_KEY[ColGroupsScheme,] #the group key rows corresponding to the grouping schemes considered are selected
         #Get the vector of colors corresponding to the group membership of each patient
@@ -67,8 +65,7 @@ SelectGroups <- function(select_groups,DATA,ColGroupsScheme,groups_corresponding
 {
     if (is.character(select_groups))
     {
-        select_groups_in_same_scheme <- CheckAllIn(select_groups,groups_corresponding[,inclusion_grouping_scheme])
-        if (!select_groups_in_same_scheme){stop('custom message: Not all select_groups are in the same ColGroupsScheme. You cannot specify to consider only group members from multiple grouping schemes.')}
+        CheckStop(4,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme)) #ensure all select_group entries are in the specified grouping scheme to select them from
         #not really relevant for boxplots - check for heatmaps
         DATA2 <- DATA #make a copy of the DATA data frame because appending non-numeric rows changes the numeric class of its contents
         DATA2[ColGroupsScheme,sort(colnames(DATA))] <- t(groups_corresponding[sort(colnames(DATA)),ColGroupsScheme]) #add rows corresponding to the group classifications of each sample
