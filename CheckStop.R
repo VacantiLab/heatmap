@@ -47,14 +47,12 @@ CheckStop <- function(check_flag,parameters)
         if (!select_groups_in_same_scheme){stop('Custom Message: Not all select_groups are in the same ColGroupsScheme. You cannot specify to consider only group members from multiple grouping schemes.')}
     }
 
-    #Make sure the group color assignments are unique
+    #Make sure each group only has one color assignment
     if (check_flag==5)
     {
         COLOR_KEY = parameters[[1]]
-        color_key_matrix <- as.matrix(COLOR_KEY[1,])
-        n_color_key_entries <- length(color_key_matrix[1,])
-        unique_color_key <- unique(color_key_matrix[1,])
-        n_unique_color_key_entries <- length(unique_color_key)
-        if (n_color_key_entries!=n_unique_color_key_entries){stop('Custom Message: Two groups have the same color indicated in the color key.')}
+        group_names <- colnames(COLOR_KEY)
+        unique_group_names <- unique(group_names)
+        if (length(group_names)!=length(unique_group_names)){stop('Custom Message: One or more groups have more than one color assignment.')}
     }
 }

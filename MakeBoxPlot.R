@@ -55,7 +55,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation,data=N
     groups_corresponding <- RetrieveGroups_return[[1]]
     GroupColorMatrix <- RetrieveGroups_return[[2]]
     COLOR_KEY <- RetrieveGroups_return[[3]]
-    CheckStop(5,parameters=list(COLOR_KEY))
+    CheckStop(5,parameters=list(COLOR_KEY)) #makes sure each group name only has one color assignment
 
     #See if all of the specified input groups are actually specified in group_key.txt file
     CheckStop(2,parameters=list(select_groups,groups_corresponding))
