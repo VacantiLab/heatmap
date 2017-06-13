@@ -109,7 +109,7 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
     sig_test_list <- list()
     if (n_groups==2)
     {
-        sig_test_list <- GetPs(group_order,n_gene,gene_name,DATA_long)
+        sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
     }
 
     #Make the plot

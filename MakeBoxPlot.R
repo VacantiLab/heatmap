@@ -109,7 +109,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
     sig_test_list <- list()
     if (n_groups==2)
     {
-        sig_test_list <- GetPs(group_order,n_gene,gene_name,DATA_long)
+        sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
     }
 
     #Find the y-limits for the boxplot based on the data

@@ -1,208 +1,82 @@
-setwd('/Users/nate/git_hub_projects/heatmap/')
-ls()
 data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
 ColGroupsScheme <- 'PAM50'
-transformation <- 'log2'
-select_rows <- c('TYMS','SHMT2')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal'),replicate_scheme='cell_type')
-)
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal'),replicate_scheme='cell_type'))
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+setwd('/Users/nate/git_hub_projects/heatmap')
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal'),replicate_scheme='cell_type'))
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal'),replicate_scheme='cell_type'))
-select_groups
-traceback()
-Q
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal'),replicate_scheme='cell_type'))
-select_groups
-class(select_groups)
-select_groups[4]
-Q
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal'),replicate_scheme='cell_type'))
-select_groups
-Q
-select_groups
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal')),replicate_scheme='cell_type')
-Q
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=list(c('basal a','basal b'),c('luminal')),replicate_scheme='cell_type')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=c('basal a','basal b'),replicate_scheme='cell_type')
-b <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,select_rows=select_rows,select_groups=c('basal a','basal b'),replicate_scheme=NULL)
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
 FillColors
-groups_corresponding
-GroupColorMatrix
-unique(rownames(GroupColorMatrix))
-unique(GroupColorMatrix)
-length(unique(GroupColorMatrix))
-unique(groups_corresponding)
-length(unique(groups_corresponding))
-i=1
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=2
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=3
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=4
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=5
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=6
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=7
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=8
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=9
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-i=10
-c(groups_corresponding[i],rownames(GroupColorMatrix)[i])
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=1
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=2
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=3
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=4
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=5
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=6
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=7
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=8
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=9
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-i=10
-c(unique(groups_corresponding[i]),unique(rownames(GroupColorMatrix)[i]))
-ugc <- unique(groups_corresponding)
-ugc
-ugcm <- unique(GroupColorMatrix)
-ugcm
-length(ugcm)
-length(ugc)
-i=1
-c(ugc[i],ugcm[i])
-c(ugc[i],rownames(ugcm)[i])
-i=17
-c(ugc[i],rownames(ugcm)[i])
-i=2
-c(ugc[i],rownames(ugcm)[i])
-i=3
-c(ugc[i],rownames(ugcm)[i])
-i=4
-c(ugc[i],rownames(ugcm)[i])
-i=5
-c(ugc[i],rownames(ugcm)[i])
-i=6
-c(ugc[i],rownames(ugcm)[i])
-i=7
-c(ugc[i],rownames(ugcm)[i])
-i=8
-c(ugc[i],rownames(ugcm)[i])
-i=9
-c(ugc[i],rownames(ugcm)[i])
-i=10
-c(ugc[i],rownames(ugcm)[i])
-i=11
-c(ugc[i],rownames(ugcm)[i])
-i=12
-c(ugc[i],rownames(ugcm)[i])
-i=13
-c(ugc[i],rownames(ugcm)[i])
-i=14
-c(ugc[i],rownames(ugcm)[i])
-i=15
-c(ugc[i],rownames(ugcm)[i])
-i=16
-c(ugc[i],rownames(ugcm)[i])
+group_order
+FillColors2 <- COLOR_KEY[1,group_order]
+FillColors2
+FillColors2 <- matrix(as.character(COLOR_KEY[1,group_order]),ncol=1)
+FillColors2
 Q
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-ugcm <- unique(GroupColorMatri
-x)
-ugcm <- unique(GroupColorMatrix)
-ugcm
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+git log
+data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data_test/'
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+group_names_from_color_key
 Q
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-ugcm <- unique(GroupColorMatrix)
-ugcm
-length(ugcm)
-Q
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-groups_corresponding
-length(unique(groups_corresponding))
-GroupColorMatrix
-length(unique(GroupColorMatrix))
-Q
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-color_df
-length(unique(color_df['cell_type',]))
-color_df['cell_type',]
-group_name_df
-Q
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-unique(color_matrix)
-length(unique(color_matrix))
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+group_names_from_color_key
 COLOR_KEY
-length(COLOR_KEY)
-unique(COLOR_KEY)
-color_df
-length(color_df)
-unique(color_df)
-as.array(color_df['cell_type',])
+colnames(COLOR_KEY)
 Q
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-COLOR_KEY
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
 Q
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-check_flag
-c
-check_flag
-c
-check_flag
-COLOR_KEY = parameters[[1]]
-color_key_matrix <- as.matrix(COLOR_KEY[1,])#
-        n_color_key_entries <- length(color_key_matrix)#
-        unique_color_key <- unique(color_key_matrix)#
-        n_unique_color_key_entries <- length(unique_color_key)
-n_color_key_entries
-n_unique_color_key_entries
-color_key_matrix
-unique_color_key <- unique(color_key_matrix[1,])
-unique_color_key
-color_key_matrix <- as.matrix(COLOR_KEY[1,])#
-        n_color_key_entries <- length(color_key_matrix[1,])#
-        unique_color_key <- unique(color_key_matrix[1,])#
-        n_unique_color_key_entries <- length(unique_color_key)
-n_color_key_entries
-n_unique_color_key_entries
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+group_names_from_color_key
+group_names_from_group_key <- as.character(GROUP_KEY[ColGroupsScheme,])
+group_names_from_group_key
+GROUP_KEY
+GROUP_KEY[ColGroupsScheme,]
+ColGroupsScheme
+group_names_from_group_key <- as.matrtix(GROUP_KEY[ColGroupsScheme,],nrow=length(ColGroupsScheme))
+group_names_from_group_key <- as.matrix(GROUP_KEY[ColGroupsScheme,],nrow=length(ColGroupsScheme))
+group_names_from_group_key
+group_names_from_group_key %in% group_names_from_color_key
+sum(group_names_from_group_key %in% group_names_from_color_key)
+length(group_names_from_group_key)
+group_names_consistent <- CheckAllIn(group_names_from_group_key,group_names_from_color_key)
+group_names_consistent
 Q
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+colnames(GROUP_KEY)
+colnames(DATA)
+c('a','b','c') %in% c('s','a','c','d','b')
+Q
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+Q
 source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-source('initialize_heatmap.R')
-b <- MakeBoxPlot(data_location,ColGroupsScheme='cell_type',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme=NULL)
-b <- MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation,select_rows=select_rows,select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='pam50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme=NULL,transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='pam50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHA','LDHB','LDHC'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHA'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHB'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHC'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS'),select_groups=NULL,replicate_scheme='cell_type')
+traceback()
+data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHA','LDHB','LDHC'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('MPC1','MPC2'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('G6PD'),select_groups=NULL,replicate_scheme='cell_type')
+b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('PSAT1'),select_groups=NULL,replicate_scheme='cell_type')
