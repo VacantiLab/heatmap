@@ -17,7 +17,7 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
 # select_groups: This can be an array of the group names (from the provided ColGroupsScheme) that are to be plotted or a list of arrays of group names or NULL
 #    If it is an array of group names, those groups are the only ones plotted
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
-#    If it is NULL, all groups in the ColGroupsScheme are plotted
+#    The ratio plotted is the first group median over the second group median
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
