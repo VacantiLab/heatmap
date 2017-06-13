@@ -1,4 +1,4 @@
-MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
+MakeVolcanoPlot2 <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names across the columns and the grouping schemes down the rowss
@@ -112,14 +112,8 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
         sig_test_list <- GetPs(group_order,n_gene,gene_name,DATA_long)
     }
 
-    #Find the y-limits for the boxplot based on the data
-    y_bounds <- get_y_bounds(group_order,gene_name,DATA_long)
-
     #Make the plot
-    b <- assemble_box_plot(DATA_long,FillColors,output_directory,y_bounds)
+    vp <- assemble_volcano_plot(sig_test_list[[1]],output_directory)
 
-    #assemble variables to return
-    MakeBoxPlot_return <- sig_test_list
-
-    return(MakeBoxPlot_return)
+    return(sig_test_list)
 }

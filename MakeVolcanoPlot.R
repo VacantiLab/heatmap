@@ -15,6 +15,11 @@ MakeVolcanoPlot <- function(data_location,select_groups,ColGroupsScheme,replicat
   #the second entry is the numerator, the first the denominator
 #Note: currently this function only plots -log10(p-value) vs. log2(ratio), where ratio is the median of the fist specified group division over the median of the second specified group division
 {
+
+    #Stop the program if the replicate scheme is in the ColGroupsScheme
+    #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
+    CheckStop(1,parameters=list(ColGroupsScheme,replicate_scheme))
+    
     #Include pertinent libraries
     library(ggplot2) #from ggplot2 package, allows the scatter plot to be made
 

@@ -35,7 +35,7 @@ GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGr
   COLOR_KEY <- COLOR_KEY[,-1] #remove the first column which contains names of row, which is just 'color'
                               #the group names are the column names (can be from multiple grouing schemes)
 
-  #Ensure the sample->group and group->color mappings have consistent group names 
+  #Ensure the sample->group and group->color mappings have consistent group names
   CheckStop(6,parameters=list(COLOR_KEY,GROUP_KEY,ColGroupsScheme))
 
   n_samples <- ncol(DATA)
@@ -108,7 +108,7 @@ ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMat
     if (group_concatonation)
     {
         #get a list of the new group names
-        groups_concatonated <- lapply(group_divisions,paste,collapse=' : ')
+        groups_concatonated <- lapply(group_divisions,paste,collapse='-')
 
         #make that list an array
         n_groups_concatonated <- length(groups_concatonated)

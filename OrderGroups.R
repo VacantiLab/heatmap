@@ -4,7 +4,7 @@ OrderGroups <- function(select_groups,group_concationation,groups_corresponding,
   #If there is nothing specified in select_groups, the order is by the order of appearance in the data
   group_order = NULL
   FillColors = NULL
-  if (!is.null(groups_corresponding))
+  if (!is.null(groups_corresponding) && !group_concationation)
   {
       group_order <- matrix(as.character(unique(groups_corresponding)),ncol=1)
       FillColors <- matrix(as.character(COLOR_KEY[1,group_order]),ncol=1)

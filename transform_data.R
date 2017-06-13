@@ -2,6 +2,8 @@ transform_data <- function(DATA,transformation)
 {
   transformed = FALSE
 
+  if (is.null(transformation)){return(DATA)}
+
   #Log transform the data if specified to do so
   if (transformation == 'log2')
   {

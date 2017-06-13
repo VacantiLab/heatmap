@@ -1,4 +1,4 @@
-assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
+assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
 {
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
     x_var <- 'gene'
@@ -53,6 +53,6 @@ assemble_box_plot <- function(DATA_long,FillColors,BoxDirectory,y_bounds)
          coord_cartesian(ylim=y_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
 
-    ggsave(paste(BoxDirectory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
+    ggsave(paste(output_directory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
     return(b)
 }
