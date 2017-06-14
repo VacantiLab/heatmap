@@ -4,7 +4,7 @@ CheckStop <- function(check_flag,parameters)
     if (check_flag==1) #In MakeBoxPlot()
     {
         #Stop the program if the replicate scheme is in the ColGroupsScheme
-        ColGroupScheme = parameters[[1]]
+        ColGroupsScheme = parameters[[1]]
         replicate_scheme = parameters[[2]]
         if (!is.null(ColGroupsScheme) && !is.null(replicate_scheme))
         {
@@ -36,8 +36,8 @@ CheckStop <- function(check_flag,parameters)
         ColGroupsScheme = parameters[[2]] #this includes the replicate_scheme because it was concatonated previously
         DATA = parameters[[3]]
         possible_group_schemes <- rownames(GROUP_KEY)
-        all_ColGroupScheme_real <- CheckAllIn(ColGroupsScheme,possible_group_schemes)
-        if (!all_ColGroupScheme_real){stop('Custom Message: a specified ColGroupsScheme or the replicate_scheme does not exist.')}
+        all_ColGroupsScheme_real <- CheckAllIn(ColGroupsScheme,possible_group_schemes)
+        if (!all_ColGroupsScheme_real){stop('Custom Message: a specified ColGroupsScheme or the replicate_scheme does not exist.')}
         all_samples_map_to_group <- CheckAllIn(colnames(DATA),colnames(GROUP_KEY))
         if (!all_samples_map_to_group){stop('Custom Message: Not all of the samples map to a group, check sample naming consistency in the quantities.txt and group_key.txt files')}
     }
