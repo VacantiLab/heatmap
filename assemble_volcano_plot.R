@@ -1,4 +1,4 @@
-assemble_volcano_plot <- function(rp_df,output_directory)
+assemble_volcano_plot <- function(rp_df,output_directory,genes_to_label)
 # rp_df is ratio p-value data frame
 {
 #set the plot parameters
@@ -9,10 +9,11 @@ YAxisLimits <- 1.1*c(0,max(rp_df$nlog10_p))
 AxisLabels <- c('Log2 Ratio','-Log10(p-value)')
 PlotDimensions <- c(4,4)
 
+
 ScatterPlot <-  ggplot(rp_df,aes_string(x=XData,y=YData)) +
     geom_point(color='black') + #specifying one color may remove the legend, May be necessary to make this a string when considering groups
-    #annotate('point',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='red') + #points to highlight in red on the volcano plot, x-points first, then y-points
-    #annotate('text',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='#0088B2',label=rownames(DATA[genes_to_label,]),size=0.75) + #points to highlight in red on the volcano plot, x-points first, then y-points
+    annotate('point',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='red') + #points to highlight in red on the volcano plot, x-points first, then y-points
+    annotate('text',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='#0088B2',label=rownames(rp_df[genes_to_label,]),size=0.75) + #points to highlight in red on the volcano plot, x-points first, then y-points
     coord_cartesian(xlim=XAxisLimits,ylim=YAxisLimits,expand = 0) + #expand=0 removes extra space before and after first and last tick marks
     theme(axis.text.y=element_text(color='black',size=10)) +
     theme(axis.ticks.y=element_line(colour='black',size=1)) +

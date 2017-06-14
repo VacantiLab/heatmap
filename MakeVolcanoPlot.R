@@ -1,4 +1,4 @@
-MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
+MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL,genes_to_label=NULL)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names across the columns and the grouping schemes down the rowss
@@ -112,8 +112,13 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
         sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
     }
 
+    volcano_df <- sig_test_list[[1]]
+
     #Make the plot
-    vp <- assemble_volcano_plot(sig_test_list[[1]],output_directory)
+    vp <- assemble_volcano_plot(volcano_df,output_directory,genes_to_label)
+
+    #Rank the genes in order of over-expression
+    ranked_volcano_df <- RankVolcanoData(volcano_df,output_directory)
 
     return(sig_test_list)
 }
