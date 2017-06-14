@@ -27,7 +27,13 @@ volcano_df$rank <- (volcano_df$reg_log2_ratio+volcano_df$reg_nlog10_p*m-d*m)/(m^
 volcano_df <- volcano_df[order(-volcano_df$rank),]
 ranked_gene_list <- rownames(volcano_df)
 
-write(ranked_gene_list,paste(output_directory,'descending_regulated_gene_list.txt',sep=''))
+n_genes <- length(ranked_gene_list)
+ranked_gene_df <- data.frame(matrix(nrow=n_genes,ncol=2))
+colnames(ranked_gene_df) <- c('gene','rank')
+ranked_gene_df[,'gene'] <- ranked_gene_list
+ranked_gene_df[,'rank'] <- n_genes:1 #In GSEA the higher (larger number) the ranking the more up-regulated the gene
 
+
+write.table(ranked_gene_df,paste(output_directory,'descending_regulated_gene_list.txt',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep='\t')
 return(volcano_df)
 }
