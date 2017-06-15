@@ -115,10 +115,15 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
     volcano_df <- sig_test_list[[1]]
 
     #Make the plot
-    vp <- assemble_volcano_plot(volcano_df,output_directory,genes_to_label)
+    vp <- assemble_volcano_plot(volcano_df,output_directory,genes_to_label,XData='log2_ratio',YData='nlog10_p',filename='volcano.pdf')
 
     #Rank the genes in order of over-expression
-    ranked_volcano_df <- RankVolcanoData(volcano_df,output_directory)
+    RankVolcanoData_return <- RankVolcanoData(volcano_df,output_directory)
+    ranked_volcano_df <- RankVolcanoData_return[[1]]
+    lin_model <- RankVolcanoData_return[[2]]
+
+    #Make the plot where the rankings were derived from
+    rvp <- assemble_volcano_plot(ranked_volcano_df,output_directory,genes_to_label,XData='reg_log2_ratio',YData='reg_nlog10_p',filename='volcano_regression.pdf')
 
     return(sig_test_list)
 }

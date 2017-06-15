@@ -7,7 +7,7 @@ RankVolcanoData <- function(volcano_df,output_directory)
 #genes_to_label <- c('ATIC')
 
 #Regression is performed on a single line, thus the portion of the volcano corresponding to negative regulation (log2(ratio) < 0) is flipped below the y-axis
-volcano_df$reg_nlog10_p <- volcano_df$nlog10_p
+volcano_df$reg_nlog10_p <- volcano_df$nlog10_p #reg is for regression
 volcano_df$reg_nlog10_p[volcano_df$log2_ratio<0] <- -volcano_df$reg_nlog10_p[volcano_df$log2_ratio<0] #lin_log10p is the linear regression variable for log10p
 
 #Because the scale of -log10(p) is arbitrary, the scale is normalized to the spread (IQR) in the value
@@ -35,5 +35,7 @@ ranked_gene_df[,'rank'] <- n_genes:1 #In GSEA the higher (larger number) the ran
 
 
 write.table(ranked_gene_df,paste(output_directory,'descending_regulated_gene_list.txt',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep='\t')
-return(volcano_df)
+
+RankVolcanoData_return <- list(volcano_df,lin_model)
+return(RankVolcanoData_return)
 }
