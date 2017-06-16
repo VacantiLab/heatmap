@@ -22,6 +22,8 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
 #    If this is specified, all members of a single group are treated as a single sample and the median values are used
+# genes_to_label is either an array of strings corresponding to the genes to be highlighed and labeled in the volcano plot
+#    or it is a string that is the name of a text file (ending in .txt) contained within the data_location/gene_lists file that is a column list of the genes to label
 
 {
     #Stop the program if the replicate scheme is in the ColGroupsScheme
@@ -115,6 +117,7 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
     volcano_df <- sig_test_list[[1]]
 
     #Make the plot
+    genes_to_label <- GetGeneList(genes_to_label,data_location)
     vp <- assemble_volcano_plot(volcano_df,output_directory,genes_to_label,XData='log2_ratio',YData='nlog10_p',filename='volcano.pdf')
 
     #Rank the genes in order of over-expression

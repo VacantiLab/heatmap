@@ -184,3 +184,30 @@ CheckAllIn <- function(array1,array2)
     all_in <- sum(TrueIndices) == length(array1)
     return(all_in)
 }
+
+###############################################################################
+
+GetGeneList <- function(genes_to_label,data_location)
+# return a list of genes as an array
+# the input will either be an array containing a gene list, in which case the input is simply returned
+# or the input will be the name of a .txt file stored within data_location/gene_lists/
+#    in that case the text file is accessed and the gene names are read into an array
+#    that text file must have only a single column of gene names
+{
+    if (IsTextFileDirectory(genes_to_label))
+    {
+        txt_directory <- paste(data_location,'gene_lists/',genes_to_label,sep='')
+        genes_to_label <- read.table(file=txt_directory,head=FALSE,check.names=FALSE,sep='\t')
+        genes_to_label <- as.character(genes_to_label[,1])
+    }
+    return(genes_to_label)
+}
+
+###############################################################################
+
+IsTextFileDirectory <- function(string)
+{
+    if (grepl('.txt$',string)){string_is_txt_file=TRUE}
+    if (!grepl('.txt$',string)){string_is_txt_file=FALSE}
+    return(string_is_txt_file)
+}

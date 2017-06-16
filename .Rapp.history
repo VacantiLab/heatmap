@@ -1,82 +1,176 @@
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
-ColGroupsScheme <- 'PAM50'
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-setwd('/Users/nate/git_hub_projects/heatmap')
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/BaselineCorrect.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/GetDerivs.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeakBorders.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/fat_matrix_to_long_df.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeaksMins.R")#
+#
+t_start_script <- proc.time()[3]#
+#
+#load libraries necessary for function to run#
+library(ncdf4) #needed to open NetCDF files containing MS data, ncdf4 package#
+library(ggplot2) #needed to make plots#
+#
+#specify what is to be plotted#
+XData <- 'sat'#
+YData <- 'intensity'#
+mz_select <- c(174,175,176)#
+#
+#open the data file#
+print('unpacking data')#
+NetCDF_data <- nc_open('/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts/Test_NetCDF_Files/T47D_no_label.AIA/tbdms01_t47d_wt.CDF')#
+#
+#extract m/z values needed#
+mass_values <- ncvar_get(NetCDF_data,'mass_values') #unpack the NetCDF file#
+  #these values are one large vector, the m/z values of each scan are concatonated together#
+mass_values_whole <- round(mass_values)#
+  #these are rounded to the nearest whole number value because tracing experiments are only concerned with whole number increments#
+  #note: the charge is always +1, so m/z is really the mass#
+mz_whole_unique <- unique(mass_values_whole)#
+mz_whole_unique <- sort(mz_whole_unique,decreasing=FALSE)#
+  #the unique masses are needed for organizing the masses, the time of scans, and the intensities#
+  #they are organized in ascending order for better visualization#
+n_mz <- length(mz_whole_unique) #the number of unique m/z values (after rounding)#
+#
+#unpack the vector containing the time each scan was made#
+scan_acquisition_time <- ncvar_get(NetCDF_data,'scan_acquisition_time')/60 #minutes#
+n_sat <- length(scan_acquisition_time) #the number of scan acqisitions#
+#
+#these are the ion counts for each m/z measurement in each scan#
+#the order corresponds to the mass_values vector described above#
+intensity_values <- ncvar_get(NetCDF_data,'intensity_values')#
+n_total_measurements <- length(intensity_values)#
+#
+#the scan indices provide the location within the mass_values and intensity_values vectors where a new scan starts#
+#a scan index is one index value prior to the location where a new scan starts#
+scan_index <- ncvar_get(NetCDF_data,'scan_index')#
+n_scans <- length(scan_index)#
+#
+#Ion Count Matrix#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding ion count values#
+mz_time_intensity <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity) <- mz_whole_unique#
+colnames(mz_time_intensity) <- scan_acquisition_time#
+#
+#populate mz_time_intensity matrix#
+for (i in 1:n_scans)#
+{#
+  current_scan_start <- scan_index[i]+1#
+  if (i!=n_scans) {current_scan_end <- scan_index[i+1]}#
+  if (i==n_scans) {current_scan_end <- n_total_measurements}#
+  sat_value_current_scan <- as.character(scan_acquisition_time[i]) #the current column in mz_time_intensity to be populated#
+  mzs_of_current_scan <- as.character(mass_values_whole[current_scan_start:current_scan_end]) #the mz values measured in the current scan, the rows to be populated in the mz_time_intensity matrix#
+  intensity_values_current_scan <- intensity_values[current_scan_start:current_scan_end]#
+  mz_time_intensity[mzs_of_current_scan,sat_value_current_scan] <- intensity_values_current_scan #fill in the desired rows (corresponding to measured m/z's) in the desired column (corresponding to the current scan acquisition time)#
+}#
+#
+#Baseline Corrected Intensity Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding baseline corrected ion count values#
+mz_time_intensity_baseline_corrected <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity_baseline_corrected) <- mz_whole_unique#
+colnames(mz_time_intensity_baseline_corrected) <- scan_acquisition_time#
+#
+#Baseline Correction Values Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the baseline m/z values down the rows#
+#the matrix will be filled with corresponding baseline ion count values#
+baseline_correction <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(baseline_correction) <- mz_whole_unique#
+colnames(baseline_correction) <- scan_acquisition_time#
+#
+#Fill in both Baseline Matrices#
+print('finding baselines')#
+#correct the mz_time_intensity matrix for baseline#
+#install.packages("doMC")#
+require(doMC)#
+registerDoMC(4)#
+t_start_script <- proc.time()[3]#
+BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisition_time,2)#
+t_elapsed_script <- (proc.time()[3]-t_start_script)
+t_elapsed_script
+setwd('/Users/Nate/git_hub_projects/heatmap')
+data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
+ColGroupsScheme='PAM50'
+select_groups <- list(c('basal a','basal b'),c('luminal'))
+replicate_scheme <- 'cell_type'
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-FillColors
-group_order
-FillColors2 <- COLOR_KEY[1,group_order]
-FillColors2
-FillColors2 <- matrix(as.character(COLOR_KEY[1,group_order]),ncol=1)
-FillColors2
-Q
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-git log
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data_test/'
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-group_names_from_color_key
-Q
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-group_names_from_color_key
-COLOR_KEY
-colnames(COLOR_KEY)
-Q
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-Q
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-group_names_from_color_key
-group_names_from_group_key <- as.character(GROUP_KEY[ColGroupsScheme,])
-group_names_from_group_key
-GROUP_KEY
-GROUP_KEY[ColGroupsScheme,]
-ColGroupsScheme
-group_names_from_group_key <- as.matrtix(GROUP_KEY[ColGroupsScheme,],nrow=length(ColGroupsScheme))
-group_names_from_group_key <- as.matrix(GROUP_KEY[ColGroupsScheme,],nrow=length(ColGroupsScheme))
-group_names_from_group_key
-group_names_from_group_key %in% group_names_from_color_key
-sum(group_names_from_group_key %in% group_names_from_color_key)
-length(group_names_from_group_key)
-group_names_consistent <- CheckAllIn(group_names_from_group_key,group_names_from_color_key)
-group_names_consistent
-Q
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-colnames(GROUP_KEY)
-colnames(DATA)
-c('a','b','c') %in% c('s','a','c','d','b')
-Q
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-Q
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 source('initialize_heatmap.R')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='pam50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme=NULL,transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='pam50',transformation='log2',select_rows=c('TYMS','DLD','SDHA'),select_groups=c('basal a','luminal'),replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHA','LDHB','LDHC'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHA'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHB'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHC'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS'),select_groups=NULL,replicate_scheme='cell_type')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
 traceback()
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('TYMS'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('LDHA','LDHB','LDHC'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('MPC1','MPC2'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('G6PD'),select_groups=NULL,replicate_scheme='cell_type')
-b<-MakeBoxPlot(data_location,ColGroupsScheme='PAM50',transformation='log2',select_rows=c('PSAT1'),select_groups=NULL,replicate_scheme='cell_type')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+traceback()
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+rp_df[1:4,]
+if (min(rp_df[,YData])<0){ymin=1.1*min(rp_df[,YData])}#
+YAxisLimits <- 1.1*c(ymin,max(rp_df[,YData]))#
+AxisLabels <- c('Log2 Ratio','-Log10(p-value)')#
+PlotDimensions <- c(4,4)
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+Q
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+c
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+c
+rp_df[1:4,]
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+ranked_volcano_df
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+file.exists('/Users/Nate/git_hub_projects/output')
+source('initialize_heatmap.R')
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,NULL)
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label=c('CCDC82','TCEAL8','GSTP1','GPD1L','SLC9A3R1','HID1'))
