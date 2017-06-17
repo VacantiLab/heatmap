@@ -1,145 +1,144 @@
-source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/BaselineCorrect.R")#
-source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/GetDerivs.R")#
-source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeakBorders.R")#
-source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/fat_matrix_to_long_df.R")#
-source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeaksMins.R")#
-#
-t_start_script <- proc.time()[3]#
-#
-#load libraries necessary for function to run#
-library(ncdf4) #needed to open NetCDF files containing MS data, ncdf4 package#
-library(ggplot2) #needed to make plots#
-#
-#specify what is to be plotted#
-XData <- 'sat'#
-YData <- 'intensity'#
-mz_select <- c(174,175,176)#
-#
-#open the data file#
-print('unpacking data')#
-NetCDF_data <- nc_open('/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts/Test_NetCDF_Files/T47D_no_label.AIA/tbdms01_t47d_wt.CDF')#
-#
-#extract m/z values needed#
-mass_values <- ncvar_get(NetCDF_data,'mass_values') #unpack the NetCDF file#
-  #these values are one large vector, the m/z values of each scan are concatonated together#
-mass_values_whole <- round(mass_values)#
-  #these are rounded to the nearest whole number value because tracing experiments are only concerned with whole number increments#
-  #note: the charge is always +1, so m/z is really the mass#
-mz_whole_unique <- unique(mass_values_whole)#
-mz_whole_unique <- sort(mz_whole_unique,decreasing=FALSE)#
-  #the unique masses are needed for organizing the masses, the time of scans, and the intensities#
-  #they are organized in ascending order for better visualization#
-n_mz <- length(mz_whole_unique) #the number of unique m/z values (after rounding)#
-#
-#unpack the vector containing the time each scan was made#
-scan_acquisition_time <- ncvar_get(NetCDF_data,'scan_acquisition_time')/60 #minutes#
-n_sat <- length(scan_acquisition_time) #the number of scan acqisitions#
-#
-#these are the ion counts for each m/z measurement in each scan#
-#the order corresponds to the mass_values vector described above#
-intensity_values <- ncvar_get(NetCDF_data,'intensity_values')#
-n_total_measurements <- length(intensity_values)#
-#
-#the scan indices provide the location within the mass_values and intensity_values vectors where a new scan starts#
-#a scan index is one index value prior to the location where a new scan starts#
-scan_index <- ncvar_get(NetCDF_data,'scan_index')#
-n_scans <- length(scan_index)#
-#
-#Ion Count Matrix#
-#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
-#the matrix will be filled with corresponding ion count values#
-mz_time_intensity <- matrix(,nrow=n_mz,ncol=n_sat)#
-rownames(mz_time_intensity) <- mz_whole_unique#
-colnames(mz_time_intensity) <- scan_acquisition_time#
-#
-#populate mz_time_intensity matrix#
-for (i in 1:n_scans)#
-{#
-  current_scan_start <- scan_index[i]+1#
-  if (i!=n_scans) {current_scan_end <- scan_index[i+1]}#
-  if (i==n_scans) {current_scan_end <- n_total_measurements}#
-  sat_value_current_scan <- as.character(scan_acquisition_time[i]) #the current column in mz_time_intensity to be populated#
-  mzs_of_current_scan <- as.character(mass_values_whole[current_scan_start:current_scan_end]) #the mz values measured in the current scan, the rows to be populated in the mz_time_intensity matrix#
-  intensity_values_current_scan <- intensity_values[current_scan_start:current_scan_end]#
-  mz_time_intensity[mzs_of_current_scan,sat_value_current_scan] <- intensity_values_current_scan #fill in the desired rows (corresponding to measured m/z's) in the desired column (corresponding to the current scan acquisition time)#
-}#
-#
-#Baseline Corrected Intensity Matrix Initialization#
-#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
-#the matrix will be filled with corresponding baseline corrected ion count values#
-mz_time_intensity_baseline_corrected <- matrix(,nrow=n_mz,ncol=n_sat)#
-rownames(mz_time_intensity_baseline_corrected) <- mz_whole_unique#
-colnames(mz_time_intensity_baseline_corrected) <- scan_acquisition_time#
-#
-#Baseline Correction Values Matrix Initialization#
-#initialize a matrix that will contain the scan acquisition times across the columns and the baseline m/z values down the rows#
-#the matrix will be filled with corresponding baseline ion count values#
-baseline_correction <- matrix(,nrow=n_mz,ncol=n_sat)#
-rownames(baseline_correction) <- mz_whole_unique#
-colnames(baseline_correction) <- scan_acquisition_time#
-#
-#Fill in both Baseline Matrices#
-print('finding baselines')#
-#correct the mz_time_intensity matrix for baseline#
-#install.packages("doMC")#
-require(doMC)#
-registerDoMC(4)#
-t_start_script <- proc.time()[3]#
-BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisition_time,2)#
-t_elapsed_script <- (proc.time()[3]-t_start_script)
-t_elapsed_script
-g <- c(1,2,3)
-g[-2]
-g[-1]
-g[3:2]
-len(g)
-length(g)
-h <- 'filesdf/dfsfd.txt'
-grep('file',h)
-grep('file','fd')
-grep('file','filedfile')
-as.logical(0)
-grep1('file','filedfile')
-grepl('file','filedfile')
-h <- 'glycolysis.txt'
-grep1('.txt$',h)
-grepl('.txt$',h)
-g <- 'dsalkfjd.txtlkjdflakj'
-grepl('.txt$',g)
-setwd('/Users/Nate/git_hub_projects/heatmap')
-source('initialize_heatmap.R')
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Cell_Line/Protein_Quantification_Data/'
+data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data/'
+setwd('/Users/nate/git_hub_projects/heatmap')
 ColGroupsScheme <- 'PAM50'
-transformation <- 'log2'
-transformation <- NULL
 select_groups <- list(c('basal a','basal b'),c('luminal'))
 replicate_scheme <- 'cell_type'
-genes_to_label <- 'test_list.txt'
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-genes_to_label
-as.character(genes_to_label)
-as.character(genes_to_label[,1])
-Q
+genes_to_label <- 'oxidative_phosphorylation_kegg'
+ls()
 source('initialize_heatmap.R')
 MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+source('initialize_heatmap.R')
+MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE)
+GROUP_KEY
+rownames(GROUP_KEY) <- GROUP_KEY[,1]
+CheckStop(3,parameters=list(GROUP_KEY,ColGroupsScheme,DATA))
+Q
+source('initialize_heatmap.R')
+MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+source('initialize_heatmap.R')
+MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+GROUP_KEY
+ColGroupsScheme
+possible_group_schemes
+all_ColGroupsScheme_real <- CheckAllIn(ColGroupsScheme,possible_group_schemes)
+all_ColGroupsScheme_real
+all_samples_map_to_group <- CheckAllIn(colnames(DATA),rownames(GROUP_KEY))
+all_samples_map_to_group
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+GROUP_KEY
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+COLOR_KEY
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+COLOR_KEY
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+COLOR_KEY
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+COLOR_KEY
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+group_names_from_color_key
+group_names_from_group_key
+group_names_consistent
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+n_designations
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+color_df
+group_name_df
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+colnames(DATA)[i]
+group_name_df[sample_name,]
+sample_name <- colnames(DATA)[i]
+group_name_df[sample_name,] <- GROUP_KEY[sample_name,]
+group_name_df
+current_groups <- group_name_df[sample_name,]
+color_df[sample_name,] <- as.character(COLOR_KEY[current_groups,])
+current_groups
+class(current_groups)
+current_groups <- as.character(group_name_df[sample_name,])
+current_groups
+color_df[sample_name,] <- as.character(COLOR_KEY[current_groups,])
+color_df
+color_df[sample_name,ColGroupsScheme] <- as.character(COLOR_KEY[current_groups,ColGroupsScheme])
+ColGroupsScheme
+color_df
+color_df[sample_name,ColGroupsScheme]
+COLOR_KEY
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+color_df
+group_name_df
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+group_name_df
+color_df
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+groups_corresponding
+GroupColorMatrix
+CheckStop(5,parameters=list(COLOR_KEY))
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+group_names
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+group_names
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+select_groups
+groups_corresponding
+all_select_groups_used <- sum(select_groups %in% groups_corresponding) == length(select_groups)
+all_select_groups_used
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+GroupColorMatrix
+groups_corresponding
+inclusion_grouping_scheme
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+concat_group_scheme
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+groups_corresponding
+GroupColorMatrix
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
 genes_to_label
-c
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label='oxidative_phosphorylation_kegg.txt')
-Q
-source('initialize_heatmap.R')
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label='oxidative_phosphorylation_kegg.txt')
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label='VDAC1')
-bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,select_rows=c('VDAC','TOMM20'),select_groups,replicate_scheme)
-source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,select_rows=c('VDAC','TOMM20'),select_groups,replicate_scheme)
-DATA
-Q
-bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,select_rows=c('VDAC1','TOMM20'),select_groups,replicate_scheme)
-Q
-source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,select_rows=c('VDAC1','TOMM20'),select_groups,replicate_scheme)
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label='oxidative_phosphorylation_kegg.txt')
-data_location_tumors <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/Breast_Cancer_Patient_Tumors/Proteome_Quantification_Data/'
-vp <- MakeVolcanoPlot(data_location_tumors,'pam50',NULL,NULL,NULL,select_groups=list(c('basal'),c('luma','lumb','her2','norm')),NULL,'one_c_metabolism_custom.txt')
-vp <- MakeVolcanoPlot(data_location_tumors,'pam50',NULL,NULL,NULL,select_groups=list(c('basal'),c('luma','lumb','her2','norm')),NULL,'one_c_metabolism_custom.txt')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label='one_c_metabolism_custom.txt')
+genes_to_label <- 'oxidative_phosphorylation_kegg.txt'
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+genes_to_label <- 'oxidative_phosphorylation_kegg.txt'
+vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'log2','NULL',c('TYMS','MPC2'),select_groups,replicate_scheme)
+bp

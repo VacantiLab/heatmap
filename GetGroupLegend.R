@@ -1,12 +1,12 @@
 MakeGroupLegend <- function(groups_corresponding,GroupColorMatrix,ColGroupsScheme,save_directory)
 {
-  n_legends <- dim(groups_corresponding)[1]
-  
+  n_legends <- dim(groups_corresponding)[2]
+
   for (i in 1:n_legends)
   {
-    group_names <- unique(groups_corresponding[i,])
+    group_names <- unique(groups_corresponding[,i])
     group_names_order <- order(group_names) #gets the indices arranged as if they were in alphabetical order
-    group_colors <- unique(GroupColorMatrix[i,])
+    group_colors <- unique(GroupColorMatrix[,i])
     group_names <- group_names[group_names_order] #arranges them in alphabetical order
     group_colors <- group_colors[group_names_order] #ensures the color order corresponds with the group name order
     x=rep(1,length(group_names))

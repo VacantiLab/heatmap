@@ -14,8 +14,8 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
         GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE) #check.names=FALSE prevents changing special characters
         rownames(GROUP_KEY) <- GROUP_KEY[,1]
         CheckStop(3,parameters=list(GROUP_KEY,ColGroupsScheme,DATA)) #make sure the ColGroupsScheme and replicate_scheme specified all exist
-        GROUP_KEY <- GROUP_KEY[,-1] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
-        GROUP_KEY <- GROUP_KEY[,ColGroupsScheme] #the group key columns corresponding to the grouping schemes considered are selected
+        GROUP_KEY <- GROUP_KEY[,-1,drop=FALSE] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
+        GROUP_KEY <- GROUP_KEY[,ColGroupsScheme,drop=FALSE] #the group key columns corresponding to the grouping schemes considered are selected
         #Get the vector of colors corresponding to the group membership of each patient
         GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
         GroupColorMatrix <- GroupColorListReturn[[1]]
