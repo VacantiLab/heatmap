@@ -1,10 +1,12 @@
 MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
-#    There must also be a group_key.txt file with the sample names across the columns and the grouping schemes down the rowss
+#    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
 #        The group names within each grouping scheme must not match any of those of another grouping scheme
-#    There must also be a group_color_key.txt file with the group names across the columns and the colors beneath them
-#        All of the group names are listed across the column headers with no indication of their scheme membership (thus the names must be unique)
+#        Each column must have a header
+#    There must also be a group_color_key.txt file with the group names down the rows and the colors beside them
+#        All of the group names are listed down the rows with no indication of their scheme membership (thus the names must be unique)
+#        Each column must have a header
 #    These files must all be tab delimited
 # ColGroupsScheme: the name of the grouping scheme used, indicates which row to take from group_key.txt
 #    There can only be one for the MakeBoxPlot() function

@@ -35,10 +35,10 @@ CheckStop <- function(check_flag,parameters)
         GROUP_KEY = parameters[[1]]
         ColGroupsScheme = parameters[[2]] #this includes the replicate_scheme because it was concatonated previously
         DATA = parameters[[3]]
-        possible_group_schemes <- rownames(GROUP_KEY)
+        possible_group_schemes <- colnames(GROUP_KEY)
         all_ColGroupsScheme_real <- CheckAllIn(ColGroupsScheme,possible_group_schemes)
         if (!all_ColGroupsScheme_real){stop('Custom Message: a specified ColGroupsScheme or the replicate_scheme does not exist.')}
-        all_samples_map_to_group <- CheckAllIn(colnames(DATA),colnames(GROUP_KEY))
+        all_samples_map_to_group <- CheckAllIn(colnames(DATA),rownames(GROUP_KEY))
         if (!all_samples_map_to_group){stop('Custom Message: Not all of the samples map to a group, check sample naming consistency in the quantities.txt and group_key.txt files')}
     }
 
@@ -56,7 +56,7 @@ CheckStop <- function(check_flag,parameters)
     if (check_flag==5) #In MakeBoxPlot()
     {
         COLOR_KEY = parameters[[1]]
-        group_names <- colnames(COLOR_KEY)
+        group_names <- rownames(COLOR_KEY)
         unique_group_names <- unique(group_names)
         if (length(group_names)!=length(unique_group_names)){stop('Custom Message: One or more groups have more than one color assignment.')}
     }
@@ -69,8 +69,8 @@ CheckStop <- function(check_flag,parameters)
         COLOR_KEY <- parameters[[1]]
         GROUP_KEY <- parameters[[2]]
         ColGroupsScheme <- parameters[[3]]
-        group_names_from_color_key <- colnames(COLOR_KEY)
-        group_names_from_group_key <- as.matrix(GROUP_KEY[ColGroupsScheme,],nrow=length(ColGroupsScheme))
+        group_names_from_color_key <- rownames(COLOR_KEY)
+        group_names_from_group_key <- as.matrix(GROUP_KEY[,ColGroupsScheme],nrow=length(ColGroupsScheme))
         group_names_consistent <- CheckAllIn(group_names_from_group_key,group_names_from_color_key)
         if (!group_names_consistent){stop('The group names in group_key.txt are not consistent with the group names in the group_color_key.txt.')}
     }

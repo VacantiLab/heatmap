@@ -7,7 +7,7 @@ OrderGroups <- function(select_groups,group_concationation,groups_corresponding,
   if (!is.null(groups_corresponding) && !group_concationation)
   {
       group_order <- matrix(as.character(unique(groups_corresponding)),ncol=1)
-      FillColors <- matrix(as.character(COLOR_KEY[1,group_order]),ncol=1)
+      FillColors <- matrix(as.character(COLOR_KEY[group_order,1]),ncol=1)
   }
 
   #If groups to be plotted are specified, their order specifies the order they will be plotted in
@@ -16,7 +16,7 @@ OrderGroups <- function(select_groups,group_concationation,groups_corresponding,
   if (is.character(select_groups) && !group_concationation)
   {
       group_order <- matrix(as.character(select_groups),ncol=1)
-      FillColors <- matrix(as.character(COLOR_KEY[select_groups]),ncol=1)
+      FillColors <- matrix(as.character(COLOR_KEY[select_groups,1]),ncol=1)
   }
 
   #If there are group concatonations (the input is a list)

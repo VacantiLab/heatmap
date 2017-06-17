@@ -15,7 +15,7 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
         rownames(GROUP_KEY) <- GROUP_KEY[,1]
         CheckStop(3,parameters=list(GROUP_KEY,ColGroupsScheme,DATA)) #make sure the ColGroupsScheme and replicate_scheme specified all exist
         GROUP_KEY <- GROUP_KEY[,-1] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
-        GROUP_KEY <- GROUP_KEY[ColGroupsScheme,] #the group key rows corresponding to the grouping schemes considered are selected
+        GROUP_KEY <- GROUP_KEY[,ColGroupsScheme] #the group key columns corresponding to the grouping schemes considered are selected
         #Get the vector of colors corresponding to the group membership of each patient
         GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
         GroupColorMatrix <- GroupColorListReturn[[1]]
@@ -32,7 +32,8 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
 GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
 {
   COLOR_KEY <- read.table(file=group_color_designations_file,head=TRUE,sep='\t',stringsAsFactors=FALSE,comment.char="",check.names=FALSE) #reads the colors associated with the groups, check.names=FALSE ensures text in column names is not changed
-  COLOR_KEY <- COLOR_KEY[,-1] #remove the first column which contains names of row, which is just 'color'
+  rownames(COLOR_KEY) <- COLOR_KEY[,1]
+  COLOR_KEY <- COLOR_KEY[,-1,drop=FALSE] #remove the first column which contains names of row, which is just 'color'
                               #the group names are the column names (can be from multiple grouing schemes)
 
   #Ensure the sample->group and group->color mappings have consistent group names
@@ -40,22 +41,22 @@ GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGr
 
   n_samples <- ncol(DATA)
   n_designations <- length(ColGroupsScheme)
-
-  color_df <- as.data.frame(matrix(NA,nrow=n_designations,ncol=n_samples)) #initialize a list that is going to carry the colors associated with each sample
-  rownames(color_df) <- ColGroupsScheme
-  colnames(color_df) <- colnames(DATA)
-  group_name_df <- color_df #initialize a list that is going to carry the group name associated with each sample
+  color_df <- as.data.frame(matrix(NA,nrow=n_samples,ncol=n_designations)) #initialize a list that is going to carry the colors associated with each sample
+  rownames(color_df) <- colnames(DATA)
+  colnames(color_df) <- ColGroupsScheme
+  group_name_df <- color_df #initialize a data frame that is going to carry the group name associated with each sample
 
   for (i in 1:n_samples) #iterate though each sample in your data
   {
     sample_name <- colnames(DATA)[i]
-    group_name_df[,sample_name] <- GROUP_KEY[,sample_name]
-    current_groups <- group_name_df[,sample_name]
-    color_df[,sample_name] <- as.character(COLOR_KEY[current_groups])
+    group_name_df[sample_name,] <- GROUP_KEY[sample_name,]
+    current_groups <- as.character(group_name_df[sample_name,])
+    color_df[sample_name,] <- as.character(COLOR_KEY[current_groups,])
   }
+
   #make the requisite matrices out of the above made lists
-  color_matrix <- t(as.matrix(color_df))
-  group_name_matrix <- t(as.matrix(group_name_df))
+  color_matrix <- as.matrix(color_df)
+  group_name_matrix <- as.matrix(group_name_df)
 
   GroupColorListReturn <- list(color_matrix,group_name_matrix,COLOR_KEY) #create list to return all that is required by MakeHeatmap() function
   return(GroupColorListReturn)
@@ -124,8 +125,8 @@ ConcatonateGroups <- function(group_divisions,groups_corresponding,GroupColorMat
             current_group_concatonated <- groups_concatonated[i]
             concatonate_indices <- groups_corresponding[,concat_group_scheme] %in% group_divisions[[i]]
             groups_corresponding[concatonate_indices,concat_group_scheme] <- groups_concatonated[i]
-            GroupColorMatrix[concatonate_indices,concat_group_scheme] <- COLOR_KEY[1,group_divisions[[i]][1]] #The corresponding color for each contatonated group is the corresponding color to the first member sub-group
-            colors_concatonated[current_group_concatonated,1] <- COLOR_KEY[1,group_divisions[[i]][1]]
+            GroupColorMatrix[concatonate_indices,concat_group_scheme] <- COLOR_KEY[group_divisions[[i]][1],1] #The corresponding color for each contatonated group is the corresponding color to the first member sub-group
+            colors_concatonated[current_group_concatonated,1] <- COLOR_KEY[group_divisions[[i]][1],1]
         }
      }
 
