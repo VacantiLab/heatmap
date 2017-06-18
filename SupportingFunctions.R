@@ -207,7 +207,11 @@ GetGeneList <- function(genes_to_label,data_location)
 
 IsTextFileDirectory <- function(string)
 {
-    if (grepl('.txt$',string)){string_is_txt_file=TRUE}
-    if (!grepl('.txt$',string)){string_is_txt_file=FALSE}
+    string_is_txt_file <- FALSE
+    if (is.character(string))
+    {
+        if (grepl('.txt$',string)){string_is_txt_file=TRUE}
+        if (!grepl('.txt$',string)){string_is_txt_file=FALSE}
+    }
     return(string_is_txt_file)
 }

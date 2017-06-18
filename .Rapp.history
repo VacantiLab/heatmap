@@ -1,144 +1,82 @@
 data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data/'
 setwd('/Users/nate/git_hub_projects/heatmap')
+source('initialize_heatmap.R')
 ColGroupsScheme <- 'PAM50'
 select_groups <- list(c('basal a','basal b'),c('luminal'))
-replicate_scheme <- 'cell_type'
-genes_to_label <- 'oxidative_phosphorylation_kegg'
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+ls()
+Q
 ls()
 source('initialize_heatmap.R')
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+GroupColorMatrix
+Q
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+Q
 source('initialize_heatmap.R')
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE)
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+c
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+GroupColorMatrix
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+GroupColorMatrix
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+GroupColorMatrix
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+GroupColorMatrix
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),'cell_type',select_groups=select_groups,label_rows=FALSE)
+GroupColorMatrix
+c
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),NULL,select_groups=select_groups,label_rows=FALSE)
+traceback()
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),NULL,select_groups=select_groups,label_rows=FALSE)
 GROUP_KEY
-rownames(GROUP_KEY) <- GROUP_KEY[,1]
+ColGroupsScheme
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),NULL,select_groups=select_groups,label_rows=FALSE)
+GROUP_KEY
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),NULL,select_groups=select_groups,label_rows=FALSE)
+GROUP_KEY
 CheckStop(3,parameters=list(GROUP_KEY,ColGroupsScheme,DATA))
-Q
-source('initialize_heatmap.R')
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-source('initialize_heatmap.R')
-MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
 GROUP_KEY
-ColGroupsScheme
-possible_group_schemes
-all_ColGroupsScheme_real <- CheckAllIn(ColGroupsScheme,possible_group_schemes)
-all_ColGroupsScheme_real
-all_samples_map_to_group <- CheckAllIn(colnames(DATA),rownames(GROUP_KEY))
-all_samples_map_to_group
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
+GROUP_KEY <- GROUP_KEY[,-1,drop=FALSE]
+GROUP_KEY
+GROUP_KEY <- GROUP_KEY[,ColGroupsScheme,drop=FALSE]
+GROUP_KEY
+GROUP_KEY <- GROUP_KEY[,ColGroupsScheme]
 GROUP_KEY
 Q
 source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-COLOR_KEY
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-COLOR_KEY
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-COLOR_KEY
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-COLOR_KEY
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-group_names_from_color_key
-group_names_from_group_key
-group_names_consistent
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-n_designations
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-color_df
-group_name_df
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-colnames(DATA)[i]
-group_name_df[sample_name,]
-sample_name <- colnames(DATA)[i]
-group_name_df[sample_name,] <- GROUP_KEY[sample_name,]
-group_name_df
-current_groups <- group_name_df[sample_name,]
-color_df[sample_name,] <- as.character(COLOR_KEY[current_groups,])
-current_groups
-class(current_groups)
-current_groups <- as.character(group_name_df[sample_name,])
-current_groups
-color_df[sample_name,] <- as.character(COLOR_KEY[current_groups,])
-color_df
-color_df[sample_name,ColGroupsScheme] <- as.character(COLOR_KEY[current_groups,ColGroupsScheme])
-ColGroupsScheme
-color_df
-color_df[sample_name,ColGroupsScheme]
-COLOR_KEY
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-color_df
-group_name_df
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-group_name_df
-color_df
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-groups_corresponding
-GroupColorMatrix
-CheckStop(5,parameters=list(COLOR_KEY))
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-group_names
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-group_names
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-select_groups
-groups_corresponding
-all_select_groups_used <- sum(select_groups %in% groups_corresponding) == length(select_groups)
-all_select_groups_used
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-GroupColorMatrix
-groups_corresponding
-inclusion_grouping_scheme
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-concat_group_scheme
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-groups_corresponding
-GroupColorMatrix
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-Q
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-genes_to_label
-genes_to_label <- 'oxidative_phosphorylation_kegg.txt'
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-genes_to_label <- 'oxidative_phosphorylation_kegg.txt'
-vp <- MakeVolcanoPlot(data_location,ColGroupsScheme,NULL,NULL,NULL,select_groups,replicate_scheme,genes_to_label)
-bp <- MakeBoxPlot(data_location,ColGroupsScheme,'log2','NULL',c('TYMS','MPC2'),select_groups,replicate_scheme)
-bp
+hm <- MakeHeatMap(data_location,ColGroupsScheme,'log2',seq(-2,2,0.5),NULL,select_groups=select_groups,label_rows=FALSE)
+hm <- MakeHeatMap(data_location,'cell_type','log2',seq(-2,2,0.5),NULL,select_groups=NULL,label_rows=FALSE)
+hm <- MakeHeatMap(data_location,'cell_type','log2',seq(-2,2,0.5),NULL,select_groups=NULL,label_rows=FALSE,DistanceMethod='average')
+hm <- MakeHeatMap(data_location,'cell_type','log2',seq(-2,2,0.5),NULL,select_groups=NULL,label_rows=FALSE,ClusterMethod='average')
+hm <- MakeHeatMap(data_location,'cell_type','median_center_iqr_norm',seq(-2,2,0.5),NULL,select_groups=NULL,label_rows=FALSE,ClusterMethod='average')
+hm <- MakeHeatMap(data_location,'cell_type','median_center_iqr_norm',seq(-2,2,0.5),NULL,select_groups=NULL,label_rows=FALSE)
+hm <- MakeHeatMap(data_location,'cell_type','log2',seq(-2,2,0.5),NULL,select_groups=NULL,label_rows=FALSE)

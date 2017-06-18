@@ -31,6 +31,7 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
     #Stop the program if the replicate scheme is in the ColGroupsScheme
     #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
     CheckStop(1,parameters=list(ColGroupsScheme,replicate_scheme))
+    CheckStop(7,parameters=list(transformation))
 
     #Include pertinent libraries
     library(ggplot2) #from ggplot2 package, allows the boxplot to be made

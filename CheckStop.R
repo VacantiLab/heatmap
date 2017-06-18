@@ -14,6 +14,7 @@ CheckStop <- function(check_flag,parameters)
 
         #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
         if (length(ColGroupsScheme)>1 || length(replicate_scheme)>1){stop('Custom Message: Cannot have more than one ColGroupsScheme or replicate_scheme for a boxplot')}
+
     }
 
     #See if all of the specified input groups are actually specified in group_key.txt file
@@ -73,5 +74,14 @@ CheckStop <- function(check_flag,parameters)
         group_names_from_group_key <- as.matrix(GROUP_KEY[,ColGroupsScheme],nrow=length(ColGroupsScheme))
         group_names_consistent <- CheckAllIn(group_names_from_group_key,group_names_from_color_key)
         if (!group_names_consistent){stop('The group names in group_key.txt are not consistent with the group names in the group_color_key.txt.')}
+    }
+
+    if (check_flag==7) #In MakeVolcanoPlot
+    {
+        transformation <- parameters[[1]]
+        if (is.character(transformation))
+        {
+            if (transformation == 'log2'){stop('Custom Message: The transformation cannot be log2 for a volcano plot.')}
+        }
     }
 }
