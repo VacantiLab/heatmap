@@ -1,11 +1,11 @@
-RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_color_designations_file,select_groups,replicate_scheme)
+RetrieveGroups <- function(DATA,ColGroupsScheme_concat,group_designations_file,group_color_designations_file,select_groups)
 {
     #Determine if there is column or row grouping
     ColGroups <- FALSE
     groups_corresponding <- NULL
     GroupColorMatrix <- NULL
     COLOR_KEY <- NULL
-    if (is.character(ColGroupsScheme)) {ColGroups <- TRUE} #this will be true if the input of ColGroupsScheme was NULL and there is a replicate_scheme
+    if (is.character(ColGroupsScheme_concat)) {ColGroups <- TRUE} #this will be true if the input of ColGroupsScheme_concat was NULL and there is a replicate_scheme
 
     if (ColGroups)
     {
@@ -13,11 +13,11 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
         #Read the file containing the group designations
         GROUP_KEY <- read.table(file=group_designations_file,head=TRUE,check.names=FALSE,sep='\t',stringsAsFactors=FALSE) #check.names=FALSE prevents changing special characters
         rownames(GROUP_KEY) <- GROUP_KEY[,1]
-        CheckStop(3,parameters=list(GROUP_KEY,ColGroupsScheme,DATA)) #make sure the ColGroupsScheme and replicate_scheme specified all exist
+        CheckStop(3,parameters=list(GROUP_KEY,ColGroupsScheme_concat,DATA)) #make sure the ColGroupsScheme and replicate_scheme specified all exist
         GROUP_KEY <- GROUP_KEY[,-1,drop=FALSE] #remove the first column which contains the name of the group designation system (i.e. PAM50, Protein Clustering, etc.)
-        GROUP_KEY <- GROUP_KEY[,ColGroupsScheme,drop=FALSE] #the group key columns corresponding to the grouping schemes considered are selected
+        GROUP_KEY <- GROUP_KEY[,ColGroupsScheme_concat,drop=FALSE] #the group key columns corresponding to the grouping schemes considered are selected
         #Get the vector of colors corresponding to the group membership of each patient
-        GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
+        GroupColorListReturn <- GetGroupColorList(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme_concat)
         GroupColorMatrix <- GroupColorListReturn[[1]]
         groups_corresponding <- GroupColorListReturn[[2]]
         COLOR_KEY <- GroupColorListReturn[[3]]
@@ -29,7 +29,7 @@ RetrieveGroups <- function(DATA,ColGroupsScheme,group_designations_file,group_co
 
 ###############################################################################
 
-GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme)
+GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGroupsScheme_concat)
 {
   COLOR_KEY <- read.table(file=group_color_designations_file,head=TRUE,sep='\t',stringsAsFactors=FALSE,comment.char="",check.names=FALSE) #reads the colors associated with the groups, check.names=FALSE ensures text in column names is not changed
   rownames(COLOR_KEY) <- COLOR_KEY[,1]
@@ -37,13 +37,13 @@ GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGr
                               #the group names are the column names (can be from multiple grouing schemes)
 
   #Ensure the sample->group and group->color mappings have consistent group names
-  CheckStop(6,parameters=list(COLOR_KEY,GROUP_KEY,ColGroupsScheme))
+  CheckStop(6,parameters=list(COLOR_KEY,GROUP_KEY,ColGroupsScheme_concat))
 
   n_samples <- ncol(DATA)
-  n_designations <- length(ColGroupsScheme)
+  n_designations <- length(ColGroupsScheme_concat)
   color_df <- as.data.frame(matrix(NA,nrow=n_samples,ncol=n_designations)) #initialize a list that is going to carry the colors associated with each sample
   rownames(color_df) <- colnames(DATA)
-  colnames(color_df) <- ColGroupsScheme
+  colnames(color_df) <- ColGroupsScheme_concat
   group_name_df <- color_df #initialize a data frame that is going to carry the group name associated with each sample
 
   for (i in 1:n_samples) #iterate though each sample in your data
@@ -64,7 +64,7 @@ GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGr
 
 ###############################################################################
 
-SelectGroups <- function(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
+SelectGroups <- function(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
 #Select the specified group names (if applicable)
 {
     if (is.character(select_groups))
@@ -72,14 +72,14 @@ SelectGroups <- function(select_groups,DATA,ColGroupsScheme,groups_corresponding
         CheckStop(4,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme)) #ensure all select_group entries are in the specified grouping scheme to select them from
         #not really relevant for boxplots - check for heatmaps
         DATA2 <- DATA #make a copy of the DATA data frame because appending non-numeric rows changes the numeric class of its contents
-        DATA2[ColGroupsScheme,sort(colnames(DATA))] <- t(groups_corresponding[sort(colnames(DATA)),ColGroupsScheme]) #add rows corresponding to the group classifications of each sample
-        DATA2[paste(ColGroupsScheme,'- color'),sort(colnames(DATA))] <- t(GroupColorMatrix[sort(colnames(DATA)),ColGroupsScheme]) #add rows corresponding to the group color assignments of each sample
+        DATA2[ColGroupsScheme_concat,sort(colnames(DATA))] <- t(groups_corresponding[sort(colnames(DATA)),ColGroupsScheme_concat]) #add rows corresponding to the group classifications of each sample
+        DATA2[paste(ColGroupsScheme_concat,'- color'),sort(colnames(DATA))] <- t(GroupColorMatrix[sort(colnames(DATA)),ColGroupsScheme_concat]) #add rows corresponding to the group color assignments of each sample
         col_to_keep_indices <- DATA2[inclusion_grouping_scheme,] %in% select_groups #find the columns to keep - this gives the indices
         DATA2 <- DATA2[,col_to_keep_indices] #keep the specified columns, this is done in DATA2 so the GroupColorMatrix and groups_corresponding matrix can be updated
         DATA <- DATA[,col_to_keep_indices] #keep the specified columns in the data frame to be plotted
-        GroupColorMatrix <- t(as.matrix(DATA2[paste(ColGroupsScheme,'- color'),])) #update the GroupColorMatrix
-        colnames(GroupColorMatrix) <- ColGroupsScheme #restore the rownames to their original (without the '- color')
-        groups_corresponding <- t(as.matrix(DATA2[ColGroupsScheme,])) #update the groups_corresponding matrix
+        GroupColorMatrix <- t(as.matrix(DATA2[paste(ColGroupsScheme_concat,'- color'),])) #update the GroupColorMatrix
+        colnames(GroupColorMatrix) <- ColGroupsScheme_concat #restore the rownames to their original (without the '- color')
+        groups_corresponding <- t(as.matrix(DATA2[ColGroupsScheme_concat,])) #update the groups_corresponding matrix
         rm(DATA2) #remove the now unnecessary DATA2 data frame from memory
     }
 
@@ -173,7 +173,6 @@ StatTransformByGroup <- function(DATA,groups_corresponding,GroupColorMatrix,repl
     DATA2 <- data.frame(matrix(ncol=0,nrow=nrow(DATA)))
     rownames(DATA2) <- rownames(DATA)
 
-    ColGroupsScheme <- ColGroupsScheme[ColGroupsScheme!=replicate_scheme]
     GroupColorMatrix <- GroupColorMatrix[,!colnames(GroupColorMatrix)==replicate_scheme,drop=FALSE]
     groups_corresponding <- groups_corresponding[,!colnames(groups_corresponding)==replicate_scheme,drop=FALSE]
 

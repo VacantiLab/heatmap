@@ -57,9 +57,8 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
     group_divisions <- UnpackGroups_return[[2]] #this is the original input if it was a list, NULL if the input was not a list
 
     #Match the group names to the samples by referencing the group_key
-    ColGroupsScheme_as_input <- ColGroupsScheme
-    ColGroupsScheme <- c(ColGroupsScheme,replicate_scheme)
-    RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme,group_designations_file,group_color_designations_file,select_groups,replicate_scheme)
+    ColGroupsScheme_concat <- c(ColGroupsScheme,replicate_scheme)
+    RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme_concat,group_designations_file,group_color_designations_file,select_groups)
     groups_corresponding <- RetrieveGroups_return[[1]]
     GroupColorMatrix <- RetrieveGroups_return[[2]]
     COLOR_KEY <- RetrieveGroups_return[[3]]
@@ -69,8 +68,8 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
     CheckStop(2,parameters=list(select_groups,groups_corresponding))
 
     #Select the groups that are considered for this box plot
-    inclusion_grouping_scheme <- ColGroupsScheme_as_input #It has to be the input ColGroupsScheme because a boxplot can only have one ColGroupsScheme
-    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
+    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme=ColGroupsScheme)
+    #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
     GroupColorMatrix <- SelectGroups_return[[3]]
@@ -78,8 +77,8 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=FALSE,transformation=NULL,
     #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
     #Also get corresponding colors for those new groups by taking the color that maps to the first sub-group of each concatonated group
     #This function does not affect the input if group_divisions is NULL (i.e. select_groups was not passed as a list to the original function)
-    concat_group_scheme <- ColGroupsScheme_as_input #It has to be the input ColGroupsScheme because a boxplot can only have one ColGroupsScheme
-    ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY,concat_group_scheme)
+    ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY,concat_group_scheme=ColGroupsScheme)
+    #concat_group_scheme has to be ColGroupsScheme because a volcano plot only has one ColGroupsScheme
     groups_corresponding <- ConcatonateGroups_return[[1]]
     GroupColorMatrix <- ConcatonateGroups_return[[2]]
     groups_concatonated <- ConcatonateGroups_return[[3]]
