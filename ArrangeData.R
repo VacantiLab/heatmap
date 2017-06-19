@@ -17,6 +17,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     group_color_designations_file <- paste(data_location,'group_color_key.txt',sep='')
 
     #Import the data and only keep selected rows if specified
+    print('opening data file')
     DATA <- OpenDataFile(data,select_rows)
 
     #Retrieve the corresponding column groupings and keep only those specified
@@ -30,6 +31,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     group_divisions <- UnpackGroups_return[[2]] #this is the original input if it was a list, NULL if the input was not a list
 
     #Match the group names to the samples by referencing the group_key
+    print('retrieving group and color assignments')
     ColGroupsScheme_concat <- c(ColGroupsScheme,replicate_scheme)
     RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme_concat,group_designations_file,group_color_designations_file,select_groups)
     groups_corresponding <- RetrieveGroups_return[[1]]
@@ -41,6 +43,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     CheckStop(2,parameters=list(select_groups,groups_corresponding))
 
     #Select the groups that are considered for this box plot
+    print('selecting groups if necessary')
     SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme=ColGroupsScheme)
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
@@ -50,6 +53,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
     #Also get corresponding colors for those new groups by taking the color that maps to the first sub-group of each concatonated group
     #This function does not affect the input if group_divisions is NULL (i.e. select_groups was not passed as a list to the original function)
+    print('combining groups if necessary')
     ConcatonateGroups_return <- ConcatonateGroups(group_divisions,groups_corresponding,GroupColorMatrix,COLOR_KEY,concat_group_scheme=ColGroupsScheme)
     #concat_group_scheme has to be ColGroupsScheme because a volcano plot only has one ColGroupsScheme
     groups_corresponding <- ConcatonateGroups_return[[1]]
@@ -59,18 +63,25 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     group_concationation <- is.list(group_divisions)
 
     #return median of replicates if specified to do so
+    print('aggregating group members if necessary')
     MedianGroup_return <- MedianGroup(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme)
     DATA <- MedianGroup_return[[1]]
     groups_corresponding <- MedianGroup_return[[2]]
     GroupColorMatrix <- MedianGroup_return[[3]]
 
     #Transform the data as specified
+    print('transforming data if necessary')
     DATA <- transform_data(DATA,transformation)
     gene_name <- rownames(DATA)
     n_gene <- length(gene_name)
 
-    #put the data in long data frame format for plotting
-    DATA_long <- FatToLongDF(DATA,groups_corresponding)
+    DATA_long <- NULL
+    if (visualization=='boxplot' | visualization=='volcanoplot')
+    {
+        #put the data in long data frame format for plotting
+        print('arranging data in long data frame format')
+        DATA_long <- FatToLongDF(DATA,groups_corresponding)
+    }
 
     FillColors = NULL #needs to be designated because it is returned
     group_order = NULL #need to be designated because it is returned
@@ -90,6 +101,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     {
         #calculate p-values: currently can only do if there are 2 groups with an equal-variance t-test
         #returns a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
+        print('performing significance tests')
         n_groups <- length(group_order)
         if (n_groups==2)
         {

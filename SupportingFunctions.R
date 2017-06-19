@@ -48,6 +48,7 @@ StoreHeatmap <- function()
 ClusterData <- function(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
 {
     #compute the distance matrix depending on the desired method (euclidan, pearson, or spearman)
+    print('computing distnace matrix')
     if (DistanceMethod == 'euclidian')
     {
         D_col <- dist(t(DATA)) #This function computes the distance matrix where the rows are points, but in this instance the columns should be points, so use the transpose of the data matrix.
@@ -85,9 +86,11 @@ ClusterData <- function(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
     # 1->5  2->5  3->5  4->5
 
     #cluster the data by feeding the distance matrices to hclust().
+    print('clustering columns')
     #This clusters the columns of the data matrix
     C_col <- hclust(D_col, method=ClusterMethod,members=NULL)
     #This clusters the rows of the data matrix
+    print('clustering rows')
     C_row <- hclust(D_row, method=ClusterMethod,members=NULL)
 
     #create a dendrogram objects to specify the order and dendrogram labeling of the columns and rows in the heatmap
