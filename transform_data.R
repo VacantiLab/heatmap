@@ -23,6 +23,7 @@ transform_data <- function(DATA,transformation)
     transformed = TRUE
   }
 
+
   #Normalize rows to row median and log2 transform if indicated
   if (transformation == 'median_norm_log2_transform')
   {

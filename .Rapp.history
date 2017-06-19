@@ -89,101 +89,10 @@ BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisi
 t_elapsed_script <- (proc.time()[3]-t_start_script)
 t_elapsed_script
 setwd('/Users/Nate/git_hub_projects/heatmap')
-data_location<-'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data/'
-select_groups <- list(c('basal a','basal b'),c('luminal'))
-vp <- MakeVolcanoPlot(data_location,'PAM50',NULL,NULL,NULL,select_groups,'cell_type','oxidative_phosphorylation_kegg.txt')
+data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data'
+data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data/'
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
 source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,'PAM50',NULL,NULL,NULL,select_groups,'cell_type','oxidative_phosphorylation_kegg.txt')
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,'PAM50',NULL,NULL,NULL,select_groups,'cell_type','oxidative_phosphorylation_kegg.txt')
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,'PAM50',NULL,NULL,NULL,select_groups,'cell_type','oxidative_phosphorylation_kegg.txt')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('TYMS','PDK1','PDK2','PDK3'),select_groups,'cell_type')
-source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('TYMS','PDK1','PDK2','PDK3'),select_groups,'cell_type')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.d2','NULL','NULL','select_groups',FALSE,TRUE,FALSE)
-select_groups
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.d2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-traceback()
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-DATA[1:5,1:5]
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-DATA[1:5,1:5]
-Q
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-DATA[1:5,1:5]
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-data
-select_rows
-DATA <- OpenDataFile(data,select_rows)
-DATA[1:5,1:5]
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-txt_directory
-DF <- read.table(file=txt_directory,head=TRUE,check.names=FALSE,sep='\t')
-DF[1:5,1:5]
-RowNames <- as.character(DF[,1])
-RowNames[1:5]
-rownames(DF) <- RowNames
-RowNames[1:5]
-DF[1:5,1:5]
-DF[,1] <- NULL
-DF[1:5,1:5]
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2','NULL','NULL',select_groups,FALSE,TRUE,FALSE)
-DATA[1:5,1:5]
-has_no_na_row_indices <- apply(DATA,1,NoNA)
-length(has_no_na_indices)
-length(has_no_na_row_indices)
-DATA <- DATA[has_no_na_row_indices,]
-DATA[1:5,1:5]
-length(DATA[,1])
-sum(has_no_na_row_indices)
-select_rows
-!is.null(select_rows)
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-hm
-TRUE | FALSE
-TRUE || FALSE
-c(TRUE TRUE) | c(TRUE FALSE)
-c(TRUE TRUE)
-c(TRUE, TRUE) | c(TRUE, FALSE)
-c(TRUE, TRUE) || c(TRUE, FALSE)
-source('initialize_heatmap.R')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-visualization=='boxplot' | visualization=='volcanoplot'
-visualization=='boxplot' | visualization=='volcanoplot'
-Q
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-sit_test_list
-sig_test_list
-FillColors
-group_order
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'cell_type','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
-vp <- MakeVolcanoPlot(data_location,'PAM50',NULL,NULL,NULL,select_groups,'cell_type','oxidative_phosphorylation_kegg.txt')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('TYMS','PDK1','PDK2','PDK3'),select_groups,'cell_type')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+sshfs
