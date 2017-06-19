@@ -88,7 +88,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
     }
 
-    ArrangeData_return <- list(sig_test_list,output_directory)
+    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors)
     return(ArrangeData_return)
 
 }

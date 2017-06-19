@@ -19,6 +19,19 @@ OpenDataFile <- function(data,select_rows)
 
 ###############################################################################
 
+read_txt_to_df <- function(txt_directory)
+#Function to read a tab delimited text file into a data frame
+{
+    DF <- read.table(file=txt_directory,head=TRUE,check.names=FALSE,sep='\t') #check.names=FALSE prevents an 'X' from being added to the numeric column names
+    #Name the rows of the data frame as the genes given in the first column of the data frame
+    RowNames <- as.character(DF[,1])
+    rownames(DF) <- RowNames
+    DF[,1] <- NULL #remove the first column of the data frame as it is no longer needed
+    return(DF)
+}
+
+###############################################################################
+
 StoreHeatmap <- function()
 {
     #Input where the heatmap is stored
@@ -96,19 +109,6 @@ NoNA <- function(vector)
 #Function to return TRUE if the row does not have any NAs
 {
     NoNA <- !is.na(sum(vector))
-}
-
-###############################################################################
-
-read_txt_to_df <- function(txt_directory)
-#Function to read a tab delimited text file into a data frame
-{
-    DF <- read.table(file=txt_directory,head=TRUE,check.names=FALSE,sep='\t') #check.names=FALSE prevents an 'X' from being added to the numeric column names
-    #Name the rows of the data frame as the genes given in the first column of the data frame
-    RowNames <- as.character(DF[,1])
-    rownames(DF) <- RowNames
-    DF[,1] <- NULL #remove the first column of the data frame as it is no longer needed
-    return(DF)
 }
 
 ###############################################################################

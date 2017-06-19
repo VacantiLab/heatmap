@@ -31,11 +31,13 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
     #Stop the program if the transformation is log2
     CheckStop(7,parameters=list(transformation))
 
+    #Extract the data required to make a volcano plot
     ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
 
-    volcano_df <- sig_test_list[[1]]
+    #Designate the data visualized in the volcano plot
+    volcano_df <- sig_test_list[[1]] #there is only one member of this list for a volcano plot because there are must only be two grouping schemes compared
 
     #Make the plot
     genes_to_label <- GetGeneList(genes_to_label,data_location)
