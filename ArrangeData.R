@@ -99,5 +99,4 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding)
     return(ArrangeData_return)
-
 }
