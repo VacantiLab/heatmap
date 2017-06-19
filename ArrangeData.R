@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 {
     #Stop the program if the replicate scheme is in the ColGroupsScheme
@@ -72,23 +72,32 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #put the data in long data frame format for plotting
     DATA_long <- FatToLongDF(DATA,groups_corresponding)
 
-    #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
-    if (is.character(select_rows)){gene_name <- select_rows}
-    OrderGroups_return <- OrderGroups(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
-    DATA_long <- OrderGroups_return[[1]]
-    FillColors <- OrderGroups_return[[2]]
-    group_order <- OrderGroups_return[[3]]
+    FillColors = NULL #needs to be designated because it is returned
+    group_order = NULL #need to be designated because it is returned
 
-    #calculate p-values: currently can only do if there are 2 groups with an equal-variance t-test
-    #returns a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
-    n_groups <- length(group_order)
-    sig_test_list <- list()
-    if (n_groups==2)
+    if (visualization=='boxplot' | visualization=='volcanoplot')
     {
-        sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
+        #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
+        if (is.character(select_rows)){gene_name <- select_rows}
+        OrderGroups_return <- OrderGroups(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
+        DATA_long <- OrderGroups_return[[1]]
+        FillColors <- OrderGroups_return[[2]]
+        group_order <- OrderGroups_return[[3]]
     }
 
-    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors)
+    sig_test_list <- list() #need to be designated because it is returned
+    if (visualization=='boxplot' | visualization=='volcanoplot')
+    {
+        #calculate p-values: currently can only do if there are 2 groups with an equal-variance t-test
+        #returns a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
+        n_groups <- length(group_order)
+        if (n_groups==2)
+        {
+            sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
+        }
+    }
+
+    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding)
     return(ArrangeData_return)
 
 }
