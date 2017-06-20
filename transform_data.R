@@ -8,9 +8,17 @@ transform_data <- function(DATA,transformation)
   if (transformation == 'log2')
   {
     DATA <- log2(DATA)
-    DATA[DATA < -3] <- -3
+    #DATA[DATA < -3] <- -3
     transformed = TRUE
   }
+
+  #exp2() transform the data if specified to do so
+  if (transformation == 'exp2')
+  {
+    DATA <- 2^(DATA)
+    transformed = TRUE
+  }
+
 
   #Center and scale the rows if indicated
   if (transformation == 'median_center_iqr_norm')

@@ -88,11 +88,29 @@ t_start_script <- proc.time()[3]#
 BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisition_time,2)#
 t_elapsed_script <- (proc.time()[3]-t_start_script)
 t_elapsed_script
+memory.limit()
+ls()
 setwd('/Users/Nate/git_hub_projects/heatmap')
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data'
 data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data/'
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
 hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
-sshfs
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+c(1,2,3)^2
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
