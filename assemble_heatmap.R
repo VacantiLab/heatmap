@@ -16,7 +16,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     #pdf(graphics_file,height=graphics_h,width=graphics_w) #not sure of the units of width and height
     png(graphics_file,height=graphics_h,width=graphics_w,units='px',pointsize=24)
 
-    if (dim(GroupColorMatrix)[2]>1)
+    if (!is.null(GroupColorMatrix)){if (dim(GroupColorMatrix)[2]>1)
     {
         heatmap <- heatmap.plus(x=DifExpMatx,
                                 Colv=colv,
@@ -30,9 +30,9 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                                 scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
                                 labRow=label_rows,
                                 labCol=label_cols)
-    }
+    }}
 
-    if (dim(GroupColorMatrix)[2]==1)
+    if (!is.null(GroupColorMatrix)){if (dim(GroupColorMatrix)[2]==1)
     {
         heatmap <- heatmap(x=DifExpMatx,
                           Colv=colv,
@@ -40,6 +40,21 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           cexRow=1,
                           cexCol=0.5,
                           ColSideColors = GroupColorMatrix,
+                          col=heat_map_colors,
+                          breaks=break_seq,
+                          margins=c(5,10),
+                          scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
+                          labRow=label_rows,
+                          labCol=label_cols)
+    }}
+
+    if (is.null(GroupColorMatrix))
+    {
+        heatmap <- heatmap(x=DifExpMatx,
+                          Colv=colv,
+                          Rowv=rowv,
+                          cexRow=1,
+                          cexCol=0.5,
                           col=heat_map_colors,
                           breaks=break_seq,
                           margins=c(5,10),
