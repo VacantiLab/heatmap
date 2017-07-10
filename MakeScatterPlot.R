@@ -9,7 +9,9 @@ MakeScatterPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
   DATA_long <- ArrangeData_return[[5]]
   FillColors <- ArrangeData_return[[6]]
   DATA <- ArrangeData_return[[7]]
+  GroupColorMatrix <- ArrangeData_return[[8]]
+  groups_corresponding <- ArrangeData_return[[9]]
 
   #Make the scatter plot
-  b <- assemble_scatter_plot(DATA,FillColors,output_directory,select_rows)
+  b <- assemble_scatter_plot(DATA,GroupColorMatrix,output_directory,select_rows)
 }

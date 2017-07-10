@@ -82,7 +82,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     DATA <- remove_zero_var_rows(DATA)
 
     DATA_long <- NULL
-    if (visualization=='boxplot' | visualization=='volcanoplot')
+    if (visualization=='boxplot' | visualization=='volcanoplot' | visualization=='scatterbar')
     {
         #put the data in long data frame format for plotting
         print('arranging data in long data frame format')
