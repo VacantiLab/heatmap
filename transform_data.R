@@ -19,8 +19,7 @@ transform_data <- function(DATA,transformation)
     transformed = TRUE
   }
 
-
-  #Center and scale the rows if indicated
+  #center rows on median and normalize by IQR
   if (transformation == 'median_center_iqr_norm')
   {
     column_names <- colnames(DATA) #record the column names after the unecessary column is removed
@@ -57,6 +56,10 @@ transform_data <- function(DATA,transformation)
 
   return(DATA)
 }
+
+
+###############################################################################
+
 
 #Function to center on median and scale by IQR
 median_center_iqr_norm <- function(vector)

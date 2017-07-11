@@ -88,29 +88,237 @@ t_start_script <- proc.time()[3]#
 BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisition_time,2)#
 t_elapsed_script <- (proc.time()[3]-t_start_script)
 t_elapsed_script
-memory.limit()
-ls()
+m <- matrix(c(2,3,4,5,6,7),nrow=2)
+m
+2^m
+mdf <- data.frame(m)
+mdf
+2^mdf
+install.packages(biocLite)
+source("https://bioconductor.org/biocLite.R")
+biocLite
+biocLite()
+biocLite("hgu133plus2.db")
+cols('hgu133plus2.db')
+cols(hgu133plus2.db)
+library('hgu133plus2.db')
+cols(hgu133plus2.db)
+colnames(hgu133plus2.db)
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids <- c("39730_at", "1635_at", "1674_at", "40504_at", "40202_at")
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','ENTREZID')
+select(hgu133plus2.db, ids, "ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID",ids)
+keys('PROBEID')
+keys(PROBEID)
+keys(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids = c('65521_at','65493_at')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids
+select(hgu133plus2.db,ids,'PROBEID')
+keytypes('hgu133plus2.db')
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
+select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
+select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
+getwd()
 setwd('/Users/Nate/git_hub_projects/heatmap')
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/Protein_Quantification_Data/'
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+getwd()
+data_location = '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data'
+data_location = '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data/'
+select_groups <- list(c('basal a','basal b'),c('luminal'))
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
+select_groups
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
+select_groups
+groups_corresponding
+select_groups
+q
+quit
+exit()
+quit()
+exit()
+Q
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,FALSE,TRUE,FALSE)
+select_groups
+Q
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,sleect_groups,FALSE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
+Q
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,NULL,select_groups,FALSE,TRUE,FALSE)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('MPC1','MPC2'),NULL,NULL)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('MPC1','MPC2'),NULL,NULL)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('MPC1','MPC2'),NULL,NULL)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('MPC1','MPC2'),NULL,NULL)
+DATA[1:2,1:2]
+Q
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+DATA[1:2,1:2]
+Q
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
-c(1,2,3)^2
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+DATA_t[1:2,1:2]
+Q
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'PAM50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+class(DATA)
+class(DATA_t)
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+class(DATA_t)
+DATA_t
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('SHMT1','MPC2'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','PDHE2'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','DLAT'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','PDHE2'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,NULL,'log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+FillColors
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+FillColors
+ColGroupsScheme
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+ColGroupsScheme
+FillColors
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+FillColors
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+GroupColorMatrix
+DATA
+DATA_t
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+DATA_t
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),list(c('luminal'),c('basal a','basal b')),NULL)
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('PDHA1','PDHB'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('OGDH','DLST'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('NDUFS7','NDUFS8'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('GAPDH','ALD'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('GAPDH','ALDOA'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('TPI1','PGK1'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('SHMT2','SLC25A5'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('SHMT2','SLC25A5'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('PFKL','PFKM'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('GNPDA1','GNPDA2'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIM9','TIM8'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM9','TIMM8'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM9','TIMM10'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM17','TIMM21'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM17B','TIMM21'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM17B','TIMM23'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM22','TIMM9'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM22','TIMM12'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM22','TIMM9'),NULL,NULL)
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TIMM22','TIMM9'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM70','TOMM20'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM22','TOMM20'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM22','TOMM40'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM7','TOMM6'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM5','TOMM6'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('NDUFS7','NDUFS8'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOM20','TOM22'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),NULL,'cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),NULL,'cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),NULL,'cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),NULL,'cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),NULL,'cell_type')
+sp <- MakeScatterPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+DATA_long[1:5,]
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+DATA_long[1:5,]
+Q
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),NULL)
+sp <- MakeScatterBarPlot(data_location,'cell_type','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+source('initialize_heatmap.R')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22'),replicate_scheme='cell_type')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22',TOMM70),replicate_scheme='cell_type')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('PDHA1','PDHB'),replicate_scheme='cell_type')
+sp <- MakeScatterBarPlot(data_location,'PAM50','log2','NULL',c('TOMM20','TOMM22','TOMM40'),replicate_scheme='cell_type')
