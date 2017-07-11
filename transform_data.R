@@ -52,6 +52,17 @@ transform_data <- function(DATA,transformation)
     transformed = TRUE
   }
 
+  #normalize by iqr, log2 trasform, then center on resulting median
+  if (transformation == 'iqr_norm_log2_median_center')
+  {
+    column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+    Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+    DATA <- data.frame(lapply(Transposed_DATA, iqr_norm_log2_median_center))
+    DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+    colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+    transformed = TRUE
+  }
+
   if (transformed==FALSE && !is.null(transformation)){stop('custom message: You have specified a transformation that does not exist.')}
 
   return(DATA)
@@ -76,6 +87,17 @@ median_norm_log2_transform <- function(vector)
   transformed <- log2(normalized)
   return(transformed)
 }
+
+#Function to normalize by iqr, log2 trasform, then center on resulting median
+iqr_norm_log2_median_center <- function(vector)
+{
+  #normalized <- vector/median(vector)
+  normalized <- vector/IQR(vector)
+  transformed <- log2(normalized)
+  transformed <- transformed - median(transformed)
+  return(transformed)
+}
+
 
 #Function to raise to power 2, median norm, then log2 transform
 exp2_mednorm_log2 <- function(vector)
