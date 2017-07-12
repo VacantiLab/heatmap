@@ -23,7 +23,8 @@ OpenDataFile <- function(data,select_rows)
     #selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
     #is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
 
-    return(DATA)
+    OpenDataFile_return <- list(DATA,select_rows)
+    return(OpenDataFile_return)
 }
 
 ###############################################################################

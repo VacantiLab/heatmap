@@ -10,7 +10,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- unit(4,'cm')
+    pdf_width <- unit(8,'cm')
     pdf_height <- unit(4,'cm')
     bar_width <- 0.50
     inter_group_spacing <- 0.55

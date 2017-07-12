@@ -18,7 +18,9 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #Import the data and only keep selected rows if specified
     print('opening data file')
-    DATA <- OpenDataFile(data,select_rows)
+    OpenDataFile_return <- OpenDataFile(data,select_rows)
+    DATA <- OpenDataFile_return[[1]]
+    select_rows <- OpenDataFile_return[[2]]
 
     #Retrieve the corresponding column groupings and keep only those specified
     #Also take the medians if there is a replicate scheme provided (this will not work if the replicate scheme is the only grouping scheme used)
