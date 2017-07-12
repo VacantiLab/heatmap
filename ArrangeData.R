@@ -111,7 +111,8 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         n_groups <- length(group_order)
         if (n_groups==2)
         {
-            sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
+            #sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
+            #commented out for now because if a gene is listed in select_genes that is not in the database, GetPs currently causes an error (2017-07-12)
         }
     }
 
