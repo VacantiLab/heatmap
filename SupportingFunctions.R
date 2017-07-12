@@ -10,7 +10,16 @@ OpenDataFile <- function(data,select_rows)
     DATA <- DATA[has_no_na_row_indices,]
 
     #Select rows from the data frame
-    if (!is.null(select_rows)) {DATA <- DATA[rownames(DATA) %in% select_rows,]}
+    if (!is.null(select_rows))
+    {
+        #determine if select_rows is a path to a file, it must be of length 1 to perform this test
+        if (length(select_rows)==1)
+            {
+                #if select_rows is a path to a file, then select_rows is set to be an array containing the gene names in that file
+                if (grepl('.txt$',select_rows)) {select_rows <- readLines(select_rows)}
+            }
+        DATA <- DATA[rownames(DATA) %in% select_rows,]
+    }
     #selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
     #is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
 

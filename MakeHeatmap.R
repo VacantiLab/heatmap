@@ -16,6 +16,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
 #    This option could use more testing
 # select_rows: These are the genes that you want to plot
 #    #If it is NULL, all genes are plotted
+#    If it is a path to a .txt file, that file must contain the gene names, one on each line, and they will be used as the select_rows
 # select_groups: This can be an array of the group names (from the provided ColGroupsScheme) that are to be plotted or a list of arrays of group names or NULL
 #    If it is an array of group names, those groups are the only ones plotted
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
