@@ -4,17 +4,22 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
     x_var <- 'gene'
     y_var <- 'value'
     color_var <- 'group'
+
+#    x_var <- 'group'
+#    y_var <- 'value'
+#    color_var <- 'gene'
+
     no_groups_color <- 'grey'
 
     YLabel <- 'Abundance'
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- unit(8,'cm')
-    pdf_height <- unit(4,'cm')
+    pdf_width <- unit(20,'cm')
+    pdf_height <- unit(8,'cm')
     bar_width <- 0.50
     inter_group_spacing <- 0.55
-    legend_position <- c(0.25,0.9)
+    legend_position <- c(0.15,0.6)
 
     #If there are groups, the group color is specified by the color_var
     if(!is.null(FillColors))
@@ -27,6 +32,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
     {
         gbp <- geom_boxplot(outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2,fill=no_groups_color)
     }
+
 
 
     b <- ggplot(DATA_long,aes_string(x=x_var, y=y_var)) +
