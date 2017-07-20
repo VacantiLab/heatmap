@@ -130,193 +130,64 @@ select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
 data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data/'
 setwd('/Users/Nate/git_hub_projects/heatmap')
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('SLC25A44','RICTOR'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5','DEPTOR'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5','DEPTOR','MTOR'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5','DEPTOR','MTOR','TTI1','TELO2'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5','DEPTOR','MTOR','TTI1','TELO2','PDK1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5','DEPTOR','MTOR','TTI1','TELO2','PDK1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5','DEPTOR','MTOR','TTI1','TELO2','PDK1','PDK2','PDK3','PDK4'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-source('init')
-source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'PAM50','log2',NULL,c('RICTOR','MLST8','MAPKAP1','PRR5','DEPTOR','MTOR','TTI1','TELO2','PDK1','PDK2','PDK3','PDK4'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-rm(list=ls())
-ls()
-h <- 'ret'
-length(g)
-length(h)
-h <- 'ftr.txt'
-h
-length(h)
-grepl('.txt$',h)
-gene_list <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/complex_I_kegg_enzyme_1.6.5.3.txt'
-gene_list_file <- gene_list
-gene_list <- readLines(gene_list_file)
-gene_list
-seelct_rows <- gene_list_file
-select_rows <- gene_list_file
-data_location
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/caulautti_rictor_ko_study_rna_seq/rna_seq_data_for_analysis'
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/caulautti_rictor_ko_study_rna_seq/rna_seq_data_for_analysis/'
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'euclidian','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'euclidian','average',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,c('SDHA','SDHB','SDHC','SDHD'),NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-select_rows
-select_rows <- '"/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/complex_III_kegg_enzyme_1.10.2.2.txt"'
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-select_rows <- "/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/complex_III_kegg_enzyme_1.10.2.2.txt"
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-select_rows <- "/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt"
-hm <- MakeHeatMap(data_location,'Group','median_norm_log2_transform',seq(-0.5,0.5,0.1),NULL,'pearson','ward.D2',NULL,select_rows,NULL,TRUE,TRUE,FALSE)
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data/'
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),cell_type,'pearson','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),FALSE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),FALSE,TRUE,FALSE)
-select_rows <- "/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/complex_I_kegg_enzyme_1.6.5.3.txt"
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),FALSE,TRUE,FALSE)
-select_rows <- "/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/complex_III_kegg_enzyme_1.10.2.2.txt"
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),'cell_type','pearson','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),FALSE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),'cell_type','euclidian','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),FALSE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-1,1,0.25),'cell_type','euclidian','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),FALSE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-1,1,0.1),'cell_type','euclidian','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),FALSE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-1,1,0.1),'cell_type','euclidian','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-1,1,0.1),'cell_type','euclidian','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-1,1,0.1),NULL,'euclidian','ward.D2',NULL,select_rows,list(c('basal a','basal b'),c('luminal')),TRUE,TRUE,FALSE)
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Proteome_Quantification_Data/'
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-1,1,0.1),NULL,'euclidian','ward.D2',NULL,select_rows,list(c('basal'),c('luminal b')),TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-1,1,0.1),NULL,'euclidian','ward.D2',NULL,select_rows,list(c('basal'),c('lumb')),TRUE,TRUE,FALSE)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('HIF1A'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MPC1'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MPC1','ARNT'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','SLC16A1','SLC16A7'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','SLC16A1','SLC16A7','PDK1'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1','MXI1'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1','MXI1','BNIP3'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1','MXI1','BNIP3','ARNT'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1','MXI1','BNIP3','ARNT','VHL'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1','MXI1','BNIP3','ARNT','VHL','SSAT2'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1','MXI1','BNIP3','ARNT','VHL','SAT2'),list(c('basal'),c('lumb')),NULL)
-select_rows
-select_rows <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_hallmark_hypoxia.txt'
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('SLC2A1','SLC2A3','PFKFB3','PGK1','SLC16A3','PDK1','MXI1','BNIP3','ARNT','VHL','SAT2'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
+vp <- MakeVolcanoPlot(data_location,'pam50',NULL,NULL,NULL,list(c('basal a','basal b'),c('luminal')),'cell_type',NULL)
 traceback()
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MPC1','aintone'),list(c('basal'),c('lumb')),NULL)
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-DATA
+is.null(NULL)
+vp <- MakeVolcanoPlot(data_location,'pam50',NULL,NULL,NULL,list(c('basal a','basal b'),c('luminal')),'cell_type',NULL)
+genes_to_label <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt'
+vp <- MakeVolcanoPlot(data_location,'pam50',NULL,NULL,NULL,list(c('basal a','basal b'),c('luminal')),'cell_type',NULL)
+vp <- MakeVolcanoPlot(data_location,'pam50',NULL,NULL,NULL,list(c('basal a','basal b'),c('luminal')),'cell_type',genes_to_label)
+vp <- MakeVolcanoPlot(data_location,'pam50',NULL,NULL,NULL,list(c('basal a','basal b'),c('luminal')),'cell_type','oxidative_phosphorylation_kegg.txt')
+vp <- MakeVolcanoPlot(data_location,'pam50',NULL,NULL,NULL,list(c('basal a','basal b'),c('luminal')),'cell_type',NULL)
+bp <- MakeBoxPlot(data_location,'cell_type','log2',NULL,c('RICTOR','MAPKAP1'),NULL,NULL)
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'cell_type','log2',NULL,c('RICTOR','MAPKAP1'),NULL,NULL)
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'cell_type','log2',NULL,c('RICTOR','MAPKAP1'),NULL,NULL)
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),NULL,'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),NULL,'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),NULL,'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),NULL,'cell_type')
+DATA_long[1:5,]
 Q
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-Q
-traceback()
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-group_order
-indices
-value
-Q
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),NULL,'cell_type')
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-indices
-value
-n_gene
-gene_name
-length(NULL)
-4<5 & 5<6
-Q
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),NULL,'cell_type')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MPC1','ARNT'),list(c('basal'),c('lumb')),NULL)
-Q
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MPC1','ARNT'),list(c('basal'),c('lumb')),NULL)
-select_rows
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-warnings
-warnings()
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,select_rows,list(c('basal'),c('lumb')),NULL)
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,select_rows,NULL,FALSE,TRUE,FALSE)
-bp[[1]]
-bp[[1]][[1]]
-library("dendextend") #package: dendextend#
-library("dendextendRcpp") #package: dendextendRcpp#
-#
-cut_tree_height <- 3.5 #the height at which the dendrogram is cut to make groups#
-#
-PDF_file <- paste('/Users/Nate/Desktop/','dendrogram.pdf',sep='') #name for the pdf file containing the dendrogram picture#
-pdf(PDF_file,height=10,width=10) #open a pdf file for printing#
-par(cex=0.5) #set the sizes of something within the dendrogram to half of its usual#
-dend <- as.dendrogram(hm[[1]][[1]]) #get a dendrogram object from the column output of the hclust function made by the MakeHeatmap function (trees is the output of the MakeHeatmap function)#
-plot(dend,horiz=F) #plot the dendrogram#
-abline(h=cut_tree_height, lwd = 2, lty = 2, col = "blue") #draw the line through the dendrogram where you set the cut height to visualize the resulting groups#
-par(cex=1) #set the size of whatever cex changes back to 1#
-dev.off() #shuts off printing to the pdf
-dend <- as.dendrogram(hm[[1]])
-plot(dend,horiz=F) #plot the dendrogram#
-abline(h=cut_tree_height, lwd = 2, lty = 2, col = "blue") #draw the line through the dendrogram where you set the cut height to visualize the resulting groups#
-par(cex=1) #set the size of whatever cex changes back to 1#
-dev.off() #shuts off printing to the pdf
-plot(dend,horiz=F)
-dend <- as.dendrogram(hm[[2]])
-plot(dend,horiz=F)
-hm <- bp
-dend <- as.dendrogram(hm[[2]])
-plot(dend,horiz=F)
-cut_tree_height <- 2.0
-MyTree <- cutree(hm[[2]],h=cut_tree_height)
-MyTree
-MyTree[MyTree==1]
-MyTree[MyTree==2]
-locations = MyTree==1
-locations
-upgenes = MyTree[locations]
-upgenes
-upgenes = colnames(MyTree[locations])
-upgenes
-upgenes = rownames(MyTree[locations])
-upgenes
-class(MyTree)
-colnames(MyTree)
-rownames(MyTree)
-namnes(MyTree)
-names(MyTree)
-upgenes = names(MyTree[locations])
-upgenes
-write.table(upgenes, file="/Users/Nate/Desktop/upreg.txt", row.names=FALSE, col.names=FALSE,sep='\n')
-upgenes2 <- as.factor(upgenes)
-upgenes2
-upgenes2 <- as.name(upgenes)
-upgenes2
-upgenes2 <- as.symbol(upgenes)
-upgenes2
-upgenes
-write.table(upgenes, file="/Users/Nate/Desktop/upreg.txt", row.names=FALSE, col.names=FALSE,sep='\n',quote=FALSE)
-write.table(upgenes, file="/Users/Nate/Desktop/upreg.txt", row.names=FALSE, col.names=FALSE,sep='\n',quote=FALSE)
-write.table(upgenes, file="/Users/Nate/Desktop/upreg.txt", row.names=FALSE, col.names=FALSE,sep='\n',quotes=FALSE)
-write.table(upgenes, file="/Users/Nate/Desktop/upreg.txt", row.names=FALSE, col.names=FALSE,sep='\n',quote=FALSE)
-select_rows <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Analysis/Heatmaps/hypoxia_up_gsea_hallmarks/genes_from_upregulated_cluster_only/genes_from_upregulated_cluster.txt'
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,select_rows,NULL,FALSE,TRUE,FALSE)
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,select_genes,NULL,FALSE,TRUE,FALSE)
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,select_rows,NULL,FALSE,TRUE,FALSE)
-select_rows <- "/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_hallmark_hypoxia.txt"
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,select_rows,NULL,FALSE,TRUE,FALSE)
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
-bp <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MTOR','DEPTOR'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MTOR','DEPTOR','RAPTOR'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MTOR','DEPTOR','RPTOR'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('MTOR','DEPTOR','RPTOR'),list(c('basal a','basal b'),c('luminal')),'cell_type')
