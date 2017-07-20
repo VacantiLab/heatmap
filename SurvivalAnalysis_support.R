@@ -1,4 +1,4 @@
-CenterScale <- function(DataFrame,Columns)
+CenterScale <- function(DataFrame,Columns,gene)
 {
   FactorMean <- NULL
   FactorSD <- NULL
@@ -7,7 +7,9 @@ CenterScale <- function(DataFrame,Columns)
   for (i in 1:NumColumns)
   {
     FactorMean <- c(FactorMean,mean(as.numeric(DataFrame[,Columns[i]]),na.rm=TRUE)) #make this mean!!!!!
-    FactorSD <- c(FactorSD,sd(as.numeric(DataFrame[,Columns[i]]),na.rm=TRUE))
+    FactorSD_append <- sd(as.numeric(DataFrame[,Columns[i]]),na.rm=TRUE)
+    if (FactorSD_append==0){FactorSD_append = 1} #cannot have NaN resulting from division by zero below in Cox Model
+    FactorSD <- c(FactorSD,FactorSD_append)
   }
   FactorMeanMatrix <- t(replicate(NumRows, FactorMean))
   FactorSDMatrix <- t(replicate(NumRows, FactorSD))
@@ -17,137 +19,168 @@ CenterScale <- function(DataFrame,Columns)
 ##################################################################################################
 GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameters,DataFrameIdentifier,QueryGenes)
 {
-  PatientInfoFilePath <- paste(DataDirectory,PatientInfoFile,sep='')
-  PatientInfo <- read.table(file=PatientInfoFilePath,head=TRUE,sep='\t')
+    # QueryGenes is now defined below to loop through all genes
+    # CoxParameters is also defined in the loop because it is looping through Cox models for each gene paired with Age
+    # This function is being made to return the following for a cancer type:
+    #        HazardCoefficient    UpperBound    LowerBound
+    # Gene1
+    # Gene2
+    #
+    # The hazard coefficient is for a model on a single gene and the age of the patient
+    # This is being done so that the hazard coefficient profile of genes across all of the cancers can be compared to each other
+    #    This will allow the hazard coefficient profiles of each gene to be gathered
 
-  GeneExpressionFilePath <- paste(DataDirectory,GeneExpressionFile,sep='')
-  GeneExpressionInfo <- read.table(file=GeneExpressionFilePath,head=TRUE,sep='\t')
-  rownames(GeneExpressionInfo) <- GeneExpressionInfo$sample
-  GeneExpressionInfo$sample <- NULL #Remove the column containing the gene gene names as they are no longer needed
-  gene_array <- rownames(GeneExpressionInfo)
+    PatientInfoFilePath <- paste(DataDirectory,PatientInfoFile,sep='')
+    PatientInfo <- read.table(file=PatientInfoFilePath,head=TRUE,sep='\t')
 
-  #Extract the required patient information
-  PatientInfoRequired <- PatientInfo[,c('X_EVENT','X_OS','days_to_birth')] #days to birth is a negative number, so this is negative age. kept this way because when normalized it is SD below average age
-  colnames(PatientInfoRequired) <- c('event','days','Age')
+    GeneExpressionFilePath <- paste(DataDirectory,GeneExpressionFile,sep='')
+    GeneExpressionInfo <- read.table(file=GeneExpressionFilePath,head=TRUE,sep='\t')
+    rownames(GeneExpressionInfo) <- GeneExpressionInfo$sample
+    GeneExpressionInfo$sample <- NULL #Remove the column containing the gene gene names as they are no longer needed
+    gene_array <- rownames(GeneExpressionInfo)[1:1000]
 
-  #Replace the dashes in the Patient Information Parsed Data frame
-  SampleIDs <- gsub('-','\\.',PatientInfo$sampleID)
-  rownames(PatientInfoRequired) <- SampleIDs
+    #Extract the required patient information
+    PatientInfoRequired <- PatientInfo[,c('X_EVENT','X_OS','days_to_birth')] #days to birth is a negative number, so this is negative age. kept this way because when normalized it is SD below average age
+    colnames(PatientInfoRequired) <- c('event','days','Age')
 
-  #Initialize the Column for the Gene Expression
-  NoEntryIdentifier = 1000000
-  PatientInfoRequired[,QueryGenes] <- NoEntryIdentifier
+    #Replace the dashes in the Patient Information Parsed Data frame
+    SampleIDs <- gsub('-','\\.',PatientInfo$sampleID)
+    rownames(PatientInfoRequired) <- SampleIDs
 
-  #Determine the number of unique patients
-  NumPatients <- length(GeneExpressionInfo[1,])
-  NumQueryGenes <- length(QueryGenes)
-  NumCoxParameters <- length(CoxParameters)
+    #Determine the number of unique patients
+    NumPatients <- length(GeneExpressionInfo[1,])
+    NumQueryGenes <- length(QueryGenes)
+    NumCoxParameters <- length(CoxParameters)
 
-  #Get a list of the unique patients
-  Patients <- colnames(GeneExpressionInfo)
+    #Get a list of the unique patients
+    Patients <- colnames(GeneExpressionInfo)
 
-  #Initialize a list of patients whose expression values are missing
-  MissingClinicalData <- NULL
+    #Initialize a list of patients whose expression values are missing
+    MissingClinicalData <- NULL
 
-  #Fill in the patient expression values
-  for (i in 1:NumPatients)
-  {
-    if (Patients[i] %in% rownames(PatientInfoRequired))
-    {PatientInfoRequired[Patients[i],QueryGenes] <- GeneExpressionInfo[QueryGenes,Patients[i]]}
-    else
-    {MissingClinicalData <- c(MissingClinicalData,Patients[i])}
-  }
+    CoxResultsDataFrameList_gene <- rep(list(NULL),length(gene_array))
+    names(CoxResultsDataFrameList_gene) <- gene_array
 
-  #Get a list of the patient sample IDs, note there can be multiple samples per patient
-  PatientSampleIDs <- rownames(PatientInfoRequired)
-  NumPatientSampleIDs <- length(PatientSampleIDs)
+    for (gene in gene_array)
+    {
+        print(gene)
 
-  #Only keep the patient sample IDs corresponding to those samples with expression data
-  PatientSampleIDsKeep <- NULL
-  for (i in 1:NumPatientSampleIDs)
-  {
-    if (PatientInfoRequired[PatientSampleIDs[i],QueryGenes[1]] != NoEntryIdentifier)
-    {PatientSampleIDsKeep <- c(PatientSampleIDsKeep,PatientSampleIDs[i])}
-  }
-  PatientInfoRequired <- PatientInfoRequired[PatientSampleIDsKeep,]
+        #Initialize the Column for the Gene Expression
+        NoEntryIdentifier = 1000000
+        PatientInfoRequired[,gene] <- NoEntryIdentifier
 
-  #Create the Cox Model
-  PatientInfoRequired$SurvObj <- with(PatientInfoRequired,Surv(days,event==1))
-  # km.as.one <- survfit(SurvObj ~ 1, data = PatientInformationRequired, conf.type = "log-log")
-  # plot(km.as.one)
+        CoxParameters <- c('Age',gene)
 
-  #Center and scale the parameter variables
-  PatientInfoRequired[CoxParameters] <- CenterScale(PatientInfoRequired,CoxParameters)
-  #PatientInfoRequired$Age <- -PatientInfoRequired$Age #Being one means one SD below the average!!! This should be protective!
 
-  #create the Cox model object
-  CoxParametersSumString <- paste(CoxParameters,collapse=' + ')
-  CoxFormulaString <- paste('SurvObj ~ ',CoxParametersSumString)
-  CoxFormula <- as.formula(CoxFormulaString)
-  CoxModel <- coxph(CoxFormula, data = PatientInfoRequired)
-  WaldCoxFitP <- 1-pchisq(CoxModel$wald.test,length(CoxModel$coefficients)) #the p for the whole model
-  CoxGeneP <- summary(CoxModel)$coefficients[QueryGenes[1],5] #The p for the gene coefficient
+        #Fill in the patient expression values
+        for (i in 1:NumPatients)
+        {
+            if (Patients[i] %in% rownames(PatientInfoRequired)){PatientInfoRequired[Patients[i],gene] <- GeneExpressionInfo[gene,Patients[i]]}
+            else{MissingClinicalData <- c(MissingClinicalData,Patients[i])}
+        }
 
-  #PI is the risk index
-  CoxCoefficientMatrix <- t(replicate(NumPatients, CoxModel$coefficients))
-  if (length(CoxParameters) > 1){PatientInfoRequired$PI <- rowSums(PatientInfoRequired[,CoxParameters]*CoxCoefficientMatrix)}
-  if (length(CoxParameters) == 1){PatientInfoRequired$PI <- PatientInfoRequired[,CoxParameters]*CoxModel$coefficients[1]}
-  PatientInfoRequired <- PatientInfoRequired[order(PatientInfoRequired[,'PI']),]
+        #Get a list of the patient sample IDs, note there can be multiple samples per patient
+        PatientSampleIDs <- rownames(PatientInfoRequired)
+        NumPatientSampleIDs <- length(PatientSampleIDs)
 
-  #Divide into risk groups
-  NumLowRisk <- ceiling(NumPatients/2)
-  NumHighRisk <- NumPatients-NumLowRisk
-  PatientInfoRequired$Risk <- 'Empty'
-  PatientInfoRequired$Risk[1:NumLowRisk] <- 'Low Risk'
-  PatientInfoRequired$Risk[(NumLowRisk+1):NumPatients] <- 'High Risk'
-  PatientInfoRequired$CoxLikelihoodRatioWaldP <- rep(WaldCoxFitP,NumPatients)
-  PatientInfoRequired$CoxGeneP <- rep(CoxGeneP,NumPatients)
+        #Only keep the patient sample IDs corresponding to those samples with expression data
+        PatientSampleIDsKeep <- NULL
+        for (i in 1:NumPatientSampleIDs)
+        {
+            if (PatientInfoRequired[PatientSampleIDs[i],gene] != NoEntryIdentifier){PatientSampleIDsKeep <- c(PatientSampleIDsKeep,PatientSampleIDs[i])}
+        }
+        PatientInfoRequired <- PatientInfoRequired[PatientSampleIDsKeep,]
 
-  #Create the Kaplan Meier objects for plotting survival over time for risk groups
-  KaplanMeierRisk <- survfit(SurvObj ~ Risk, data = PatientInfoRequired, conf.type = "log-log")
-  KaplanMeierDiff <- survdiff(SurvObj ~ Risk, data = PatientInfoRequired)
-  RiskLogRankP <- 1-pchisq(KaplanMeierDiff$chisq,length(KaplanMeierDiff$n)-1) #the p for the separate risk groups
-  PatientInfoRequired$RiskLogRankP <- rep(RiskLogRankP,NumPatients)
+        #Create the Cox Model
+        PatientInfoRequired$SurvObj <- with(PatientInfoRequired,Surv(days,event==1))
+        # km.as.one <- survfit(SurvObj ~ 1, data = PatientInformationRequired, conf.type = "log-log")
+        # plot(km.as.one)
 
-  BoxPlotDataFrame <- PatientInfoRequired[c(CoxParameters,'Risk','CoxLikelihoodRatioWaldP','RiskLogRankP','CoxGeneP')]
-  BoxPlotDataFrame <- BoxPlotDataFrame[complete.cases(BoxPlotDataFrame),]
-  BoxPlotDataFrame <- gather_(BoxPlotDataFrame,'Factor','Measurement',CoxParameters)
-  BoxPlotDataFrame$Identifier <- rep(DataFrameIdentifier,length(BoxPlotDataFrame[,1]))
-  BoxPlotDataFrame$Risk <- factor(BoxPlotDataFrame$Risk, levels=c("Low Risk", "High Risk")) #sets the order for the boxplot
+        #Center and scale the parameter variables
+        PatientInfoRequired[CoxParameters] <- CenterScale(PatientInfoRequired,CoxParameters,gene)
+        #PatientInfoRequired$Age <- -PatientInfoRequired$Age #Being one means one SD below the average!!! This should be protective!
 
-  #Create a merged data frame for low and high risk groups for plotting
-  LowRiskIndicator <- rep('High Risk',KaplanMeierRisk$strata[1]) #I don't know what dermines the order, but based on the numbers in each group this is the correct assignment
-  HighRiskIndicator <- rep('Low Risk',KaplanMeierRisk$strata[2])
-  MergedTime <- KaplanMeierRisk$time
-  MergedSurvival <- KaplanMeierRisk$surv
-  MergedRiskIndicator <- c(LowRiskIndicator,HighRiskIndicator)
-  SurvivalDataFrame <- data.frame(MergedTime,MergedSurvival,MergedRiskIndicator)
-  SurvivalDataFrame$MergedRiskIndicator <- factor(SurvivalDataFrame$MergedRiskIndicator, levels=c("Low Risk", "High Risk")) #sets the order for the boxplot
+        #create the Cox model object
+        CoxParametersSumString <- paste(CoxParameters,collapse=' + ')
+        CoxFormulaString <- paste('SurvObj ~ ',CoxParametersSumString)
+        CoxFormula <- as.formula(CoxFormulaString)
+        CoxModel <- coxph(CoxFormula, data = PatientInfoRequired)
+        WaldCoxFitP <- 1-pchisq(CoxModel$wald.test,length(CoxModel$coefficients)) #the p for the whole model
+        CoxGeneP <- summary(CoxModel)$coefficients[gene,5] #The p for the gene coefficient
 
-  #Get the model outputs
-  #A cox model is the hazard function multiplied by exp(CoxCoef*risk_factor), or H*exp(Cox*R)
-  #The Cox coefficient is the coefficient to the hazard function when R=1 or exp(Cox*1)
-  #In this model R is defined as standard deviation above the average for expression and the negative of age
-  CoxCoefficients <- CoxModel$coefficients
-  HazardModelCoefficients <- exp(CoxCoefficients) #This are the outputs of the model! Being one SD from the mean for the given measurement multiplies the hazard function by this coefficient
-  CoxCoefficientBounds <- confint(CoxModel)
-  #     2.5%   97.5%
-  #Age
-  #Gene
-  CoxCoefficientLowerBounds <- CoxCoefficientBounds[,1]
-  CoxCoefficientUpperBounds <- CoxCoefficientBounds[,2]
-  HazardModelCoefficientLowerBounds <- exp(CoxCoefficientLowerBounds)
-  HazardModelCoefficientUpperBounds <- exp(CoxCoefficientUpperBounds)
+        ##PI is the risk index
+        #CoxCoefficientMatrix <- t(replicate(NumPatients, CoxModel$coefficients))
+        #if (length(CoxParameters) > 1){PatientInfoRequired$PI <- rowSums(PatientInfoRequired[,CoxParameters]*CoxCoefficientMatrix)}
+        #if (length(CoxParameters) == 1){PatientInfoRequired$PI <- PatientInfoRequired[,CoxParameters]*CoxModel$coefficients[1]}
+        #PatientInfoRequired <- PatientInfoRequired[order(PatientInfoRequired[,'PI']),]
 
-  CoxResultsDataFrame <- data.frame(CoxParameters,HazardModelCoefficients,HazardModelCoefficientLowerBounds,HazardModelCoefficientUpperBounds)
-  CoxResultsDataFrame$CoxParameters <- factor(CoxResultsDataFrame$CoxParameters)
-  CoxResultsDataFrame$Identifier <- rep(DataFrameIdentifier,length(CoxResultsDataFrame[,1]))
-  CoxResultsDataFrame$RiskLogRankP <- rep(RiskLogRankP,length(CoxResultsDataFrame[,1]))
-  CoxResultsDataFrame$CoxLikelihoodRatioWaldP <- rep(WaldCoxFitP,length(CoxResultsDataFrame[,1]))
-  CoxResultsDataFrame$CoxGeneP <- rep(CoxGeneP,length(CoxResultsDataFrame[,1]))
+        ##Divide into risk groups
+        #NumLowRisk <- ceiling(NumPatients/2)
+        #NumHighRisk <- NumPatients-NumLowRisk
+        #PatientInfoRequired$Risk <- 'Empty'
+        #PatientInfoRequired$Risk[1:NumLowRisk] <- 'Low Risk'
+        #PatientInfoRequired$Risk[(NumLowRisk+1):NumPatients] <- 'High Risk'
+        #PatientInfoRequired$CoxLikelihoodRatioWaldP <- rep(WaldCoxFitP,NumPatients)
+        #PatientInfoRequired$CoxGeneP <- rep(CoxGeneP,NumPatients)
 
-  CoxReturn <- list(BoxPlotDataFrame,SurvivalDataFrame,CoxResultsDataFrame)
-  return(CoxReturn)
+        ##Create the Kaplan Meier objects for plotting survival over time for risk groups
+        #KaplanMeierRisk <- survfit(SurvObj ~ Risk, data = PatientInfoRequired, conf.type = "log-log")
+        #KaplanMeierDiff <- survdiff(SurvObj ~ Risk, data = PatientInfoRequired)
+        #RiskLogRankP <- 1-pchisq(KaplanMeierDiff$chisq,length(KaplanMeierDiff$n)-1) #the p for the separate risk groups
+        #PatientInfoRequired$RiskLogRankP <- rep(RiskLogRankP,NumPatients)
+
+        #BoxPlotDataFrame <- PatientInfoRequired[c(CoxParameters,'Risk','CoxLikelihoodRatioWaldP','RiskLogRankP','CoxGeneP')]
+        #BoxPlotDataFrame <- BoxPlotDataFrame[complete.cases(BoxPlotDataFrame),]
+        #BoxPlotDataFrame <- gather_(BoxPlotDataFrame,'Factor','Measurement',CoxParameters)
+        #BoxPlotDataFrame$Identifier <- rep(DataFrameIdentifier,length(BoxPlotDataFrame[,1]))
+        #BoxPlotDataFrame$Risk <- factor(BoxPlotDataFrame$Risk, levels=c("Low Risk", "High Risk")) #sets the order for the boxplot
+
+        ##Create a merged data frame for low and high risk groups for plotting
+        #LowRiskIndicator <- rep('High Risk',KaplanMeierRisk$strata[1]) #I don't know what dermines the order, but based on the numbers in each group this is the correct assignment
+        #HighRiskIndicator <- rep('Low Risk',KaplanMeierRisk$strata[2])
+        #MergedTime <- KaplanMeierRisk$time
+        #MergedSurvival <- KaplanMeierRisk$surv
+        #MergedRiskIndicator <- c(LowRiskIndicator,HighRiskIndicator)
+        #SurvivalDataFrame <- data.frame(MergedTime,MergedSurvival,MergedRiskIndicator)
+        #SurvivalDataFrame$MergedRiskIndicator <- factor(SurvivalDataFrame$MergedRiskIndicator, levels=c("Low Risk", "High Risk")) #sets the order for the boxplot
+
+        #Get the model outputs
+        #A cox model is the hazard function multiplied by exp(CoxCoef*risk_factor), or H*exp(Cox*R)
+        #The Cox coefficient is the coefficient to the hazard function when R=1 or exp(Cox*1)
+        #In this model R is defined as standard deviation above the average for expression and the negative of age
+        CoxCoefficients <- CoxModel$coefficients
+        HazardModelCoefficients <- exp(CoxCoefficients) #This are the outputs of the model! Being one SD from the mean for the given measurement multiplies the hazard function by this coefficient
+        CoxCoefficientBounds <- confint(CoxModel)
+        #     2.5%   97.5%
+        #Age
+        #Gene
+        CoxCoefficientLowerBounds <- CoxCoefficientBounds[,1]
+        CoxCoefficientUpperBounds <- CoxCoefficientBounds[,2]
+        HazardModelCoefficientLowerBounds <- exp(CoxCoefficientLowerBounds)
+        HazardModelCoefficientUpperBounds <- exp(CoxCoefficientUpperBounds)
+
+        CoxResultsDataFrame <- data.frame(CoxParameters,HazardModelCoefficients,HazardModelCoefficientLowerBounds,HazardModelCoefficientUpperBounds)
+        CoxResultsDataFrame$CoxParameters <- factor(CoxResultsDataFrame$CoxParameters)
+        CoxResultsDataFrame$Identifier <- rep(DataFrameIdentifier,length(CoxResultsDataFrame[,1]))
+        #CoxResultsDataFrame$RiskLogRankP <- rep(RiskLogRankP,length(CoxResultsDataFrame[,1]))
+        CoxResultsDataFrame$CoxLikelihoodRatioWaldP <- rep(WaldCoxFitP,length(CoxResultsDataFrame[,1]))
+        CoxResultsDataFrame$CoxGeneP <- rep(CoxGeneP,length(CoxResultsDataFrame[,1]))
+
+        #CoxResultsDataFrame['Age',] <- NULL
+        CoxResultsDataFrameList_gene[[gene]] <- CoxResultsDataFrame
+        CoxResultsDataFrameList_gene[[gene]] <- CoxResultsDataFrameList_gene[[gene]][gene,]
+
+        PatientInfoRequired[,gene] <- NULL
+    }
+
+    CoxResultsDataFrame <- do.call('rbind',CoxResultsDataFrameList_gene)
+    CoxResultsDataFrame[,'CoxParameters'] <- NULL
+    CoxResultsDataFrame[,'Identifier'] <- NULL
+
+    browser()
+
+    CoxReturn <- list(BoxPlotDataFrame,SurvivalDataFrame,CoxResultsDataFrame)
+    return(CoxReturn)
 }
 ################################################################################################
 MakeBoxPlot_survival <- function(BoxPlotDataFrame,FileDirectory,FileName,x_var,y_var,color_var,YRangePlot,QueryGenes)
