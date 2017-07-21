@@ -15,7 +15,6 @@ SurvivalAnalysis <- function()
 #     This will be stored in a data frame
 #          Euclidian distance hierarchical clustering of the genes will allow visualization of which genes act in concert as risk or survival factors
 #          Similar clustering of the tumors will allow visualization of which tumors share common risk and survival factor profiles
-
 {
     #load requisite libraries
     library(ggplot2)
@@ -27,8 +26,11 @@ SurvivalAnalysis <- function()
                            'LUAD','LUNG','LUSC','MESO','OV','PAAD','PCPG','PRAD','READ','SARC','SKCM','STAD','TGCT','THCA','THYM','UCEC','UCS','UVM')
     #CancerIdentifiers <- c('ACC')
 
+    #These variables are re-defined in the call to the function that computes the Cox model, thus setting these values here does not do anything
     QueryGenes <- c('SLC25A44')
     CoxParameters <- c('Age',QueryGenes) #can also have 'Age' as a CoxParameter
+
+    #Currently plotting is commented out, so setting these values does not do anything
     YRangePlot <- c(-3,3)
     YTicks <- seq(YRangePlot[1],YRangePlot[2],1)
 
@@ -36,6 +38,7 @@ SurvivalAnalysis <- function()
     PlotDepositDirectory <- StoreHeatmap()
     DataRepositoryDirectory <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Databases/TCGA RNA Seq/'
 
+    #get a list of all of the directories (one for each tumor-type) that have expression and patient survival data in them
     NumCancers <- length(CancerIdentifiers)
     DataDirectories <- NULL
     for (i in 1:NumCancers)
@@ -45,15 +48,17 @@ SurvivalAnalysis <- function()
         DataDirectories <- c(DataDirectories,placeholder)
     }
 
+    #name the two files that respectively contain survival data and gene expression data
     PatientInfoFile <- 'clinical_data'
     GeneExpressionFile <- 'genomicMatrix'
 
-    #initialize data frames
+    #initialize lists to contain data frames with results for each of the tumor-types
     BoxPlotDataFrameList <- vector('list',NumCancers)
     SurvivalDataFrameList <- vector('list',NumCancers)
     CoxResultsDataFrameList <- vector('list',NumCancers)
     KaplanMeierRiskList <- vector('list',NumCancers)
 
+    #iterate through the tumor-types and fit a Cox model to the survival data for each gene
     for (i in 1:NumCancers)
         {
         print(i)
@@ -67,6 +72,7 @@ SurvivalAnalysis <- function()
         #MakeSurvivalCoefficientPlot(CoxResultsDataFrameList[[i]],PlotDepositDirectory,paste(CancerIdentifiers[i],'HazardCoefficientPlot.pdf'),'CoxParameters','CoxParameters') #the last one is the x_var
         }
 
+    #iterate through the tumor-types and determine if the Cox model is significant
     CoxModelSignificant <- NULL
     for (i in 1:NumCancers)
     {
@@ -74,6 +80,7 @@ SurvivalAnalysis <- function()
         CoxModelSignificant <- c(CoxModelSignificant,SignificanceCondition)
     }
 
+    #Plotting is not currently functional
     #Plot the gene expression for each cancer type for each risk group
     #bind all of the box plot data frames into one data frame
     AllBoxPlotDataFrame <- do.call('rbind',BoxPlotDataFrameList)

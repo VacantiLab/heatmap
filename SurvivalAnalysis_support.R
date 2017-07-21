@@ -1,4 +1,6 @@
 CenterScale <- function(DataFrame,Columns,gene)
+# This function scales the expression data for survival analysis
+# This will be done later by the transform() function
 {
   FactorMean <- NULL
   FactorSD <- NULL
