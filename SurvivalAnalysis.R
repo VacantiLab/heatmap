@@ -36,7 +36,7 @@ SurvivalAnalysis <- function()
 
     #create the directory 'output' one level above the current directory for storing the heatmap
     PlotDepositDirectory <- StoreHeatmap()
-    DataRepositoryDirectory <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Databases/TCGA RNA Seq/'
+    DataRepositoryDirectory <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Databases/TCGA_RNA_Seq/'
 
     #get a list of all of the directories (one for each tumor-type) that have expression and patient survival data in them
     NumCancers <- length(CancerIdentifiers)

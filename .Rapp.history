@@ -128,219 +128,87 @@ select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
 select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
 select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
 setwd('/Users/Nate/git_hub_projects/heatmap')
-ls
-ls()
+source('initialize_heatmap.R')
 source('initialize_heatmap.R')
 SurvivalAnalysis()
-traceback()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxFormulaString
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-paste(4,':','team')
-SurvivalAnalysis()
-traceback()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-PatientSampleIDs
-Q
-SurvivalAnalysis()
+CoxResultsRisk[[1]][1:10,]
+CoxResultsRisk[[1]]
 Q
 source('initialize_heatmap.R')
 SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-PatientInfoRequired
-PatientSampleIDs[i]
-gene
-PatientInfoRequired[PatientSampleIDs[i],gene]
-GeneExpressionInfo
-GeneExpressionInfo[1:100,]
-GeneExpressionInfo[1:10,1:4]
-GeneExpressionInfo['SNORD115_17',1:4]
-f = mtcars
-f
-f = mtcars
-f
-rownames(f[1:2]) <- c('red','green')
-f[1:2]
-rownames(f)[1:2] <- c('red','green')
-f
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-GeneExpressionInfo['SNORD115_17',1:4]
+CoxResultsRisk[[1]]
+cbind(CoxResultsRisk)
+cbind(CoxResultsRisk[[1]],CoxResultsRisk[[2]])
+CoxResultsRisk[[1]][1:4,]
+class(CoxResultsRisk[[1]])
 Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-gsub('~!@#$%^&*(){}_+:\"<>?,./;[]-=','_',?|26823)
-gsub('~!@#$%^&*(){}_+:\"<>?,./;[]-=','_','?|26823')
-gsub("~!@#$%^&*(){}_+:\<>?,./;[]-=",'_','?|26823')
-gsub("~!@#$%^&*(){}_+:<>?,./;[]-=",'_','?|26823')
-gsub("~!@#$%^&*()_+:<>?,./;[]-=",'_','?|26823')
-gsub("[[:punct:]]", "_",'?|26823')
-gsub("[[:punct:]]", "",'?|_26823')
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxResultsDataFrame[1:10,]
-Q
-source('initialize_heatmap.R')
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxResultsDataFrame$HazardModelCoefficientLowerBounds
-CoxResultsDataFrame
-CoxResultsDataFrame[gene,'HazardModelCoefficientLowerBounds'] < 1 && CoxResultsDataFrame[gene,'HazardModelCoefficientUpperBounds'
-]
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-traceback()
-CoxResultsDataFrame['RBMY1A3P',]
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxResultsDataFrame['RBMY1A3P',]
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxResultsDataFrame
-CoxResultsRisk <- CoxResultsDataFrame[,'Risk']
+CoxResultsRisk <- rep(data.frame(matrix(nrow=2,ncol=2)),2)
 CoxResultsRisk
-CoxResultsRisk <- CoxResultsDataFrame[,'Risk',drop=FALSE]
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+class(CoxResultsRisk)
+class(CoxResultsRisk[[1]])
+class(CoxResultsRisk[[1]][1])
+Q
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+class(CoxResultsRisk[[1]])
+class(CoxResultsRisk)
+cbind(CoxResultsRisk)
+cbind(CoxResultsRisk[[1]],CoxResultsRisk[[2]])
+df <- do.call("cbind", CoxResultsRisk)
 CoxResultsRisk
-colnames(CoxResultsRisk) <- DataFrameIdentifier
+CoxResultsRisk[1:2]
+df <- do.call("cbind", CoxResultsRisk[1:2])
+df
+Q
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+CoxRisk <- do.call("cbind", CoxResultsRisk)
 CoxResultsRisk
 Q
 source('initialize_heatmap.R')
 SurvivalAnalysis()
-x <- data.frame(dbSNP_RSID = paste0("rs", sample(1e6, 1e5)),#
-  matrix(paste0(sample(c("A", "C", "T", "G"), 1e7, replace = TRUE),#
-    sample(c("A", "C", "T", "G"), 1e7, replace = TRUE)), ncol = 100))#
-y <- data.frame(dbSNP_RSID = paste0("rs", sample(1e6, 1e5)),#
-  matrix(paste0(sample(c("A", "C", "T", "G"), 1e7, replace = TRUE),#
-    sample(c("A", "C", "T", "G"), 1e7, replace = TRUE)), ncol = 100))#
-colnames(x)[2:101] <- paste0("Sample", 1:100)#
-colnames(y)[2:101] <- paste0("Sample", 101:200)#
-mergedDf <- merge(x, y, by = "dbSNP_RSID")
-]
-]
-]
-x <- data.frame(dbSNP_RSID = paste0("rs", sample(1e6, 1e5)),#
-  matrix(paste0(sample(c("A", "C", "T", "G"), 1e7, replace = TRUE),#
-    sample(c("A", "C", "T", "G"), 1e7, replace = TRUE)), ncol = 100))
-x
-rm(list=x)
-rm(x)
-x
-v = data.frame(c(1,2,3))
-v
-v = data.frame(ncol=3,nrow=3)
-v
-v = data.frame(matrix(ncol=3,nrow=3))
-v
-v = v[,1]
-v
-v = data.frame(matrix(ncol=3,nrow=3))
-v = v[,1,drop=FALSE]
-v
-colnames(v) = 'red'
-v
-rownmaes(v) = c('nebraska','alabama','ksu')
-rownames(v) = c('nebraska','alabama','ksu')
-v
-h = v
-h
-rownames(h)[2] = 'georgia'
-h
-vh = merge(v,h)
-vh
-vh = merge(v,h,by='red')
-vh
-v[,]
-v[,'red'] = c(49,21,7)
-v
-h[,'red'] = c(49,20,7)
-h
-vh = merge(v,h,by='red')
-vh
-v['names',] = rownames(v)
-v[,'names'] = rownames(v)
-v
-h[,'names'] = rownames(h)
-h
-vh = merge(v,h,by='red')
-vh
-vh = merge(v,h,by='names')
-vh
-rep(4,5)
-h <- rep('t',6)
-h
-h[[1]]
-h[[2]] <- c(1,2,3)
-h <- rep(c(NA,NA),6)
-h
-h[[1]]
-h <- rep(list(NA,NA),6)
-h
-gene_array_list <- list(rep(list(),3))
-gene_array_list
-h <- list()
-k <- c(h,c(1,2,3,4))
-k
-h
-h[[1]] <- c(1,2,3,4)
-h
-h[[2]] <- c(9,10)
-h
-h[[1]] <- c(1,2,3,4,5,67)
-h[[2]] <- c(1,6,7,67,89)
-h[[3]] <- c(4,3,2,8,67)
-Reduce(intersect,h)
-source('initialize_heatmap.R')
 source('initialize_heatmap.R')
 SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-length(gene_array)
-t <- sort(gene_array)
-t[1:5]
-gene_array <- sort(gene_array)
-gene_array[1:20]
-rep(list(NULL),3)
+CoxRisk
 Q
 source('initialize_heatmap.R')
-SurvivalAnalysis()
+cr <- SurvivalAnalysis()
+cr
+source('initialize_heatmap.R')
+source('initialize_heatmap.R')
+cr <- SurvivalAnalysis()
+output_directory
+source('initialize_heatmap.R')
+cr <- SurvivalAnalysis()
+output_directory
+source('initialize_heatmap.R')
+cr <- SurvivalAnalysis()
+output_directory
+warnings()
+saveRDS(CoxRisk, file=paste(output_directory,'CoxRisk.rds'))
 Q
 source('initialize_heatmap.R')
-SurvivalAnalysis()
+cr <- SurvivalAnalysis()
+Q
 source('initialize_heatmap.R')
-SurvivalAnalysis()
+cr <- SurvivalAnalysis()
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,FALSE,TRUE,FALSE)
+warnings()
+Q
+cr <- SurvivalAnalysis()
 source('initialize_heatmap.R')
+cr <- SurvivalAnalysis()
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,TRUE,TRUE,FALSE)
+Q
 source('initialize_heatmap.R')
-SurvivalAnalysis()
-c
+cr <- SurvivalAnalysis()
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,TRUE,TRUE,FALSE)
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('AAK1','AADAC'),TRUE,FALSE)
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44'),TRUE,FALSE)
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44','GLS2'),TRUE,FALSE)
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44','GLS2','GLUL','GOT1','GOT2'),TRUE,FALSE)
+Q
