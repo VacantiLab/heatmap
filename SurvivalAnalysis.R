@@ -112,9 +112,9 @@ SurvivalAnalysis <- function()
 output_directory <- StoreHeatmap()
 
 saveRDS(CoxRisk, file=paste(output_directory,'CoxRisk.rds'))
-browser()
 
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44','GLS2','GLUL','GOT1','GOT2'),TRUE,FALSE)
+#Make the heatmap - requires too much memory to be done on a personal computer
+#hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44','GLS2','GLUL','GOT1','GOT2'),TRUE,FALSE)
 
 return(CoxRisk)
 }
