@@ -80,8 +80,8 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #The rows with zero variance are removed because likely this causes NAs to be generated when calculating correlations
         #Most of the time this won't be an issue because all samples are not likely to have identical values for a measurement
         #However in measruing 10k protein abundances across few samples, this could happen by chance
-    print('searching for and removing rows with zero variance')
-    DATA <- remove_zero_var_rows(DATA)
+    #print('searching for and removing rows with zero variance')
+    #DATA <- remove_zero_var_rows(DATA)
 
     DATA_long <- NULL
     if (visualization=='boxplot' | visualization=='volcanoplot' | visualization=='scatterbar')

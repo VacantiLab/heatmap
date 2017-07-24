@@ -1,255 +1,346 @@
-CoxResultsDataFrameList[[1]]
-Q
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/BaselineCorrect.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/GetDerivs.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeakBorders.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/fat_matrix_to_long_df.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeaksMins.R")#
+#
+t_start_script <- proc.time()[3]#
+#
+#load libraries necessary for function to run#
+library(ncdf4) #needed to open NetCDF files containing MS data, ncdf4 package#
+library(ggplot2) #needed to make plots#
+#
+#specify what is to be plotted#
+XData <- 'sat'#
+YData <- 'intensity'#
+mz_select <- c(174,175,176)#
+#
+#open the data file#
+print('unpacking data')#
+NetCDF_data <- nc_open('/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts/Test_NetCDF_Files/T47D_no_label.AIA/tbdms01_t47d_wt.CDF')#
+#
+#extract m/z values needed#
+mass_values <- ncvar_get(NetCDF_data,'mass_values') #unpack the NetCDF file#
+  #these values are one large vector, the m/z values of each scan are concatonated together#
+mass_values_whole <- round(mass_values)#
+  #these are rounded to the nearest whole number value because tracing experiments are only concerned with whole number increments#
+  #note: the charge is always +1, so m/z is really the mass#
+mz_whole_unique <- unique(mass_values_whole)#
+mz_whole_unique <- sort(mz_whole_unique,decreasing=FALSE)#
+  #the unique masses are needed for organizing the masses, the time of scans, and the intensities#
+  #they are organized in ascending order for better visualization#
+n_mz <- length(mz_whole_unique) #the number of unique m/z values (after rounding)#
+#
+#unpack the vector containing the time each scan was made#
+scan_acquisition_time <- ncvar_get(NetCDF_data,'scan_acquisition_time')/60 #minutes#
+n_sat <- length(scan_acquisition_time) #the number of scan acqisitions#
+#
+#these are the ion counts for each m/z measurement in each scan#
+#the order corresponds to the mass_values vector described above#
+intensity_values <- ncvar_get(NetCDF_data,'intensity_values')#
+n_total_measurements <- length(intensity_values)#
+#
+#the scan indices provide the location within the mass_values and intensity_values vectors where a new scan starts#
+#a scan index is one index value prior to the location where a new scan starts#
+scan_index <- ncvar_get(NetCDF_data,'scan_index')#
+n_scans <- length(scan_index)#
+#
+#Ion Count Matrix#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding ion count values#
+mz_time_intensity <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity) <- mz_whole_unique#
+colnames(mz_time_intensity) <- scan_acquisition_time#
+#
+#populate mz_time_intensity matrix#
+for (i in 1:n_scans)#
+{#
+  current_scan_start <- scan_index[i]+1#
+  if (i!=n_scans) {current_scan_end <- scan_index[i+1]}#
+  if (i==n_scans) {current_scan_end <- n_total_measurements}#
+  sat_value_current_scan <- as.character(scan_acquisition_time[i]) #the current column in mz_time_intensity to be populated#
+  mzs_of_current_scan <- as.character(mass_values_whole[current_scan_start:current_scan_end]) #the mz values measured in the current scan, the rows to be populated in the mz_time_intensity matrix#
+  intensity_values_current_scan <- intensity_values[current_scan_start:current_scan_end]#
+  mz_time_intensity[mzs_of_current_scan,sat_value_current_scan] <- intensity_values_current_scan #fill in the desired rows (corresponding to measured m/z's) in the desired column (corresponding to the current scan acquisition time)#
+}#
+#
+#Baseline Corrected Intensity Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding baseline corrected ion count values#
+mz_time_intensity_baseline_corrected <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity_baseline_corrected) <- mz_whole_unique#
+colnames(mz_time_intensity_baseline_corrected) <- scan_acquisition_time#
+#
+#Baseline Correction Values Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the baseline m/z values down the rows#
+#the matrix will be filled with corresponding baseline ion count values#
+baseline_correction <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(baseline_correction) <- mz_whole_unique#
+colnames(baseline_correction) <- scan_acquisition_time#
+#
+#Fill in both Baseline Matrices#
+print('finding baselines')#
+#correct the mz_time_intensity matrix for baseline#
+#install.packages("doMC")#
+require(doMC)#
+registerDoMC(4)#
+t_start_script <- proc.time()[3]#
+BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisition_time,2)#
+t_elapsed_script <- (proc.time()[3]-t_start_script)
+t_elapsed_script
+m <- matrix(c(2,3,4,5,6,7),nrow=2)
+m
+2^m
+mdf <- data.frame(m)
+mdf
+2^mdf
+install.packages(biocLite)
+source("https://bioconductor.org/biocLite.R")
+biocLite
+biocLite()
+biocLite("hgu133plus2.db")
+cols('hgu133plus2.db')
+cols(hgu133plus2.db)
+library('hgu133plus2.db')
+cols(hgu133plus2.db)
+colnames(hgu133plus2.db)
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids <- c("39730_at", "1635_at", "1674_at", "40504_at", "40202_at")
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','ENTREZID')
+select(hgu133plus2.db, ids, "ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID",ids)
+keys('PROBEID')
+keys(PROBEID)
+keys(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids = c('65521_at','65493_at')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids
+select(hgu133plus2.db,ids,'PROBEID')
+keytypes('hgu133plus2.db')
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
+select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
+select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
+setwd('/Users/Nate/git_hub_projects/heatmap')
+ls
+ls()
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-gene_array[1:10]
-QueryGenes
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-CoxResultsDataFrameList[[1]]Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-QueryGenes
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-Q
-source('initialize_heatmap.R')
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList[[1]]
-Q
-f <- list(mtcars,mtcars)
-f
-do.call('rbind'f)
-do.call('rbind',f)
-list(4)
-g <- rep(NULL,2)
-g
-g[[1]]
-g[[2]]
-g[[3]]
-g <- rep(list(0),2)
-g
-g <- rep(list(NULL),2)
-g
-g[['red']] <- 4
-g
-g[['blue']] = 4
-g
-g[[c('red','blue')]]
-names(g)
-source('initialize_heatmap.R')
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+SurvivalAnalysis()
 traceback()
 source('initialize_heatmap.R')
+SurvivalAnalysis()
+CoxFormulaString
+PatientInfoRequired
+Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+paste(4,':','team')
+SurvivalAnalysis()
+traceback()
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+PatientSampleIDs
+Q
+SurvivalAnalysis()
+Q
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+PatientInfoRequired
 PatientSampleIDs[i]
 gene
 PatientInfoRequired[PatientSampleIDs[i],gene]
-NoEntryIdentifier
-PatientInfoRequired[PatientSampleIDs[i],gene] != NoEntryIdentifier
-c(PatientSampleIDsKeep,PatientSampleIDs[i])
+GeneExpressionInfo
+GeneExpressionInfo[1:100,]
+GeneExpressionInfo[1:10,1:4]
+GeneExpressionInfo['SNORD115_17',1:4]
+f = mtcars
+f
+f = mtcars
+f
+rownames(f[1:2]) <- c('red','green')
+f[1:2]
+rownames(f)[1:2] <- c('red','green')
+f
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+GeneExpressionInfo['SNORD115_17',1:4]
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-if (PatientInfoRequired[PatientSampleIDs[i],gene] != NoEntryIdentifier){PatientSampleIDsKeep <- c(PatientSampleIDsKeep,PatientSampleIDs[i])}
+SurvivalAnalysis()
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-traceback()
+SurvivalAnalysis()
+gsub('~!@#$%^&*(){}_+:\"<>?,./;[]-=','_',?|26823)
+gsub('~!@#$%^&*(){}_+:\"<>?,./;[]-=','_','?|26823')
+gsub("~!@#$%^&*(){}_+:\<>?,./;[]-=",'_','?|26823')
+gsub("~!@#$%^&*(){}_+:<>?,./;[]-=",'_','?|26823')
+gsub("~!@#$%^&*()_+:<>?,./;[]-=",'_','?|26823')
+gsub("[[:punct:]]", "_",'?|26823')
+gsub("[[:punct:]]", "",'?|_26823')
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+SurvivalAnalysis()
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientSampleIDs[4]
-PatientInfoRequired[PatientSampleIDs[4],gene]
-PatientInfoRequired
+SurvivalAnalysis()
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-traceback()
+SurvivalAnalysis()
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-CoxParameters
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+CoxResultsDataFrame[1:10,]
 Q
 source('initialize_heatmap.R')
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-traceback()
+SurvivalAnalysis()
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList_gene[[gene]]
-CoxResultsDataFrameList_gene[[gene]]['Age',] <- NULL
-CoxResultsDataFrameList_gene[[gene]]['Age',]
-y <- mtcars
-y
-y['Volvo 142E',] <- NULL
-CoxResultsDataFrameList_gene[[gene]] <- CoxResultsDataFrameList_gene[[gene]][gene]
-CoxResultsDataFrameList_gene[[gene]] <- CoxResultsDataFrameList_gene[[gene]][gene,]
-CoxResultsDataFrameList_gene[[gene]]
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+SurvivalAnalysis()
+CoxResultsDataFrame$HazardModelCoefficientLowerBounds
 CoxResultsDataFrame
+CoxResultsDataFrame[gene,'HazardModelCoefficientLowerBounds'] < 1 && CoxResultsDataFrame[gene,'HazardModelCoefficientUpperBounds'
+]
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrame
+SurvivalAnalysis()
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+SurvivalAnalysis()
 traceback()
+CoxResultsDataFrame['RBMY1A3P',]
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
+SurvivalAnalysis()
+CoxResultsDataFrame['RBMY1A3P',]
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-PatientInfoRequired
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-gene
-y <- mtcars
-y
-y[,'mpg'] <- NULL
-y
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-PatientInfoRequired[,gene]
-NoEntryIdentifier
-PatientInfoRequired[,gene] <- NoEntryIdentifier
-PatientInfoRequired[,gene]
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-NoEntryIdentifier = 1000000#
-        PatientInfoRequired[,gene] <- NoEntryIdentifier
-PatientInfoRequired
-GeneExpressionInfo[gene,]
-for (i in 1:NumPatients)#
-        {#
-            if (Patients[i] %in% rownames(PatientInfoRequired)){PatientInfoRequired[Patients[i],gene] <- GeneExpressionInfo[gene,Patients[i]]}#
-            else{MissingClinicalData <- c(MissingClinicalData,Patients[i])}#
-        }
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-FactorSD
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-FactorSD
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-FactorSD
-DataFrame[,Columns[i]]),na.rm=TRUE)
-DataFrame[,Columns[i]])
-DataFrame[,Columns[i]]
-FactorMean
-DataFrame
-Columns
-FactorSD
-i
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-PatientInfoRequired
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrameList_gene[[gene]]
-Q
-source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+SurvivalAnalysis()
 CoxResultsDataFrame
+CoxResultsRisk <- CoxResultsDataFrame[,'Risk']
+CoxResultsRisk
+CoxResultsRisk <- CoxResultsDataFrame[,'Risk',drop=FALSE]
+CoxResultsRisk
+colnames(CoxResultsRisk) <- DataFrameIdentifier
+CoxResultsRisk
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
-CoxResultsDataFrame
+SurvivalAnalysis()
+x <- data.frame(dbSNP_RSID = paste0("rs", sample(1e6, 1e5)),#
+  matrix(paste0(sample(c("A", "C", "T", "G"), 1e7, replace = TRUE),#
+    sample(c("A", "C", "T", "G"), 1e7, replace = TRUE)), ncol = 100))#
+y <- data.frame(dbSNP_RSID = paste0("rs", sample(1e6, 1e5)),#
+  matrix(paste0(sample(c("A", "C", "T", "G"), 1e7, replace = TRUE),#
+    sample(c("A", "C", "T", "G"), 1e7, replace = TRUE)), ncol = 100))#
+colnames(x)[2:101] <- paste0("Sample", 1:100)#
+colnames(y)[2:101] <- paste0("Sample", 101:200)#
+mergedDf <- merge(x, y, by = "dbSNP_RSID")
+]
+]
+]
+x <- data.frame(dbSNP_RSID = paste0("rs", sample(1e6, 1e5)),#
+  matrix(paste0(sample(c("A", "C", "T", "G"), 1e7, replace = TRUE),#
+    sample(c("A", "C", "T", "G"), 1e7, replace = TRUE)), ncol = 100))
+x
+rm(list=x)
+rm(x)
+x
+v = data.frame(c(1,2,3))
+v
+v = data.frame(ncol=3,nrow=3)
+v
+v = data.frame(matrix(ncol=3,nrow=3))
+v
+v = v[,1]
+v
+v = data.frame(matrix(ncol=3,nrow=3))
+v = v[,1,drop=FALSE]
+v
+colnames(v) = 'red'
+v
+rownmaes(v) = c('nebraska','alabama','ksu')
+rownames(v) = c('nebraska','alabama','ksu')
+v
+h = v
+h
+rownames(h)[2] = 'georgia'
+h
+vh = merge(v,h)
+vh
+vh = merge(v,h,by='red')
+vh
+v[,]
+v[,'red'] = c(49,21,7)
+v
+h[,'red'] = c(49,20,7)
+h
+vh = merge(v,h,by='red')
+vh
+v['names',] = rownames(v)
+v[,'names'] = rownames(v)
+v
+h[,'names'] = rownames(h)
+h
+vh = merge(v,h,by='red')
+vh
+vh = merge(v,h,by='names')
+vh
+rep(4,5)
+h <- rep('t',6)
+h
+h[[1]]
+h[[2]] <- c(1,2,3)
+h <- rep(c(NA,NA),6)
+h
+h[[1]]
+h <- rep(list(NA,NA),6)
+h
+gene_array_list <- list(rep(list(),3))
+gene_array_list
+h <- list()
+k <- c(h,c(1,2,3,4))
+k
+h
+h[[1]] <- c(1,2,3,4)
+h
+h[[2]] <- c(9,10)
+h
+h[[1]] <- c(1,2,3,4,5,67)
+h[[2]] <- c(1,6,7,67,89)
+h[[3]] <- c(4,3,2,8,67)
+Reduce(intersect,h)
+source('initialize_heatmap.R')
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+length(gene_array)
+t <- sort(gene_array)
+t[1:5]
+gene_array <- sort(gene_array)
+gene_array[1:20]
+rep(list(NULL),3)
 Q
 source('initialize_heatmap.R')
-sa <- SurvivalAnalysis()
+SurvivalAnalysis()
+Q
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+source('initialize_heatmap.R')
+source('initialize_heatmap.R')
+SurvivalAnalysis()
+c

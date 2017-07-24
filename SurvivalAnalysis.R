@@ -55,49 +55,66 @@ SurvivalAnalysis <- function()
     #initialize lists to contain data frames with results for each of the tumor-types
     CoxResultsRisk <- vector('list',NumCancers)
 
+    #shorten for testing
+    NumCancers <- 4
+    DataDirectories <- DataDirectories[1:NumCancers]
+
     #find the genes that are common to all cancer-type measurements
     gene_array <- GetCommonGeneList(DataDirectories,GeneExpressionFile)
     gene_array <- sort(gene_array)
 
+    #shorten for testing
+    gene_array <- gene_array[1:50]
+
     #iterate through the tumor-types and fit a Cox model to the survival data for each gene
     #for (i in 1:NumCancers)
-    for (i in 1:2)
+    for (i in 1:NumCancers)
         {
         print(CancerIdentifiers[i])
         CoxResultsRisk[[i]] <- GetCox(DataDirectories[i],PatientInfoFile,GeneExpressionFile,CoxParameters,CancerIdentifiers[i],gene_array)
-        browser()
         #MakeBoxPlot_survival(BoxPlotDataFrameList[[i]],PlotDepositDirectory,paste(CancerIdentifiers[i],'BoxPlot.pdf',sep='_'),'Factor','Measurement','Risk',YRangePlot,QueryGenes) #the last 3 are x_var, y_var, color_var
         #MakeSurvivalPlot(SurvivalDataFrameList[[i]],PlotDepositDirectory,paste(CancerIdentifiers[i],'SurvivalPlot.pdf',sep='_'))
         #MakeSurvivalCoefficientPlot(CoxResultsDataFrameList[[i]],PlotDepositDirectory,paste(CancerIdentifiers[i],'HazardCoefficientPlot.pdf'),'CoxParameters','CoxParameters') #the last one is the x_var
         }
 
-    #iterate through the tumor-types and determine if the Cox model is significant
-    CoxModelSignificant <- NULL
-    for (i in 1:NumCancers)
-    {
-        SignificanceCondition <- CoxResultsDataFrameList[[i]]$CoxLikelihoodRatioWaldP[1]<0.05
-        CoxModelSignificant <- c(CoxModelSignificant,SignificanceCondition)
-    }
+    CoxRisk <- do.call("cbind", CoxResultsRisk[1:NumCancers])
 
-    #Plotting is not currently functional
-    #Plot the gene expression for each cancer type for each risk group
-    #bind all of the box plot data frames into one data frame
-    AllBoxPlotDataFrame <- do.call('rbind',BoxPlotDataFrameList)
-    #Select only entries for the query gene
-    AllBoxPlotDataFrame <- AllBoxPlotDataFrame[AllBoxPlotDataFrame$Factor == QueryGenes[1],]
-    #select only entries where the separation by risk group and model is significant
+    ##iterate through the tumor-types and determine if the Cox model is significant
+    #CoxModelSignificant <- NULL
+    #for (i in 1:NumCancers)
+    #{
+    #    SignificanceCondition <- CoxResultsDataFrameList[[i]]$CoxLikelihoodRatioWaldP[1]<0.05
+    #    CoxModelSignificant <- c(CoxModelSignificant,SignificanceCondition)
+    #}
+
+    ##Plotting is not currently functional
+    ##Plot the gene expression for each cancer type for each risk group
+    ##bind all of the box plot data frames into one data frame
+    #AllBoxPlotDataFrame <- do.call('rbind',BoxPlotDataFrameList)
+    ##Select only entries for the query gene
+    #AllBoxPlotDataFrame <- AllBoxPlotDataFrame[AllBoxPlotDataFrame$Factor == QueryGenes[1],]
+    ##select only entries where the separation by risk group and model is significant
     #AllBoxPlotDataFrame <- AllBoxPlotDataFrame[AllBoxPlotDataFrame$RiskLogRankP < 0.05,]
     #AllBoxPlotDataFrame <- AllBoxPlotDataFrame[AllBoxPlotDataFrame$CoxLikelihoodRatioWaldP < 0.05,]
     #AllBoxPlotDataFrame <- AllBoxPlotDataFrame[AllBoxPlotDataFrame$CoxGeneP < 0.05,]
-    AllBoxPlot <- MakeBoxPlot_survival(AllBoxPlotDataFrame,PlotDepositDirectory,'AllBoxPlot.pdf','Identifier','Measurement','Risk',YRangePlot,QueryGenes) #the last 3 are x_var, y_var, color_var
+    #AllBoxPlot <- MakeBoxPlot_survival(AllBoxPlotDataFrame,PlotDepositDirectory,'AllBoxPlot.pdf','Identifier','Measurement','Risk',YRangePlot,QueryGenes) #the last 3 are x_var, y_var, color_var
 
-    #Plot the cox model coefficients
-    AllCoxResultsDataFrame <- do.call('rbind',CoxResultsDataFrameList)
+    ##Plot the cox model coefficients
+    #AllCoxResultsDataFrame <- do.call('rbind',CoxResultsDataFrameList)
     #AllCoxResultsDataFrame <- AllCoxResultsDataFrame[AllCoxResultsDataFrame$RiskLogRankP < 0.05,] #one measure of significance
     #AllCoxResultsDataFrame <- AllCoxResultsDataFrame[AllCoxResultsDataFrame$CoxLikelihoodRatioWaldP < 0.05,] #another measure of significance
     #AllCoxResultsDataFrame <- AllCoxResultsDataFrame[AllCoxResultsDataFrame$CoxGeneP < 0.05,] #this is not a measure of significance (?), maybe only for the gene - but want age and gene considered
-    AllModelCoefficientPlot <- MakeSurvivalCoefficientPlot(AllCoxResultsDataFrame,PlotDepositDirectory,'AllModelCoefficientPlot.pdf','Identifier','CoxParameters') #the last one is x_var
+    #AllModelCoefficientPlot <- MakeSurvivalCoefficientPlot(AllCoxResultsDataFrame,PlotDepositDirectory,'AllModelCoefficientPlot.pdf','Identifier','CoxParameters') #the last one is x_var
 
-survival_ran = TRUE
-return(survival_ran)
+#survival_ran = TRUE
+
+#create the directory 'output' one level above the current directory for storing the heatmap
+output_directory <- StoreHeatmap()
+
+saveRDS(CoxRisk, file=paste(output_directory,'CoxRisk.rds'))
+browser()
+
+hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44','GLS2','GLUL','GOT1','GOT2'),TRUE,FALSE)
+
+return(CoxRisk)
 }

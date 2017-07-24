@@ -195,10 +195,8 @@ GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameter
     CoxResultsDataFrame[,'Identifier'] <- NULL
     CoxResultsRisk <- CoxResultsDataFrame[,'Risk',drop=FALSE]
     colnames(CoxResultsRisk) <- DataFrameIdentifier
-    CoxResultsRisk[,'gene'] <- rownames(CoxResultsRisk)
 
-    CoxReturn <- list(CoxResultsRisk)
-    return(CoxReturn)
+    return(CoxResultsRisk)
 }
 ################################################################################################
 MakeBoxPlot_survival <- function(BoxPlotDataFrame,FileDirectory,FileName,x_var,y_var,color_var,YRangePlot,QueryGenes)

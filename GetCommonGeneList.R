@@ -1,7 +1,6 @@
 GetCommonGeneList <- function(DataDirectories,GeneExpressionFile)
 {
-    #n_cancers <- length(DataDirectories)
-    n_cancers <- 2
+    n_cancers <- length(DataDirectories)
     gene_array_list <- list()
     print('getting all gene lists ...')
     for (i in 1:n_cancers)
