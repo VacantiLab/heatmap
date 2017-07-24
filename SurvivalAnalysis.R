@@ -56,15 +56,15 @@ SurvivalAnalysis <- function()
     CoxResultsRisk <- vector('list',NumCancers)
 
     #shorten for testing
-    NumCancers <- 4
-    DataDirectories <- DataDirectories[1:NumCancers]
+    #NumCancers <- 4
+    #DataDirectories <- DataDirectories[1:NumCancers]
 
     #find the genes that are common to all cancer-type measurements
     gene_array <- GetCommonGeneList(DataDirectories,GeneExpressionFile)
     gene_array <- sort(gene_array)
 
     #shorten for testing
-    gene_array <- gene_array[1:50]
+    #gene_array <- gene_array[1:50]
 
     #iterate through the tumor-types and fit a Cox model to the survival data for each gene
     #for (i in 1:NumCancers)
