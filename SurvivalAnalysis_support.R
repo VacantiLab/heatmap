@@ -19,7 +19,7 @@ CenterScale <- function(DataFrame,Columns,gene)
   return(ReturnDataFrame)
 }
 ##################################################################################################
-GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameters,DataFrameIdentifier,QueryGenes)
+GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameters,DataFrameIdentifier,gene_array)
 {
     # QueryGenes is now defined below to loop through all genes
     # CoxParameters is also defined in the loop because it is looping through Cox models for each gene paired with Age
@@ -39,7 +39,6 @@ GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameter
     GeneExpressionInfo <- read.table(file=GeneExpressionFilePath,head=TRUE,sep='\t')
     rownames(GeneExpressionInfo) <- GeneExpressionInfo$sample
     GeneExpressionInfo$sample <- NULL #Remove the column containing the gene gene names as they are no longer needed
-    gene_array <- rownames(GeneExpressionInfo)[1:1000]
 
     #Extract the required patient information
     PatientInfoRequired <- PatientInfo[,c('X_EVENT','X_OS','days_to_birth')] #days to birth is a negative number, so this is negative age. kept this way because when normalized it is SD below average age
@@ -49,9 +48,14 @@ GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameter
     SampleIDs <- gsub('-','\\.',PatientInfo$sampleID)
     rownames(PatientInfoRequired) <- SampleIDs
 
+    #Replace the dashes in the genes of the gene_array in order to make valid Cox formula objects with them
+    gene_array <- gsub('[[:punct:]]','_',gene_array)
+    gene_array <- gsub('^_','X_',gene_array)
+    rownames(GeneExpressionInfo) <- gsub('[[:punct:]]','_',rownames(GeneExpressionInfo))
+    rownames(GeneExpressionInfo) <- gsub('^_','X_',rownames(GeneExpressionInfo))
+
     #Determine the number of unique patients
     NumPatients <- length(GeneExpressionInfo[1,])
-    NumQueryGenes <- length(QueryGenes)
     NumCoxParameters <- length(CoxParameters)
 
     #Get a list of the unique patients
@@ -63,9 +67,12 @@ GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameter
     CoxResultsDataFrameList_gene <- rep(list(NULL),length(gene_array))
     names(CoxResultsDataFrameList_gene) <- gene_array
 
+    print_iterator = 1
     for (gene in gene_array)
     {
-        print(gene)
+        print(paste(print_iterator,':',DataFrameIdentifier,':',gene))
+        print_iterator = print_iterator+1
+
 
         #Initialize the Column for the Gene Expression
         NoEntryIdentifier = 1000000
@@ -167,6 +174,14 @@ GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameter
         #CoxResultsDataFrame$RiskLogRankP <- rep(RiskLogRankP,length(CoxResultsDataFrame[,1]))
         CoxResultsDataFrame$CoxLikelihoodRatioWaldP <- rep(WaldCoxFitP,length(CoxResultsDataFrame[,1]))
         CoxResultsDataFrame$CoxGeneP <- rep(CoxGeneP,length(CoxResultsDataFrame[,1]))
+        CoxResultsDataFrame$Risk <- NULL
+        if (is.na(CoxResultsDataFrame[gene,'HazardModelCoefficientLowerBounds'])){CoxResultsDataFrame[gene,'Risk'] <- 0}
+        if (!is.na(CoxResultsDataFrame[gene,'HazardModelCoefficientLowerBounds']))
+        {
+            if (CoxResultsDataFrame[gene,'HazardModelCoefficientLowerBounds'] < 1 && CoxResultsDataFrame[gene,'HazardModelCoefficientUpperBounds'] > 1){CoxResultsDataFrame[gene,'Risk'] <- 0}
+            if (CoxResultsDataFrame[gene,'HazardModelCoefficientLowerBounds'] > 1){CoxResultsDataFrame[gene,'Risk'] <- 1}
+            if (CoxResultsDataFrame[gene,'HazardModelCoefficientUpperBounds'] < 1){CoxResultsDataFrame[gene,'Risk'] <- -1}
+        }
 
         #CoxResultsDataFrame['Age',] <- NULL
         CoxResultsDataFrameList_gene[[gene]] <- CoxResultsDataFrame
@@ -178,10 +193,11 @@ GetCox <- function(DataDirectory,PatientInfoFile,GeneExpressionFile,CoxParameter
     CoxResultsDataFrame <- do.call('rbind',CoxResultsDataFrameList_gene)
     CoxResultsDataFrame[,'CoxParameters'] <- NULL
     CoxResultsDataFrame[,'Identifier'] <- NULL
+    CoxResultsRisk <- CoxResultsDataFrame[,'Risk',drop=FALSE]
+    colnames(CoxResultsRisk) <- DataFrameIdentifier
+    CoxResultsRisk[,'gene'] <- rownames(CoxResultsRisk)
 
-    browser()
-
-    CoxReturn <- list(BoxPlotDataFrame,SurvivalDataFrame,CoxResultsDataFrame)
+    CoxReturn <- list(CoxResultsRisk)
     return(CoxReturn)
 }
 ################################################################################################

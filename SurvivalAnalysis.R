@@ -53,19 +53,18 @@ SurvivalAnalysis <- function()
     GeneExpressionFile <- 'genomicMatrix'
 
     #initialize lists to contain data frames with results for each of the tumor-types
-    BoxPlotDataFrameList <- vector('list',NumCancers)
-    SurvivalDataFrameList <- vector('list',NumCancers)
-    CoxResultsDataFrameList <- vector('list',NumCancers)
-    KaplanMeierRiskList <- vector('list',NumCancers)
+    CoxResultsRisk <- vector('list',NumCancers)
+
+    #find the genes that are common to all cancer-type measurements
+    gene_array <- GetCommonGeneList(DataDirectories,GeneExpressionFile)
+    gene_array <- sort(gene_array)
 
     #iterate through the tumor-types and fit a Cox model to the survival data for each gene
-    for (i in 1:NumCancers)
+    #for (i in 1:NumCancers)
+    for (i in 1:2)
         {
-        print(i)
-        CoxReturn <- GetCox(DataDirectories[i],PatientInfoFile,GeneExpressionFile,CoxParameters,CancerIdentifiers[i],QueryGenes)
-        BoxPlotDataFrameList[[i]] <- CoxReturn[[1]]
-        SurvivalDataFrameList[[i]] <- CoxReturn[[2]]
-        CoxResultsDataFrameList[[i]] <- CoxReturn[[3]]
+        print(CancerIdentifiers[i])
+        CoxResultsRisk[[i]] <- GetCox(DataDirectories[i],PatientInfoFile,GeneExpressionFile,CoxParameters,CancerIdentifiers[i],gene_array)
         browser()
         #MakeBoxPlot_survival(BoxPlotDataFrameList[[i]],PlotDepositDirectory,paste(CancerIdentifiers[i],'BoxPlot.pdf',sep='_'),'Factor','Measurement','Risk',YRangePlot,QueryGenes) #the last 3 are x_var, y_var, color_var
         #MakeSurvivalPlot(SurvivalDataFrameList[[i]],PlotDepositDirectory,paste(CancerIdentifiers[i],'SurvivalPlot.pdf',sep='_'))
