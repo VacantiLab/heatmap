@@ -1,6 +1,7 @@
 GetCoxOutputs <- function(CoxFormula,PatientInfoRequired,gene,CoxParameters,DataFrameIdentifier)
 # Sometimes the coxph will throw up an error because the data doesn't quite work
 #     In these cases the risk for that gene and that cancer-type is returned as 0 and the function continues
+#     One instance of thses cases is in KICH for gene TRIM60
 {
     #If there is no error thrown by coxph()
     attempt <- try(CoxModel <- coxph(CoxFormula, data = PatientInfoRequired))
