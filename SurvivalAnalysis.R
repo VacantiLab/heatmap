@@ -24,6 +24,12 @@ SurvivalAnalysis <- function()
 
     CancerIdentifiers <- c('ACC','BLCA','BRCA','CESC','CHOL','COAD','COADREAD','DLBC','ESCA','GBM','HNSC','KICH','KIRC','KIRP','LAML','LGG','LIHC',
                            'LUAD','LUNG','LUSC','MESO','OV','PAAD','PCPG','PRAD','READ','SARC','SKCM','STAD','TGCT','THCA','THYM','UCEC','UCS','UVM')
+
+    #KICH moved to first because it was having problems
+    #CancerIdentifiers <- c('KICH','ACC','BLCA','BRCA','CESC','CHOL','COAD','COADREAD','DLBC','ESCA','GBM','HNSC','KIRC','KIRP','LAML','LGG','LIHC',
+    #                       'LUAD','LUNG','LUSC','MESO','OV','PAAD','PCPG','PRAD','READ','SARC','SKCM','STAD','TGCT','THCA','THYM','UCEC','UCS','UVM')
+
+    #For shortening the list for testing
     #CancerIdentifiers <- c('KICH')
 
     #These variables are re-defined in the call to the function that computes the Cox model, thus setting these values here does not do anything
@@ -62,7 +68,7 @@ SurvivalAnalysis <- function()
     gene_array <- sort(gene_array)
 
     #shorten for testing
-    #gene_array <- gene_array[18686:length(gene_array)]
+    #gene_array <- gene_array[18686:18687]
     #also set the CancerIdentifiers above to a fewer amount if desired
 
     #iterate through the tumor-types and fit a Cox model to the survival data for each gene
