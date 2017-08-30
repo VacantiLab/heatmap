@@ -128,87 +128,18 @@ select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
 select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
 select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
 setwd('/Users/Nate/git_hub_projects/heatmap')
+select_rows = '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/complex_I_kegg_enzyme_1.6.5.3.txt'
 source('initialize_heatmap.R')
+data_location = '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Proteome_Quantification_Data/'
+sb <- MakeScatterBarPlot(data_location,NULL,'log2','NULL','select_rows','NULL','NULL')
+sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,'select_rows',NULL,NULL)
 source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxResultsRisk[[1]][1:10,]
-CoxResultsRisk[[1]]
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxResultsRisk[[1]]
-cbind(CoxResultsRisk)
-cbind(CoxResultsRisk[[1]],CoxResultsRisk[[2]])
-CoxResultsRisk[[1]][1:4,]
-class(CoxResultsRisk[[1]])
-Q
-CoxResultsRisk <- rep(data.frame(matrix(nrow=2,ncol=2)),2)
-CoxResultsRisk
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-class(CoxResultsRisk)
-class(CoxResultsRisk[[1]])
-class(CoxResultsRisk[[1]][1])
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-class(CoxResultsRisk[[1]])
-class(CoxResultsRisk)
-cbind(CoxResultsRisk)
-cbind(CoxResultsRisk[[1]],CoxResultsRisk[[2]])
-df <- do.call("cbind", CoxResultsRisk)
-CoxResultsRisk
-CoxResultsRisk[1:2]
-df <- do.call("cbind", CoxResultsRisk[1:2])
-df
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxRisk <- do.call("cbind", CoxResultsRisk)
-CoxResultsRisk
-Q
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-source('initialize_heatmap.R')
-SurvivalAnalysis()
-CoxRisk
-Q
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-cr
-source('initialize_heatmap.R')
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-output_directory
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-output_directory
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-output_directory
-warnings()
-saveRDS(CoxRisk, file=paste(output_directory,'CoxRisk.rds'))
-Q
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-Q
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,FALSE,TRUE,FALSE)
-warnings()
-Q
-cr <- SurvivalAnalysis()
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,TRUE,TRUE,FALSE)
-Q
-source('initialize_heatmap.R')
-cr <- SurvivalAnalysis()
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('AAK1','AADAC'),TRUE,FALSE)
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44'),TRUE,FALSE)
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44','GLS2'),TRUE,FALSE)
-hm <- MakeHeatMap(NULL,NULL,NULL,c(-1.5,-0.5,0.5,1.5),NULL,'euclidian','ward.D2',CoxRisk,NULL,NULL,c('SLC25A44','GLS2','GLUL','GOT1','GOT2'),TRUE,FALSE)
-Q
+sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,'select_rows',NULL,NULL)
+DATA
+class(DATA)
+data
+select_rows
+select_rows
+q
+quit
+quit()

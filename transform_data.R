@@ -41,7 +41,7 @@ transform_data <- function(DATA,transformation)
     transformed = TRUE
   }
 
-  #Normalize rows to row median and log2 transform if indicated
+  #Normalize rows to row median and log2 transform
   if (transformation == 'median_norm_log2_transform')
   {
     column_names <- colnames(DATA) #record the column names after the unecessary column is removed
@@ -58,6 +58,17 @@ transform_data <- function(DATA,transformation)
     column_names <- colnames(DATA) #record the column names after the unecessary column is removed
     Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
     DATA <- data.frame(lapply(Transposed_DATA, iqr_norm_log2_median_center))
+    DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+    colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+    transformed = TRUE
+  }
+
+  #raise to power 2, normalize by iqr, log2 transform, then center on resulting median
+  if (transformation == 'exp2_iqrnorm_log2_mediancenter')
+  {
+    column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+    Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+    DATA <- data.frame(lapply(Transposed_DATA, exp2_iqrnorm_log2_mediancenter))
     DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
     colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
     transformed = TRUE
@@ -105,5 +116,16 @@ exp2_mednorm_log2 <- function(vector)
   exp2_raised <- vector^2
   normalized <- exp2_raised/median(exp2_raised)
   transformed <- log2(normalized)
+  return(transformed)
+}
+
+
+#Function to raise to power 2, iqr norm, log2 transform, then median center
+exp2_iqrnorm_log2_mediancenter <- function(vector)
+{
+  exp2_raised <- vector^2
+  normalized <- exp2_raised/IQR(exp2_raised)
+  transformed <- log2(normalized)
+  transformed <- transformed - median(transformed)
   return(transformed)
 }
