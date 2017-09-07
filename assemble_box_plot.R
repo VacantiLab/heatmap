@@ -15,8 +15,8 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- unit(6,'cm')
-    pdf_height <- unit(6,'cm')
+    pdf_width <- unit(4,'cm')
+    pdf_height <- unit(4,'cm')
     bar_width <- 0.50
     inter_group_spacing <- 0.55
     legend_position <- c(0.08,0.6)
@@ -34,7 +34,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
     }
 
     #If you want to add markers for points on the boxplot
-    boxplot_points <- FALSE #for now this needs to be changed in the source code to have points on the boxplot
+    boxplot_points <- TRUE #for now this needs to be changed in the source code to have points on the boxplot
     gtp <- NULL
     if(boxplot_points)
     {
@@ -45,7 +45,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
 
     b <- ggplot(DATA_long,aes_string(x=x_var, y=y_var)) +
          gbp +
-         gpp +
+         #gpp +
          gtp +
          theme(axis.text.y=element_text(color='black',size=TextSize)) +
          theme(axis.ticks.y=element_line(colour='black',size=0.5)) +
