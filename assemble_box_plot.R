@@ -34,7 +34,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
     }
 
     #If you want to add markers for points on the boxplot
-    boxplot_points <- TRUE #for now this needs to be changed in the source code to have points on the boxplot
+    boxplot_points <- FALSE #for now this needs to be changed in the source code to have points on the boxplot
     gtp <- NULL
     if(boxplot_points)
     {
