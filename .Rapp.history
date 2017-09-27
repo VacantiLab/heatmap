@@ -128,46 +128,23 @@ select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
 select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
 select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
 setwd('/Users/Nate/git_hub_projects/heatmap')
-select_rows = '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/complex_I_kegg_enzyme_1.6.5.3.txt'
+data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Metabolomics/Tumors_with_Proteome_Quantification/'
+ColGroupsScheme <- 'proteome_consensus'
 source('initialize_heatmap.R')
-data_location = '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Proteome_Quantification_Data/'
-sb <- MakeScatterBarPlot(data_location,NULL,'log2','NULL','select_rows','NULL','NULL')
-sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,'select_rows',NULL,NULL)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+traceback()
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
 source('initialize_heatmap.R')
-sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,'select_rows',NULL,NULL)
-DATA
-class(DATA)
-data
-select_rows
-select_rows
-q
-quit
-quit()
-Q
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
 source('initialize_heatmap.R')
-sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,'select_rows',NULL,NULL)
-select_rows
-Q
-select_rows
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
 source('initialize_heatmap.R')
-sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,'select_rows',NULL,NULL)
-select_rows
-Q
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
 source('initialize_heatmap.R')
-sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,select_rows,NULL,NULL)
-select_rows = ['NDUS7','NDUS8','NDUV2','NDUS3','NDUS2','NDUV1','NDUS1','NU1M','NU2M','NU3M','NU4M','NU4LM','NU5M','NU6M']
-f = [1,2,3]
-f = [1 2 3]
-select_rows = c('NDUS7','NDUS8','NDUV2','NDUS3','NDUS2','NDUV1','NDUS1','NU1M','NU2M','NU3M','NU4M','NU4LM','NU5M','NU6M')
-sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,select_rows,NULL,NULL)
-select_rows
-select_rows = c('NDUFS7','NDUFS8','NDUFV2','NDUFS3','NDUFS2','NDUFV1','NDUFS1','ND1','ND2','ND3','ND4','ND4L','ND5','ND6')
-sb <- MakeScatterBarPlot(data_location,NULL,'log2',NULL,select_rows,NULL,NULL)
-sb <- MakeScatterBarPlot(data_location,NULL,'iqr_norm_log2_median_center',NULL,select_rows,NULL,NULL)
-data_location_mrna <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/mRNA/quantified_data_for_analysis/'
-sb <- MakeScatterBarPlot(data_location_mrna,NULL,'iqr_norm_log2_median_center',NULL,select_rows,NULL,NULL)
-sb <- MakeScatterBarPlot(data_location_mrna,NULL,'exp2_iqrnorm_log2_mediancenter',NULL,select_rows,NULL,NULL)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp
 source('initialize_heatmap.R')
-sb <- MakeScatterBarPlot(data_location_mrna,NULL,'exp2_iqrnorm_log2_mediancenter',NULL,select_rows,NULL,NULL)
-select_rows_mrna <- c('NDUFS2','NDUFS2','NDUFS3','NDUFS7','NDUFS8','NDUFV1','NDUFV2')
-sb <- MakeScatterBarPlot(data_location_mrna,NULL,'exp2_iqrnorm_log2_mediancenter',NULL,select_rows_mrna,NULL,NULL)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,'median_center_iqr_norm',NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)

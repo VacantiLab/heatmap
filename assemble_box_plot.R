@@ -19,7 +19,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds)
     pdf_height <- unit(4,'cm')
     bar_width <- 0.50
     inter_group_spacing <- 0.55
-    legend_position <- c(0.08,0.6)
+    legend_position <- c(0.12,0.98)
 
     #If there are groups, the group color is specified by the color_var
     if(!is.null(FillColors))

@@ -34,5 +34,9 @@ get_y_bounds <- function(group_order,gene_name,DATA_long)
 
     #Return the y-bounds
     y_bounds <- c(set_min,set_max)
+
+    #Manual y-bounds
+    #y_bounds <- c(-0.25,0.4)
+
     return(y_bounds)
 }
