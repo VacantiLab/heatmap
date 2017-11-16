@@ -35,6 +35,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
     gene_name <- ArrangeData_return[[4]]
     DATA_long <- ArrangeData_return[[5]]
     FillColors <- ArrangeData_return[[6]]
+    DATA_transformed <- ArrangeData_return[[7]]
 
     #Find the y-limits for the boxplot based on the data
     y_bounds <- get_y_bounds(group_order,gene_name,DATA_long)
@@ -43,7 +44,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
     b <- assemble_box_plot(DATA_long,FillColors,output_directory,y_bounds)
 
     #assemble variables to return
-    MakeBoxPlot_return <- sig_test_list
+    MakeBoxPlot_return <- list(sig_test_list,DATA_transformed)
 
     return(MakeBoxPlot_return)
 }

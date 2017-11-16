@@ -11,6 +11,9 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #create the directory 'output' one level above the current directory for storing the heatmap
     output_directory <- StoreHeatmap()
 
+    #specify if transformation occurs before or after groups of samples are excluded
+    transform_after_exclusion = FALSE
+
     #Input data
     if (!(class(data)=='data.frame')){data <- paste(data_location,'quantities.txt',sep='')}
     group_designations_file <- paste(data_location,'group_key.txt',sep='')
@@ -44,6 +47,15 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #See if all of the specified input groups are actually specified in group_key.txt file
     CheckStop(2,parameters=list(select_groups,groups_corresponding))
 
+    #transform if specified to do so before excluding groups or samples
+    if (transform_after_exclusion == FALSE)
+    {
+        print('transforming data if necessary')
+        DATA <- transform_data(DATA,transformation)
+        gene_name <- rownames(DATA)
+        n_gene <- length(gene_name)
+    }
+
     #Select the groups that are considered for this box plot
     print('selecting groups if necessary')
     SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme=ColGroupsScheme)
@@ -71,11 +83,14 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     groups_corresponding <- MedianGroup_return[[2]]
     GroupColorMatrix <- MedianGroup_return[[3]]
 
-    #Transform the data as specified
-    print('transforming data if necessary')
-    DATA <- transform_data(DATA,transformation)
-    gene_name <- rownames(DATA)
-    n_gene <- length(gene_name)
+    #transform if specified to do so after excluding groups or samples
+    if (transform_after_exclusion == TRUE)
+    {
+        print('transforming data if necessary')
+        DATA <- transform_data(DATA,transformation)
+        gene_name <- rownames(DATA)
+        n_gene <- length(gene_name)
+    }
 
     #The rows with zero variance are removed because likely this causes NAs to be generated when calculating correlations
         #Most of the time this won't be an issue because all samples are not likely to have identical values for a measurement
@@ -118,6 +133,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         }
     }
 
-    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding)
+    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA)
     return(ArrangeData_return)
 }
