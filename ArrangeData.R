@@ -12,7 +12,8 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     output_directory <- StoreHeatmap()
 
     #specify if transformation occurs before or after groups of samples are excluded
-    transform_after_exclusion = FALSE
+    #    TRUE for after - default, FALSE for before
+    transform_after_exclusion = TRUE
 
     #Input data
     if (!(class(data)=='data.frame')){data <- paste(data_location,'quantities.txt',sep='')}
@@ -48,10 +49,12 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     CheckStop(2,parameters=list(select_groups,groups_corresponding))
 
     #transform if specified to do so before excluding groups or samples
+    DATA_transformed_full <- NULL
     if (transform_after_exclusion == FALSE)
     {
         print('transforming data if necessary')
         DATA <- transform_data(DATA,transformation)
+        DATA_transformed_full <- DATA
         gene_name <- rownames(DATA)
         n_gene <- length(gene_name)
     }
@@ -133,6 +136,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         }
     }
 
-    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA)
+    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full)
     return(ArrangeData_return)
 }

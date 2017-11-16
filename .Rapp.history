@@ -128,37 +128,54 @@ select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
 select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
 select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
 setwd('/Users/Nate/git_hub_projects/heatmap')
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data'
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
+pwd
+pwd()
+getwd()
+data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Metabolomics/Tumors_with_Proteome_Quantification/'
+ColGroupsScheme <- 'proteome_consensus'
+transformation <- 'median_center_iqr_norm'
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data/'
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','euclidian',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','complete',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','average',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),'cell_type','euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',NULL,TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',list(c('basal a','basal b'),c('luminal')),TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/etc_core_subunits.txt',list(c('basal a','basal b'),c('luminal')),TRUE,TRUE,FALSE)
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt',list(c('basal a','basal b'),c('luminal')),TRUE,TRUE,FALSE)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,NULL,NULL,NULL)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),NULL,NULL)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'euclidian','ward.D2',NULL,'/Users/Nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt',list(c('basal a','basal b'),c('luminal')),TRUE,TRUE,FALSE)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp[[1]]
+bp[[2]]
+bp
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp[[1]]
+bp[[2]]
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp[[2]]
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp[[2]]
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp[[2]]
+bp[[1]]
+bp
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'pam50','log2',NULL,c('RICTOR','MAPKAP1'),list(c('basal a','basal b'),c('luminal')),'cell_type')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,c('glucose','lactate'),c('GRP1','GRP4'),NULL)
+bp[[2]]
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,NULL,c('GRP1','GRP4'),NULL)
+bp[[2]]
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,NULL,c('GRP1','GRP4'),NULL)
+bp[[2]]
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,NULL,c('GRP1','GRP4'),NULL)
+bp[[2]]
+write.table(bp[[2]],'/Users/Nate/git_hub_projects/output/median_center_iqr_norm.txt')
+write.table(bp[[2]],'/Users/Nate/git_hub_projects/output/median_center_iqr_norm.txt',sep='\t')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme,transformation,NULL,NULL,c('GRP1','GRP4'),NULL)
+bp[[2]]
+bp[[1]]
