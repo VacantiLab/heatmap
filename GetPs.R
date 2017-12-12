@@ -43,7 +43,10 @@ SigTest <- function(gene_name,DATA,group1_members,group2_members)
 {
     value_group1 <- as.numeric(DATA[gene_name,group1_members])
     value_group2 <- as.numeric(DATA[gene_name,group2_members])
-    t_test_result <- t.test(value_group1,value_group2,var.equal=TRUE,alternative='two.sided')
+    #alternative_option = 'greater'
+    #alternative_option = 'less'
+    alternative_option = 'two.sided'
+    t_test_result <- t.test(value_group1,value_group2,var.equal=TRUE,alternative=alternative_option)
     p_val <- t_test_result[[3]]
     ratio <- median(value_group1)/median(value_group2)
     SigTestReturn <- c(p_val,ratio)
