@@ -129,3 +129,31 @@ select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
 select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
 setwd('/Users/Nate/git_hub_projects/heatmap')
 data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Metabolomics/Tumors_with_Proteome_Quantification/'
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'metabolites','median_center_iqr_norm',seq(-2,0.5,2),NULL,'pearson','ward.D2',NULL,NULL,c('LP','HP'),TRUE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'metabolites','median_center_iqr_norm',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,c('LP','HP'),TRUE,TRUE,FALSE)
+bp <- MakeBoxPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','lactate'),c('LP','HP'),NULL)
+bp
+sp <- MakeScatterPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','lactate'),c('LP','HP'),NULL)
+sp <- MakeScatterPlot(data_location,'metabolites','log2',NULL,c('glucose','lactate'),c('LP','HP'),NULL)
+sp
+bp <- MakeBoxPlot(data_location,'metabolites','log2',NULL,c('glucose','lactate'),c('LP','HP'),NULL)
+bp
+hm <- MakeHeatMap(data_location,'metabolites','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,c('LP','HP'),TRUE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'metabolites','log2',seq(-2,2,0.5),NULL,'pam50','ward.D2',NULL,NULL,c('LP','HP'),TRUE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,c('LP','HP'),TRUE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'proteome_consensus','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,c('GRP1','GRP2','GRP3','GRP4','GRP5','GRP6'),TRUE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'proteome_consensus','log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,c('GRP1','GRP2','GRP3','GRP4','GRP5'),TRUE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,'metabolites','median_center_iqr_norm',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,c('LP','HP'),TRUE,TRUE,FALSE)
+sp <- MakeScatterPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','lactate'),c('LP','HP'),NULL)
+bp <- MakeBoxPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','lactate'),c('LP','HP'),NULL)
+bp <- MakeBoxPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','alanine'),c('LP','HP'),NULL)
+bp
+bp <- MakeBoxPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','alanine','lactate'),c('LP','HP'),NULL)
+bp <- MakeBoxPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','alanine','lactate'),c('LP','HP'),NULL)
+bp
+bp <- MakeBoxPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','alanine','lactate'),c('LP','HP'),NULL)
+bp
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,'metabolites','median_center_iqr_norm',NULL,c('glucose','alanine','lactate'),c('LP','HP'),NULL)
+bp

@@ -13,8 +13,16 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
     graphics_w = 1000
     graphics_h = 1000
-    #pdf(graphics_file,height=graphics_h,width=graphics_w) #not sure of the units of width and height
-    png(graphics_file,height=graphics_h,width=graphics_w,units='px',pointsize=24)
+
+    if (graphics_type == '.pdf')
+    {
+        pdf(graphics_file,height=4,width=4) #not sure of the units of width and height
+    }
+
+    if (graphics_type == '.png')
+    {
+        png(graphics_file,height=graphics_h,width=graphics_w,units='px',pointsize=24)
+    }
 
     if (!is.null(GroupColorMatrix)){if (dim(GroupColorMatrix)[2]>1)
     {
