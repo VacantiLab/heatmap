@@ -1,4 +1,4 @@
-assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod)
+assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row)
 #This function is needed because heatmap.plus cannot handle only a single grouping scheme, it must be provided at least two
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
 
@@ -8,7 +8,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-    graphics_type <- '.png'
+    graphics_type <- '.pdf'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
     graphics_w = 1000
@@ -70,6 +70,18 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           labRow=label_rows,
                           labCol=label_cols)
     }
+
+    dev.off() #turn off printing to the specified pdf
+
+    #print the column dendrogram as pdf
+    pdf(paste(HeatmapDirectory,'col_dendrogram',sep=''),height=4,width=4) #not sure of the units of width and height
+    plot(C_col,hang=-1)
+    dev.off() #turn off printing to the specified pdf
+
+    #print the column dendrogram as pdf
+    pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=4,width=4) #not sure of the units of width and height
+    plot(C_row,hang=-1,lwd=0.5)
+    dev.off() #turn off printing to the specified pdf
 
     #return used variables
     assemble_heatmap_return <- list(heat_map_colors)

@@ -73,7 +73,12 @@ CheckStop <- function(check_flag,parameters)
         group_names_from_color_key <- rownames(COLOR_KEY)
         group_names_from_group_key <- as.matrix(GROUP_KEY[,ColGroupsScheme],nrow=length(ColGroupsScheme))
         group_names_consistent <- CheckAllIn(group_names_from_group_key,group_names_from_color_key)
-        if (!group_names_consistent){stop('The group names in group_key.txt are not consistent with the group names in the group_color_key.txt.')}
+        if (!group_names_consistent)
+        {
+            print(COLOR_KEY)
+            print(GROUP_KEY)
+            stop('The group names in group_key.txt are not consistent with the group names in the group_color_key.txt.')
+        }
     }
 
     if (check_flag==7) #In MakeVolcanoPlot

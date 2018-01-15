@@ -44,9 +44,9 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
     #Retrieve the clusters for creating the dendrograms
     ClusterData_return <- ClusterData(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
     colv <- ClusterData_return[[1]]
-    rowv <- ClusterData_return[[2]]
+    rowv <- ClusterData_return[[2]] #dendrogram object
     C_col <- ClusterData_return[[3]]
-    C_row <- ClusterData_return[[4]]
+    C_row <- ClusterData_return[[4]] #hclust object
 
     print('making the heatmap')
     #make numeric matrix out of data frame
@@ -59,9 +59,8 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
     label_cols <- FindColLabels(label_cols,DifExpMatx)
 
     #Draw and save the heatmap
-    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod)
+    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row)
     heat_map_colors <- assemble_heatmap_return[[1]]
-    dev.off() #turn off printing to the specified pdf
 
     #Draw and save the legends
     MakeColorKey(break_seq,heat_map_colors,output_directory)
