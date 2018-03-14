@@ -79,8 +79,20 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     dev.off() #turn off printing to the specified pdf
 
     #print the column dendrogram as pdf
+    color_dend = TRUE
     pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height
-    plot(C_row,hang=-1,lwd=0.5)
+    if (color_dend == TRUE)
+    {
+        par(mfrow = c(1,1))
+        C_row = as.dendrogram(C_row)
+        #requires the dendextend package
+        C_row %>% set("branches_k_color", k = 14) %>% plot(main = "Row Dendrogram")
+    }
+
+    if (color_dend == FALSE)
+    {
+        plot(C_row,hang=-1,lwd=0.5)
+    }
     dev.off() #turn off printing to the specified pdf
 
     #return used variables
