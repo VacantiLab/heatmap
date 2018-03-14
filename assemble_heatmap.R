@@ -78,8 +78,6 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     plot(C_col,hang=-1)
     dev.off() #turn off printing to the specified pdf
 
-    browser()
-
     #print the column dendrogram as pdf
     pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height
     plot(C_row,hang=-1,lwd=0.5)
