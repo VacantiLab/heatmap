@@ -79,7 +79,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     dev.off() #turn off printing to the specified pdf
 
     #print the column dendrogram as pdf
-    color_dend = TRUE
+    color_dend = FALSE
     pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height
     if (color_dend == TRUE)
     {
