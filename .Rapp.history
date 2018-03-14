@@ -1,14 +1,211 @@
-setwd('/Users/nate/git_hub_projects/heatmap')
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_5/'
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/BaselineCorrect.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/GetDerivs.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeakBorders.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/fat_matrix_to_long_df.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeaksMins.R")#
+#
+t_start_script <- proc.time()[3]#
+#
+#load libraries necessary for function to run#
+library(ncdf4) #needed to open NetCDF files containing MS data, ncdf4 package#
+library(ggplot2) #needed to make plots#
+#
+#specify what is to be plotted#
+XData <- 'sat'#
+YData <- 'intensity'#
+mz_select <- c(174,175,176)#
+#
+#open the data file#
+print('unpacking data')#
+NetCDF_data <- nc_open('/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts/Test_NetCDF_Files/T47D_no_label.AIA/tbdms01_t47d_wt.CDF')#
+#
+#extract m/z values needed#
+mass_values <- ncvar_get(NetCDF_data,'mass_values') #unpack the NetCDF file#
+  #these values are one large vector, the m/z values of each scan are concatonated together#
+mass_values_whole <- round(mass_values)#
+  #these are rounded to the nearest whole number value because tracing experiments are only concerned with whole number increments#
+  #note: the charge is always +1, so m/z is really the mass#
+mz_whole_unique <- unique(mass_values_whole)#
+mz_whole_unique <- sort(mz_whole_unique,decreasing=FALSE)#
+  #the unique masses are needed for organizing the masses, the time of scans, and the intensities#
+  #they are organized in ascending order for better visualization#
+n_mz <- length(mz_whole_unique) #the number of unique m/z values (after rounding)#
+#
+#unpack the vector containing the time each scan was made#
+scan_acquisition_time <- ncvar_get(NetCDF_data,'scan_acquisition_time')/60 #minutes#
+n_sat <- length(scan_acquisition_time) #the number of scan acqisitions#
+#
+#these are the ion counts for each m/z measurement in each scan#
+#the order corresponds to the mass_values vector described above#
+intensity_values <- ncvar_get(NetCDF_data,'intensity_values')#
+n_total_measurements <- length(intensity_values)#
+#
+#the scan indices provide the location within the mass_values and intensity_values vectors where a new scan starts#
+#a scan index is one index value prior to the location where a new scan starts#
+scan_index <- ncvar_get(NetCDF_data,'scan_index')#
+n_scans <- length(scan_index)#
+#
+#Ion Count Matrix#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding ion count values#
+mz_time_intensity <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity) <- mz_whole_unique#
+colnames(mz_time_intensity) <- scan_acquisition_time#
+#
+#populate mz_time_intensity matrix#
+for (i in 1:n_scans)#
+{#
+  current_scan_start <- scan_index[i]+1#
+  if (i!=n_scans) {current_scan_end <- scan_index[i+1]}#
+  if (i==n_scans) {current_scan_end <- n_total_measurements}#
+  sat_value_current_scan <- as.character(scan_acquisition_time[i]) #the current column in mz_time_intensity to be populated#
+  mzs_of_current_scan <- as.character(mass_values_whole[current_scan_start:current_scan_end]) #the mz values measured in the current scan, the rows to be populated in the mz_time_intensity matrix#
+  intensity_values_current_scan <- intensity_values[current_scan_start:current_scan_end]#
+  mz_time_intensity[mzs_of_current_scan,sat_value_current_scan] <- intensity_values_current_scan #fill in the desired rows (corresponding to measured m/z's) in the desired column (corresponding to the current scan acquisition time)#
+}#
+#
+#Baseline Corrected Intensity Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding baseline corrected ion count values#
+mz_time_intensity_baseline_corrected <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity_baseline_corrected) <- mz_whole_unique#
+colnames(mz_time_intensity_baseline_corrected) <- scan_acquisition_time#
+#
+#Baseline Correction Values Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the baseline m/z values down the rows#
+#the matrix will be filled with corresponding baseline ion count values#
+baseline_correction <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(baseline_correction) <- mz_whole_unique#
+colnames(baseline_correction) <- scan_acquisition_time#
+#
+#Fill in both Baseline Matrices#
+print('finding baselines')#
+#correct the mz_time_intensity matrix for baseline#
+#install.packages("doMC")#
+require(doMC)#
+registerDoMC(4)#
+t_start_script <- proc.time()[3]#
+BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisition_time,2)#
+t_elapsed_script <- (proc.time()[3]-t_start_script)
+t_elapsed_script
+m <- matrix(c(2,3,4,5,6,7),nrow=2)
+m
+2^m
+mdf <- data.frame(m)
+mdf
+2^mdf
+install.packages(biocLite)
+source("https://bioconductor.org/biocLite.R")
+biocLite
+biocLite()
+biocLite("hgu133plus2.db")
+cols('hgu133plus2.db')
+cols(hgu133plus2.db)
+library('hgu133plus2.db')
+cols(hgu133plus2.db)
+colnames(hgu133plus2.db)
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids <- c("39730_at", "1635_at", "1674_at", "40504_at", "40202_at")
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','ENTREZID')
+select(hgu133plus2.db, ids, "ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID",ids)
+keys('PROBEID')
+keys(PROBEID)
+keys(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids = c('65521_at','65493_at')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids
+select(hgu133plus2.db,ids,'PROBEID')
+keytypes('hgu133plus2.db')
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
+select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
+select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
+setwd('/Users/Nate/git_hub_projects/heatmap')
+data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Proteome_Quantification_Data/'
 source('initialize_heatmap.R')
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_5/heat_map_quantities/'
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'euclidian','complete')
-traceback()
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'euclidian','complete')
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'euclidian','complete')
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'euclidian','complete')
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'pearson','complete')
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'pearson','complete')
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'pearson','complete')
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'pearson','complete')
-hm <- MakeHeatMap(data_location,'group',NULL,seq(0,10,1),NULL,'euclidian','complete')
+hm <- MakeHeatMap(data_location,c('pam50'),'log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+hm <- MakeHeatMap(data_location,c('pam50','proteome_consensus'),'log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+4 != 5
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,c('pam50','proteome_consensus'),'log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+install.packages('heatmap.plus')
+library('heatmap.plus')
+hm <- MakeHeatMap(data_location,c('pam50','proteome_consensus'),'log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+library('heatmap.plus')
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,c('pam50','proteome_consensus'),'log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+3:1
+source('initialize_heatmap.R')
+install.packages('dendextend')
+library('dendextend')
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,c('pam50','proteome_consensus'),'log2',seq(-2,2,0.5),NULL,'pearson','ward.D2',NULL,NULL,NULL,FALSE,TRUE,FALSE)
+pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
+    par(mfrow = c(1,2))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
+    par(mfrow = c(1,2))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
+    par(mfrow = c(1,2))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
+    par(mfrow = c(1,1))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+png(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=1000,width=1000,units='px',pointsize=24)#
+    par(mfrow = c(1,1))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+png(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=1000,width=1000,units='px',pointsize=24)#
+    #par(mfrow = c(1,1))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+png(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=1000,width=1000,units='px',pointsize=24)#
+    #par(mfrow = c(1,1))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
+    #png(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=1000,width=1000,units='px',pointsize=24)#
+    #par(mfrow = c(1,1))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+png(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=1000,width=1000,units='px',pointsize=24)#
+    #par(mfrow = c(1,1))#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
+    par(mfrow = c(1,1))#
+    C_row = as.dendrogram(C_row)#
+    C_row %>% set("branches_k_color", k = 3) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
+    par(mfrow = c(1,1))#
+    C_row = as.dendrogram(C_row)#
+    C_row %>% set("branches_k_color", k = 14) %>% plot(main = "Nice defaults")#
+    #plot(C_row,hang=-1,lwd=0.5)#
+    dev.off() #turn off printing to the specified pdf
+q
+quit
+exit()
+quit()
