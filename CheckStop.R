@@ -6,14 +6,18 @@ CheckStop <- function(check_flag,parameters)
         #Stop the program if the replicate scheme is in the ColGroupsScheme
         ColGroupsScheme = parameters[[1]]
         replicate_scheme = parameters[[2]]
+        visualization = parameters[[3]]
         if (!is.null(ColGroupsScheme) && !is.null(replicate_scheme))
         {
             replicate_scheme_unique = sum(replicate_scheme %in% ColGroupsScheme)==0
             if(!replicate_scheme_unique){stop('Custom Message: The replicate_scheme is in the ColGroupsScheme. These should be mutually exclusive.')}
         }
 
-        #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
-        if (length(ColGroupsScheme)>1 || length(replicate_scheme)>1){stop('Custom Message: Cannot have more than one ColGroupsScheme or replicate_scheme for a boxplot')}
+        #Stop the program if more than one ColGroupsScheme is specified for a boxplot
+        if (length(ColGroupsScheme)>1 && visualization != 'heatmap'){stop('Custom Message: Cannot have more than one ColGroupsScheme if not a heatmap')}
+
+        #Stop the program if more than one replicate_scheme is specified
+        if (length(replicate_scheme)>1){stop('Custom Message: Cannot have more than one replicate_scheme')}
 
     }
 
