@@ -2,6 +2,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
 #This function is needed because heatmap.plus cannot handle only a single grouping scheme, it must be provided at least two
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
 #uses dendextend package for coloring dendrogram branches
+#uses dynamicTreeCut package to cut the tree for enrichment analysis
 
 {
     n_colors = length(break_seq)-1
@@ -87,7 +88,13 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
         par(mfrow = c(1,1))
         C_row = as.dendrogram(C_row)
         #requires the dendextend package
-        C_row %>% set("branches_k_color", k = 14) %>% plot(main = "Row Dendrogram")
+        C_row %>% set("branches_k_color", k = 10) %>% plot(main = "Row Dendrogram")
+    }
+
+    dynamic_cut_of_tree = FALSE
+    if (dynamic_cut_of_tree == TRUE)
+    {
+        dtc <- cutreeDynamic(C_row,minClusterSize=100,deepSplit=0) #requires dynamicTreeCut package
     }
 
     if (color_dend == FALSE)
