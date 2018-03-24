@@ -3,6 +3,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
 #uses dendextend package for coloring dendrogram branches
 #uses dynamicTreeCut package to cut the tree for enrichment analysis
+#uses enrichR package to calculate cluster enrichments
 
 {
     n_colors = length(break_seq)-1
@@ -81,14 +82,29 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     dev.off() #turn off printing to the specified pdf
 
     #print the column dendrogram as pdf
-    color_dend = FALSE
+    color_dend = TRUE
     pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height
     if (color_dend == TRUE)
     {
+        n_clusters <- 12
         par(mfrow = c(1,1))
         C_row = as.dendrogram(C_row)
         #requires the dendextend package
-        C_row %>% set("branches_k_color", k = 10) %>% plot(main = "Row Dendrogram")
+        C_row %>% set("branches_k_color", k = n_clusters) %>% plot(main = "Row Dendrogram")
+        cluster_assignments <- cutree(C_row, k=n_clusters)
+        cluster_members <- vector(mode='list',length=n_clusters)
+        enrichment_list <- vector(mode='list',length=n_clusters)
+        for (i in 1:n_clusters)
+        {
+            current_indices = cluster_assignments == i
+            current_members = names(cluster_assignments[current_indices])
+            cluster_members[[i]] <- current_members
+            current_cluster_members <- cluster_members[[i]]
+            current_enrichment <- enrichr(current_cluster_members,'KEGG_2016')
+            current_enrichment_df <- as.data.frame(current_enrichment)
+            enrichment_list[[i]] <- current_enrichment_df[1:10,]
+
+        }
     }
 
     dynamic_cut_of_tree = FALSE
@@ -97,6 +113,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
         dtc <- cutreeDynamic(C_row,minClusterSize=100,deepSplit=0) #requires dynamicTreeCut package
     }
 
+    #print the column dendrogram as pdf
     if (color_dend == FALSE)
     {
         plot(C_row,hang=-1,lwd=0.5)
