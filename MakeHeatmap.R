@@ -1,4 +1,4 @@
-MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE)
+MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=TRUE,rev_c_dend=FALSE)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns

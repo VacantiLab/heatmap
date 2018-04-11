@@ -56,64 +56,114 @@ enrichr(glycolysis_extract,NULL)
 enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia')
 s
 enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia'))
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/patient_tumors/lehtio_lab_landscape_study/Proteome_Quantification_Data/'
-pwd()
-getwd()
 setwd('/Users/nate/git_hub_projects/heatmap')
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
-install.packages('dynamictreecut')
-install.packages('dynamicTreeCut')
-library('dynamicTreeCut')
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data/'
+hm <- MakeHeatmap(data_location,'pam50','log2',seq(-2,2,0.5))
 hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
 source('initialize_heatmap.R')
 hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
-dtc <- cuttreeDynamic(C_row,minClusterSize=2)
-dtc <- cutreeDynamic(C_row,minClusterSize=2)
-dtc
-dtc <- cutreeDynamic(C_row,minClusterSize=2,deepSplit=0)
-dtc
-dtc <- cutreeDynamic(C_row,minClusterSize=50,deepSplit=0)
-dtc
-dtc <- cutreeDynamic(C_row,minClusterSize=100,deepSplit=0)
-dtc
-max(dtc)
-dtc <- cutreeDynamic(C_row,minClusterSize=50,deepSplit=0)
-max(dtc)
-color_dend = TRUE
-pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height#
-    if (color_dend == TRUE)#
-    {#
-        par(mfrow = c(1,1))#
-        C_row = as.dendrogram(C_row)#
-        #requires the dendextend package#
-        C_row %>% set("branches_k_color", k = 14) %>% plot(main = "Row Dendrogram")#
-    }
-dev.off()
+install.packages('dendextend')
+library('dendextend')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+cluster_assignments[1:10]
+cluster_assignments[1:100]
+cluster_assignments == 2
+for (i in 1:n_clusters)#
+        {#
+            current_indices = cluster_assignments == i#
+            current_members = cluster_members[current_indices]#
+            cluster_members[[i]] = current_members#
+        }
+cluster_members[[1]]
+cluster_members = vector(mode='list',length=n_clusters)#
+        for (i in 1:n_clusters)#
+        {#
+            current_indices = cluster_assignments == i#
+            current_members = cluster_members[current_indices]#
+            cluster_members[[i]] = current_members#
+        }
+cluster_members[[1]]
+q
 Q
 source('initialize_heatmap.R')
 hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
-install.packages('dendextend')
-library('dendextend')
-install.packages('dendextend')
-library('dendextend')
-remove.packages('dynamicTreeCut')
-install.packages('dendextend')
-library('dendextend')
-install.packages('dendextend')
-library(dendextend)
-library(dendextend)
-install.packages('dendextendRcpp')
-install.packages('viridis')
-install.packages("viridis", type="source")
-if (!require("devtools")) install.packages("devtools")#
-devtools::install_github("sjmgarnier/viridis")
-install.packages('viridisLite')
-if (!require("devtools")) install.packages("devtools")#
-devtools::install_github("sjmgarnier/viridis")
-install.packages('dendextend')
-library('dendextend')
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+Q
 source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+cluster_members[[1]]
+rownames(cluster_members[[1]])
+names(cluster_members[[1]])
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+cluster_members[[1]]
+cluster_members[[2]]
+cluster_members[[3]]
+cluster_members[[12]]
+Q
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+enrichr(cluster_members[[12]],'KEGG_2016')
+Q
+install.packages('enrichr')
+install.packages('enrichR')
+library('enrichR')
+enrichr(cluster_members[[12]],'KEGG_2016')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+enrichment <- enrichr(cluster_members[[12]],'KEGG_2016')
+enrichment
+class(enrichment)
+class(enrichment)[1]
+enrichment[1]
+enrichment[[1]]
+enrichment[1:10]
+enrichment[1:10,1:4]
+enrichment[1,1]
+enrichment[1]
+enrichment[1][1]
+enrichment[1][1,1]
+enrichment
+enrichment$Genes
+class(enrichment)
+enrichment[,'Term']
+enrichment[1,'Term']
+enrichment&Term
+rownames(enrichment)
+colnames(enrichment)
+enrichment
+enrichment[1]
+class(enrichment[1])
+class(enrichment[1][1])
+class(enrichment[1][1][1])
+as.dataframe(enrichment)
+as.data.frame(enrichment)
+en <- as.data.frame(enrichment)
+class(en)
+en[1,1]
+rownames(en)
+en$Term
+colnames(en)
+en$KEGG_2016.Term
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
+enrichment_list[[1]]
+enrichment_list[[2]]
+enrichment_list[[3]]
+enrichment_list[[4]]
+enrichment_list[[5]]
+enrichment_list[[6]]
+enrichment_list[[7]]
+enrichment_list[[8]]
+enrichment_list[[9]]
+enrichment_list[[10]]
+C
+Q
+source('initialize_heatmap.R')
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
 hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5))
