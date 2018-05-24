@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 {
     #Stop the program if the replicate scheme is in the ColGroupsScheme
@@ -85,6 +85,27 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     DATA <- MedianGroup_return[[1]]
     groups_corresponding <- MedianGroup_return[[2]]
     GroupColorMatrix <- MedianGroup_return[[3]]
+
+    #transform the columns based on other columns if specified to do so
+    if (!is.null(ddt))
+    {
+        print('transforming columns')
+        TransformColumns_return <- TransformColumns(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
+        DATA <- TransformColumns_return[[1]]
+        groups_corresponding <- TransformColumns_return[[2]]
+        GroupColorMatrix <- TransformColumns_return[[3]]
+    }
+
+    variance_threshhold = NULL
+    if (!is.null(variance_threshhold))
+    {
+        gene_vars <- apply(DATA,1,var)
+        gene_means <- apply(DATA,1,mean)
+        rel_var <- gene_vars/gene_means
+        thresh_array <- rel_var > variance_threshhold
+        DATA_rows_keep <- rownames(DATA)[thresh_array]
+        DATA <- DATA[DATA_rows_keep,]
+    }
 
     #transform if specified to do so after excluding groups or samples
     if (transform_after_exclusion == TRUE)

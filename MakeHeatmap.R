@@ -1,4 +1,4 @@
-MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=TRUE,rev_c_dend=FALSE)
+MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=TRUE,rev_c_dend=FALSE,ddt=NULL)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -27,10 +27,15 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
 #    If this is specified, all members of a single group are treated as a single sample and the median values are used
 # genes_to_label is either an array of strings corresponding to the genes to be highlighed and labeled in the volcano plot
 #    or it is a string that is the name of a text file (ending in .txt) contained within the data_location/gene_lists file that is a column list of the genes to label
+# ddt: data dependent transform
+#    Allows for the transformation of the columns to ratios of columns
+#    It is a list of two arrays
+#        The first array contains the names of the columns of the original DATA set that will be the numerators
+#        The second array contains the names of the columns of the original DATA set that will be the denominators
 
 {
     #Extract the data required to make a heatmap
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='heatmap')
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='heatmap',ddt)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]

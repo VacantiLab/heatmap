@@ -205,3 +205,45 @@ StatTransformByGroup <- function(DATA,groups_corresponding,GroupColorMatrix,repl
     StatTransformByGroup_return <- list(DATA,groups_corresponding,GroupColorMatrix)
     return(StatTransformByGroup_return)
 }
+
+###############################################################################
+
+TransformColumns <- function(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
+# This function transforms the columns to ratios specified by the list of arrays ddt
+#     The first array contains the numerator columns and the second array contains the denominator columns
+{
+    new_n_col <- ncol(DATA)/2
+    DATA2 = data.frame(matrix(ncol = new_n_col, nrow = nrow(DATA)))
+    rownames(DATA2) <- rownames(DATA)
+    colname_array <- array(,dim=c(1,new_n_col))
+
+    groups_corresponding_2 <- matrix(ncol = ncol(groups_corresponding), nrow = nrow(groups_corresponding)/2)
+    GroupColorMatrix_2 <- matrix(ncol = ncol(GroupColorMatrix), nrow = nrow(GroupColorMatrix)/2)
+
+    for (i in 1:new_n_col)
+    {
+        colname_array[1,i] <- paste(ddt[[1]][i],'/',ddt[[2]][i],sep='')
+    }
+    colnames(DATA2) <- colname_array
+
+    rownames(groups_corresponding_2) <- colname_array
+    colnames(groups_corresponding_2) <- colnames(groups_corresponding)
+
+    rownames(GroupColorMatrix_2) <- colname_array
+    colnames(GroupColorMatrix_2) <- colnames(GroupColorMatrix)
+
+    for (DATA2_colname in colname_array)
+    {
+        DATA_numerator <- gsub('/.*','',DATA2_colname)
+        DATA_denom <- gsub('.*/','',DATA2_colname)
+        DATA2[,DATA2_colname] <- DATA[,DATA_numerator]/DATA[,DATA_denom]
+
+        groups_corresponding_2[DATA2_colname,] <- groups_corresponding[DATA_numerator,]
+        GroupColorMatrix_2[DATA2_colname,] <- GroupColorMatrix[DATA_numerator,]
+    }
+
+    TransformColumns_return <- list(DATA2,groups_corresponding_2,GroupColorMatrix_2)
+
+    return(TransformColumns_return)
+
+}
