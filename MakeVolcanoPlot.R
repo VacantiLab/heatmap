@@ -32,7 +32,7 @@ MakeVolcanoPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NU
     CheckStop(7,parameters=list(transformation))
 
     #Extract the data required to make a volcano plot
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='volcanoplot')
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='volcanoplot',ddt=NULL)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
 
