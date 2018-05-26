@@ -209,7 +209,7 @@ GetGeneList <- function(genes_to_label,data_location)
 {
     if (IsTextFileDirectory(genes_to_label))
     {
-        txt_directory <- paste(data_location,'gene_lists/',genes_to_label,sep='')
+        txt_directory <- genes_to_label
         genes_to_label <- read.table(file=txt_directory,head=FALSE,check.names=FALSE,sep='\t')
         genes_to_label <- as.character(genes_to_label[,1])
     }

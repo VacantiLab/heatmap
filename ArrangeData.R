@@ -59,6 +59,12 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         n_gene <- length(gene_name)
     }
 
+    #median-normalize columns
+    for (specified_column in colnames(DATA))
+    {
+        DATA[,specified_column] <- DATA[,specified_column]/median(DATA[,specified_column])
+    }
+
     #Select the groups that are considered for this box plot
     print('selecting groups if necessary')
     SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme=ColGroupsScheme)

@@ -57,75 +57,64 @@ enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia')
 s
 enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia'))
 setwd('/Users/nate/git_hub_projects/heatmap')
+data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/ipaw_544_bc_cell_lines_rotenone_20180404_14.02/protein_quantities/'
+ddt <- list(c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone'),c('bt20_dmso','hcc1419_dmso','mcf7_dmso','t47d_dmso','mdamb157_dmso'))
+ddt
+source('inini')
 source('initialize_heatmap.R')
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/lehtio_lab_panel_proteomics/Protein_Quantification_Data/'
+hm <- Make
+hm <- MakeHeatMap(data_location,'pam50','log2','eq(-2,2,0.5),ddt=ddt)
+l
+=
+)
+adf
+quit
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt)
+ddt
+ddt[[2]]
+ddt[[2]] <- c('bt20_control','hcc1419_control','mcf7_control','t47d_control','mdamb157_control')
+ddt
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt)
+'/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt'
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
+select_rows
+select_rows <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt'
+select_rows
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
+select_rows
+select_rows <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_hallmark_hypoxia.txt'
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),select_rows=select_rows)
+bp <- MakeBoxPlot(data_location,'treatment','log2',c('RICTOR','MAPKAP1'))
 source('initialize_heatmap.R')
-hm <- MakeHeatMap('data_location','cell_type',NULL,seq(0,10,1),'cell_type_2',select_groups=c('MDAMB157','BT20','T47D','HCC1419','MCF7'))
+bp <- MakeBoxPlot(data_location,'treatment','log2',c('RICTOR','MAPKAP1'))
+quit
+quit#
+stop
+bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=c('RICTOR','MAPKAP1'))
+bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=c('RICTOR','MAPKAP1'))
+traceback()
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'cell_type',NULL,seq(0,10,1),'cell_type_2',select_groups=c('MDAMB157','BT20','T47D','HCC1419','MCF7'))
-hm <- MakeHeatMap(data_location,'cell_type','log2',seq(-2,2,0.5),'cell_type_2',select_groups=c('MDAMB157','BT20','T47D','HCC1419','MCF7'))
+bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=c('RICTOR','MAPKAP1'))
+data_location
+select_rows
+select_rows_bp
+select_rows_bp = c('RICTOR','MAPKAP1')
+select_rows = c('RICTOR','MAPKAP1')
+bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=select_rows)
+clear selecrt_rows
+bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=select_rows)
+bp
+bp <- MakeVolcanoPlot(data_location,'treatment','log2')
+bp <- MakeVolcanoPlot(data_location,'treatment')
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'cell_type',NULL,seq(-2,2,0.5),'cell_type_2',select_groups=c('MDAMB157','BT20','T47D','HCC1419','MCF7'))
-rownames(DATA[1])
-rownames(DATA)[1]
-saveRDS(DATA,'/Users/nate/Desktop/temp/henrik.rda')
-q
-exit
-Q
-data_location_nate <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/ipaw_544_bc_cell_lines_rotenone_20180404_14.02/protein_quantities/'
-hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),select_groups=c('dmso'))
-hm <- MakeHeatMap(data_location,'treatment','log2',break_seq=seq(-2,2,0.5),select_groups=c('dmso'))
-hm <- MakeHeatMap(data_location_nate,'treatment','log2',break_seq=seq(-2,2,0.5),select_groups=c('dmso'))
-c
-hm <- MakeHeatMap(data_location_nate,'treatment',NULL,break_seq=seq(-2,2,0.5),select_groups=c('dmso'))
-saveRDS(DATA,'/Users/nate/Desktop/temp/nate.rda')
-Q
-nate <- readRDS('/Users/nate/Desktop/temp/nate.rda')
-rownames(nate)[1]
-henrik <- readRDS('/Users/nate/Desktop/temp/henrik.rda')
-rownames(henrik)[1]
-g <- rowmeans(nate)
-g <- rowMeans(nate)
-g[1]
-nate_row_means <- rowMeans(nate)
-g <- nate/nate_row_means
-size(g)
-dim(g)
-nate[1,1]
-nate_row_means[1]
-g[1]
-nate[1,1]
-nate_row_means[1]
-g[1,1]
-nate[1,2]
-g[1,2]
-nate[2,2]
-nate_row_means[2]
-g[2,2]
-nate_norm = g
-colnames(nate_norm)
-rownames(nate_norm)[1]
-saveRDS(nate_norm,'/Users/nate/Desktop/temp/nate_norm.rda')
-henrik_rowmeans <- rowmeans(henrik)
-henrik_rowmeans <- rowMeans(henrik)
-henrik_norm <- henrik/henrik_rowmeans
-saveRDS(henrik_norm,'/Users/nate/Desktop/temp/henrik_norm.rda')
-merged <- merge(nate_norm,henrik_norm,by=row.names)
-merged <- merge(nate_norm,henrik_norm,by=0)
-colnames(merged)
-class(merged)
-merged[1:5,1:5]
-rownames(mergerd)[1]
-rownames(merged)[1]
-rownames(merged)=merged[,'Row.names']
-merged[1:5,1:5]
-merged[,'Row.names'] <- NULL
-merged[1:5,1:5]
-saveRDS(merged,'/Users/nate/Desktop/temp/merged.rda')
-merged[1:2,1:10]
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/analysis/heatmap_with_henriks_data/protein_quantities/'
-pwd
-pwd()
-getwd()
+bp <- MakeVolcanoPlot(data_location,'treatment')
+bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1'))
+bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1','BCL2'))
+bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1','BCL2','SLC11A2'))
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),data=merged)
+bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1','BCL2','SLC11A2'))
+bp <- MakeVolcanoPlot(data_location,'treatment','log2',genes_to_label <- 'EPHX4')
+bp <- MakeVolcanoPlot(data_location,'treatment',NULL,genes_to_label <- 'EPHX4')
+bp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_groups=c('rotenone','dmso'))
