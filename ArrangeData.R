@@ -1,5 +1,6 @@
 ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
+# med_norm specifies to median normalize columns
 {
     #Stop the program if the replicate scheme is in the ColGroupsScheme
     #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified

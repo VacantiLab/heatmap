@@ -32,6 +32,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
 #    It is a list of two arrays
 #        The first array contains the names of the columns of the original DATA set that will be the numerators
 #        The second array contains the names of the columns of the original DATA set that will be the denominators
+# med_norm specifies to median normalize columns, will occur before rows are selected
 
 {
     #Extract the data required to make a heatmap
