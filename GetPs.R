@@ -4,6 +4,10 @@ GetPs <- function(group_order,gene_name,DATA,groups_corresponding)
     #name the groupwise test: i.e. list the two groups being tested
     group_test <- paste(group_order[1],group_order[2],sep=' : ')
 
+    #remove genes from the list to consdier if the data does not exist (a t-test will not be attempted)
+    list_to_consider <- gene_name %in% rownames(DATA)
+    gene_name <- gene_name[list_to_consider]
+
     #initialize the data frame
     sig_test_list <- list()
     n_genes <- length(gene_name)
@@ -46,6 +50,7 @@ SigTest <- function(gene_name,DATA,group1_members,group2_members)
     #alternative_option = 'greater'
     #alternative_option = 'less'
     alternative_option = 'two.sided'
+
     t_test_result <- t.test(value_group1,value_group2,var.equal=TRUE,alternative=alternative_option)
     p_val <- t_test_result[[3]]
     ratio <- median(value_group1)/median(value_group2)

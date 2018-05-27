@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 {
     #Stop the program if the replicate scheme is in the ColGroupsScheme
@@ -20,9 +20,9 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     group_designations_file <- paste(data_location,'group_key.txt',sep='')
     group_color_designations_file <- paste(data_location,'group_color_key.txt',sep='')
 
-    #Import the data and only keep selected rows if specified
+    #Import the data and only keep selected rows and median-nomralize columns if specified
     print('opening data file')
-    OpenDataFile_return <- OpenDataFile(data,select_rows)
+    OpenDataFile_return <- OpenDataFile(data,select_rows,med_norm)
     DATA <- OpenDataFile_return[[1]]
     select_rows <- OpenDataFile_return[[2]]
 
@@ -57,12 +57,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         DATA_transformed_full <- DATA
         gene_name <- rownames(DATA)
         n_gene <- length(gene_name)
-    }
-
-    #median-normalize columns
-    for (specified_column in colnames(DATA))
-    {
-        DATA[,specified_column] <- DATA[,specified_column]/median(DATA[,specified_column])
     }
 
     #Select the groups that are considered for this box plot

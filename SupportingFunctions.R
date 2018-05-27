@@ -1,4 +1,4 @@
-OpenDataFile <- function(data,select_rows)
+OpenDataFile <- function(data,select_rows,med_norm)
 #Takes a data file location and reads the data into a data frame compatible with the MakeHeatMap function
 {
     #Import the data
@@ -8,6 +8,15 @@ OpenDataFile <- function(data,select_rows)
     #remove any rows with NA as an entry
     has_no_na_row_indices <- apply(DATA,1,NoNA)
     DATA <- DATA[has_no_na_row_indices,]
+
+    #median-normalize columns if specified to do so
+    if (med_norm)
+    {
+        for (specified_column in colnames(DATA))
+        {
+            DATA[,specified_column] <- DATA[,specified_column]/median(DATA[,specified_column])
+        }
+    }
 
     #Select rows from the data frame
     if (!is.null(select_rows))
