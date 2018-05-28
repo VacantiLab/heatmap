@@ -98,10 +98,13 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     }
 
     #median normalize within each of the groups as designated by the grouping scheme specified by the input ddt
-    if (ddt %in% ColGroupsScheme)
+    if (!is.null(ddt))
     {
-        med_norm_scheme = ddt
-        DATA = med_norm_within_groups(DATA,groups_corresponding,med_norm_scheme)
+        if (ddt %in% ColGroupsScheme)
+        {
+            med_norm_scheme = ddt
+            DATA = med_norm_within_groups(DATA,groups_corresponding,med_norm_scheme)
+        }
     }
 
     variance_threshhold = NULL
