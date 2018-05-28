@@ -32,7 +32,9 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
 #    It is a list of two arrays
 #        The first array contains the names of the columns of the original DATA set that will be the numerators
 #        The second array contains the names of the columns of the original DATA set that will be the denominators
-# med_norm specifies to median normalize columns, will occur before rows are selected
+#    It can also be a string that is one of the members of ColGroupsScheme
+#        If this is the case, the data within groups designated by the ddt grouping scheme will be normalized to the median of the group
+# med_norm specifies to median normalize columns, will occur before rows are selected or other transformations performed (Done within OpenDataFile)
 
 {
     #Extract the data required to make a heatmap
