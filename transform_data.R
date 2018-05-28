@@ -12,6 +12,14 @@ transform_data <- function(DATA,transformation)
     transformed = TRUE
   }
 
+    #Log10 transform the data if specified to do so
+    if (transformation == 'log10')
+    {
+      DATA <- log10(DATA)
+      #DATA[DATA < -3] <- -3
+      transformed = TRUE
+    }
+
   #exp2() transform the data if specified to do so
   if (transformation == 'exp2')
   {
