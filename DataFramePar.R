@@ -247,3 +247,17 @@ TransformColumns <- function(DATA,groups_corresponding,GroupColorMatrix,replicat
     return(TransformColumns_return)
 
 }
+
+#medain normalize within groups
+med_norm_within_groups <- function(DATA,groups_corresponding,med_norm_scheme)
+{
+    for (group in groups_corresponding[,med_norm_scheme])
+    {
+        member_locations = groups_corresponding[,med_norm_scheme] == group
+        members = names(member_locations)[member_locations]
+        median_vector <- apply(DATA[,members],1,median)
+        DATA[,members] = sweep(DATA[,members],1,median_vector,'/')
+    }
+
+    return(DATA)
+}

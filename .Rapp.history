@@ -58,63 +58,114 @@ s
 enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia'))
 setwd('/Users/nate/git_hub_projects/heatmap')
 data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/ipaw_544_bc_cell_lines_rotenone_20180404_14.02/protein_quantities/'
-ddt <- list(c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone'),c('bt20_dmso','hcc1419_dmso','mcf7_dmso','t47d_dmso','mdamb157_dmso'))
-ddt
-source('inini')
+dtt_rot <- list(c('bt20_control','hcc1419_control','mcf7_control','t47d_control'.'mdamb157_control'),c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone'.'mdamb157_rotenone'))
+dtt_rot <- list(c('bt20_control','hcc1419_control','mcf7_control','t47d_control'.'mdamb157_control'),c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone'))
+dtt_rot <- list(c('bt20_control','hcc1419_control','mcf7_control','t47d_control','mdamb157_control'),c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone'))
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),dtt=dtt_rot)
 source('initialize_heatmap.R')
-hm <- Make
-hm <- MakeHeatMap(data_location,'pam50','log2','eq(-2,2,0.5),ddt=ddt)
-l
-=
-)
-adf
-quit
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt)
-ddt
-ddt[[2]]
-ddt[[2]] <- c('bt20_control','hcc1419_control','mcf7_control','t47d_control','mdamb157_control')
-ddt
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt)
-'/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt'
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
-select_rows
-select_rows <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt'
-select_rows
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
-select_rows
-select_rows <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_hallmark_hypoxia.txt'
-hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
-hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),ddt=ddt,select_rows=select_rows)
-hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),select_rows=select_rows)
-bp <- MakeBoxPlot(data_location,'treatment','log2',c('RICTOR','MAPKAP1'))
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),dtt=dtt_rot)
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),ddt=dtt_rot)
+oxphos_list <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt'
+bp <- MakeBoxPlot(data_location,'treatment','log2',oxphos_list)
+bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=oxphos_list)
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'treatment','log2',c('RICTOR','MAPKAP1'))
-quit
-quit#
-stop
-bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=c('RICTOR','MAPKAP1'))
-bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=c('RICTOR','MAPKAP1'))
+bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=oxphos_list)
+oxphos_list
+traceback()
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+DATA[1:3,1:3]
+DATA[1:3,]
+group1_members <- rownames(groups_corresponding[groups_corresponding[,1]==group_order[1],1,drop=FALSE])
+group1_members
+group2_members <- rownames(groups_corresponding[groups_corresponding[,1]==group_order[2],1,drop=FALSE])
+group2_members
+class(gene_name)
+gene_name
+nrows(DATA)
+length(DATA)
+DATA
+class(DATA)
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+value_group1
+value_group2
+t_test_result <- t.test(value_group1,value_group2,var.equal=TRUE,alternative=alternative_option)
+t_test_result
+gene_name
+print(gene_name)
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+gene_name
+DATA
+gene_names
+gene_name
+gene_name in rownames(DATA)
+4 in c(4,5,6)
+4 %in% c(4,5,6)
+where(4 %in% c(4,5,6))
+c(3,4,5,6) %in% c(8,5,4,9)
+gene_name %in% rownames(DATA)
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+DATA
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
 traceback()
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=c('RICTOR','MAPKAP1'))
-data_location
-select_rows
-select_rows_bp
-select_rows_bp = c('RICTOR','MAPKAP1')
-select_rows = c('RICTOR','MAPKAP1')
-bp <- MakeBoxPlot(data_location,'treatment','log2',selet_rows=select_rows)
-clear selecrt_rows
-bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=select_rows)
-bp
-bp <- MakeVolcanoPlot(data_location,'treatment','log2')
-bp <- MakeVolcanoPlot(data_location,'treatment')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+gene_name
+length(DATA)
+dim(DATA)
+Q
 source('initialize_heatmap.R')
-bp <- MakeVolcanoPlot(data_location,'treatment')
-bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1'))
-bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1','BCL2'))
-bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1','BCL2','SLC11A2'))
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
 source('initialize_heatmap.R')
-bp <- MakeBoxPlot(data_location,'treatment','log2',select_rows=c('EPHX4','RPUSD1','BCL2','SLC11A2'))
-bp <- MakeVolcanoPlot(data_location,'treatment','log2',genes_to_label <- 'EPHX4')
-bp <- MakeVolcanoPlot(data_location,'treatment',NULL,genes_to_label <- 'EPHX4')
-bp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_groups=c('rotenone','dmso'))
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+dim(gene_name)
+gene_name
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+gene_name
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+warnings
+warnings()
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list)
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list,select_groups=c('rotenone','dmso'))
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,genes_to_label=oxphos_list,select_groups=c('rotenone','dmso'))
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list,select_groups=c('rotenone','dmso'))
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list,genes_to_label=oxphos_list,select_groups=c('rotenone','dmso'))
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list,genes_to_label=oxphos_list,select_groups=c('rotenone','dmso'))
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list,genes_to_label=oxphos_list,select_groups=c('rotenone','dmso'))
+traceback()
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list,genes_to_label=oxphos_list,select_groups=c('rotenone','dmso'))
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,'treatment',NULL,select_rows=oxphos_list,genes_to_label=oxphos_list,select_groups=c('rotenone','dmso'))
+bp <- MakeBoxPlot(data_location,ColGroupsScheme='treatment',transformation='log2',select_rows=oxphos_list)
+dtt_rot
+ddt_rot <- dtt_rot
+ddt_rot
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),ddt=ddt_rot)
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),ddt=ddt_rot,select_rows=oxphos_list)
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),ddt=ddt_rot,select_rows=oxphos_list)
+hm <- MakeHeatMap(data_location,'pam50','log2',seq(-2,2,0.5),select_rows=oxphos_list)
+hm <- MakeHeatMap(data_location,'treatment','log2',seq(-2,2,0.5),ddt=ddt_rot,select_rows=oxphos_list)
