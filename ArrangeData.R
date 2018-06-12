@@ -2,9 +2,20 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 # med_norm specifies to median normalize columns
 {
+    #if more than one ColGroupsScheme is specified for a volcano plot because of a data dependent transformation (ddt)
+    #    that needs to be disguised for the CheckStop
+    ColGroupsScheme_holder = ColGroupsScheme
+    if (visualization == 'volcanoplot' && !is.null(ddt) && length(ColGroupsScheme)>1)
+    {
+        ColGroupsScheme = ColGroupsScheme[ColGroupsScheme != ddt]
+    }
+
     #Stop the program if the replicate scheme is in the ColGroupsScheme
     #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
     CheckStop(1,parameters=list(ColGroupsScheme,replicate_scheme,visualization))
+
+    #Reset the ColGroupsScheme if it was disguised above
+    ColGroupsScheme = ColGroupsScheme_holder
 
     #Include pertinent libraries
     library(ggplot2) #from ggplot2 package, allows the boxplot to be made
@@ -60,15 +71,19 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         n_gene <- length(gene_name)
     }
 
+
     #Select the groups that are considered for this box plot
+    #    This is automatically performed on the first ColGroupsScheme provided
     print('selecting groups if necessary')
-    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme=ColGroupsScheme)
+    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme=ColGroupsScheme[1])
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
     GroupColorMatrix <- SelectGroups_return[[3]]
 
+
     #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
+    #    There can only be one ColGroupsScheme provided if there is group concatonation
     #Also get corresponding colors for those new groups by taking the color that maps to the first sub-group of each concatonated group
     #This function does not affect the input if group_divisions is NULL (i.e. select_groups was not passed as a list to the original function)
     print('combining groups if necessary')
@@ -80,12 +95,14 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     colors_concatonated <- ConcatonateGroups_return[[4]]
     group_concationation <- is.list(group_divisions)
 
+
     #return median of replicates if specified to do so
     print('aggregating group members if necessary')
     MedianGroup_return <- MedianGroup(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme)
     DATA <- MedianGroup_return[[1]]
     groups_corresponding <- MedianGroup_return[[2]]
     GroupColorMatrix <- MedianGroup_return[[3]]
+
 
     #transform the columns based on other columns if specified to do so
     if (class(ddt)=='list')
@@ -97,14 +114,24 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         GroupColorMatrix <- TransformColumns_return[[3]]
     }
 
+
     #median normalize within each of the groups as designated by the grouping scheme specified by the input ddt
     if (!is.null(ddt))
     {
-        if (ddt %in% ColGroupsScheme)
+        if (class(ddt) == 'character')
         {
             med_norm_scheme = ddt
             DATA = med_norm_within_groups(DATA,groups_corresponding,med_norm_scheme)
         }
+    }
+
+    #reset the ColGroupsScheme and groups_corresponding to what they would have been without a ddt
+    #    may not be necessary
+    if (visualization == 'volcanoplot' && !is.null(ddt) && length(ColGroupsScheme)>1)
+    {
+        ColGroupsScheme = ColGroupsScheme[ColGroupsScheme != ddt]
+        cols_to_keep = colnames(groups_corresponding) != ddt
+        groups_corresponding = groups_corresponding[,cols_to_keep,drop=FALSE]
     }
 
     variance_threshhold = NULL
@@ -169,5 +196,9 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     }
 
     ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full)
+    if (visualization == 'volcanoplot')
+    {
+        ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,ColGroupsScheme)
+    }
     return(ArrangeData_return)
 }

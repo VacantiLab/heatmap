@@ -56,48 +56,16 @@ enrichr(glycolysis_extract,NULL)
 enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia')
 s
 enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia'))
-mtcars
-apply(mtcars,1,median)
-apply(mtcars['mpg','cyl'],1,median)
-apply(mtcars[,'c(mpg','cyl')],1,median)
-apply(mtcars[,c('mpg','cyl')],1,median)
-apply(mtcars[,c('mpg','cyl')],1,median/2)
-apply(mtcars[,c('mpg','cyl')],1,median()/2)
-apply(mtcars[,c('mpg','cyl')],1,median(mtcars[,c('mpg','cyl')])/2)
-apply(mtcars[,c('mpg','cyl')],1,median)
-m <- apply(mtcars[,c('mpg','cyl')],1,median)
-m <- sweep(mtcars[,c('mpg','cyl')],1,m,'/')
-m
-class('g')
-class('g')=='character'
 setwd('/Users/nate/git_hub_projects/heatmap')
+data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/quantification_jorrit_correct/protein_quantities_gene_symbol/'
 source('initialize_heatmap.R')
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/ipaw_544_bc_cell_lines_rotenone_20180404_14.02/protein_quantities/'
-hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
-oxphos_list <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt'
-hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
-group
-member_locations = groups_corresponding == group
-member_locations
-Q
+hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5),)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
-member_locations = groups_corresponding[,med_norm_scheme] == group
-member_locations
-members = rownames(groups_corresponding)[member_locations]
-members
-rownames(member_locations)
-names(member_locations)
-members = names(member_locations)[member_locations]
-members
-median_vector <- apply(DATA[,members],1,median)
-DATA[,members] = sweep(DATA[,members],1,median_vector,'/')
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
+hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5))
+hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5))
 library('heatmap.plus')
-hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
-hm <- MakeHeatMap(data_location,c('treatment','pam50'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
-hm <- MakeHeatMap(data_location,c('treatment','cell_type','pam50'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
-hm <- MakeHeatMap(data_location,c('treatment','cell_type','pam50'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type',DistanceMethod='euclidian')
-hm <- MakeHeatMap(data_location,c('treatment','cell_type','pam50'),'log2',seq(-2,2,0.5),select_rows=oxphos_list,ddt='cell_type')
+hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5))
+hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5),ddt='cell_type')
+vp <- MakeVolcanoPlot(data_location,'treatment',)
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt')
