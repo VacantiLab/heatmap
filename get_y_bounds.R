@@ -35,6 +35,13 @@ get_y_bounds <- function(group_order,gene_name,DATA_long)
     #Return the y-bounds
     y_bounds <- c(set_min,set_max)
 
+    #If you want all outliers covered in the y_bounds - this must be specified in source code for now
+    include_outliers = TRUE
+    if (include_outliers == TRUE)
+    {
+        y_bounds <- c(min(DATA_long[,'value']),max(DATA_long[,'value']))
+    }
+
     #Manual y-bounds
     #y_bounds <- c(-0.25,0.4)
 
