@@ -1,71 +1,202 @@
-dm <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)
-dm
-rownames(dm) <- c('W','X','Y','Z')
-dm
-dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
-rownames(dm) <- c('W','X','Y','Z')#
-colnams(dm) <- c('W','X','Y','Z')
-colnames(dm) <- c('W','X','Y','Z')
-dm
-dm_df <- as.data.frame(dm)
-dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
-rownames(dm_mat) <- c('W','X','Y','Z')#
-colnames(dm_mat) <- c('W','X','Y','Z')#
-dm_df <- as.data.frame(dm)
-dm_df
-dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
-rownames(dm_mat) <- c('W','X','Y','Z')#
-colnames(dm_mat) <- c('W','X','Y','Z')#
-dm_df <- as.data.frame(dm_mat)
-dm_df
-D_col <- dist(t(dm_df))
-D_col
-dm_dist <- as.dist(dm_mat)
-dm_dist
-C_col <- hclust(dm_dist, method='complete',members=NULL)
-plot(C_row,hang=-1,lwd=0.5)
-filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'
-pdf(paste(filepath,'row_dendrogram',sep=''),height=4,width=4)
-plot(C_col,hang=-1,lwd=0.5)
-dev.off()
-C_col <- hclust(dm_dist, method='ward.d2',members=NULL)#
-filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
-pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
-plot(C_col,hang=-1,lwd=0.5)#
-dev.off() #turn off printing to the specified pdf
-C_col <- hclust(dm_dist, method='ward.D2',members=NULL)#
-filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
-pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
-plot(C_col,hang=-1,lwd=0.5)#
-dev.off() #turn off printing to the specified pdf
-dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
-rownames(dm_mat) <- c('W','X','Y','Z')#
-colnames(dm_mat) <- c('W','X','Y','Z')#
-dm_df <- as.data.frame(dm_mat)#
-dm_dist <- as.dist(dm_mat)#
-C_col <- hclust(dm_dist, method='complete',members=NULL)#
-filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
-pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
-plot(C_col,hang=-1,lwd=0.5)#
-dev.off() #turn off printing to the specified pdf
-install.packages('enrichR')
-library('enrichR')
-glycolysis_extract <- c('HK3','HK1','HK2','HKDC1','GCK','GPI','PFKM','PFKP')
-enrichr(glycolysis_extract,'KEGG_2016')
-enrichr(glycolysis_extract,NULL)
-enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia')
-s
-enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia'))
-setwd('/Users/nate/git_hub_projects/heatmap')
-data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/quantification_jorrit_correct/protein_quantities_gene_symbol/'
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/BaselineCorrect.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/GetDerivs.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeakBorders.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/fat_matrix_to_long_df.R")#
+source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeaksMins.R")#
+#
+t_start_script <- proc.time()[3]#
+#
+#load libraries necessary for function to run#
+library(ncdf4) #needed to open NetCDF files containing MS data, ncdf4 package#
+library(ggplot2) #needed to make plots#
+#
+#specify what is to be plotted#
+XData <- 'sat'#
+YData <- 'intensity'#
+mz_select <- c(174,175,176)#
+#
+#open the data file#
+print('unpacking data')#
+NetCDF_data <- nc_open('/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts/Test_NetCDF_Files/T47D_no_label.AIA/tbdms01_t47d_wt.CDF')#
+#
+#extract m/z values needed#
+mass_values <- ncvar_get(NetCDF_data,'mass_values') #unpack the NetCDF file#
+  #these values are one large vector, the m/z values of each scan are concatonated together#
+mass_values_whole <- round(mass_values)#
+  #these are rounded to the nearest whole number value because tracing experiments are only concerned with whole number increments#
+  #note: the charge is always +1, so m/z is really the mass#
+mz_whole_unique <- unique(mass_values_whole)#
+mz_whole_unique <- sort(mz_whole_unique,decreasing=FALSE)#
+  #the unique masses are needed for organizing the masses, the time of scans, and the intensities#
+  #they are organized in ascending order for better visualization#
+n_mz <- length(mz_whole_unique) #the number of unique m/z values (after rounding)#
+#
+#unpack the vector containing the time each scan was made#
+scan_acquisition_time <- ncvar_get(NetCDF_data,'scan_acquisition_time')/60 #minutes#
+n_sat <- length(scan_acquisition_time) #the number of scan acqisitions#
+#
+#these are the ion counts for each m/z measurement in each scan#
+#the order corresponds to the mass_values vector described above#
+intensity_values <- ncvar_get(NetCDF_data,'intensity_values')#
+n_total_measurements <- length(intensity_values)#
+#
+#the scan indices provide the location within the mass_values and intensity_values vectors where a new scan starts#
+#a scan index is one index value prior to the location where a new scan starts#
+scan_index <- ncvar_get(NetCDF_data,'scan_index')#
+n_scans <- length(scan_index)#
+#
+#Ion Count Matrix#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding ion count values#
+mz_time_intensity <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity) <- mz_whole_unique#
+colnames(mz_time_intensity) <- scan_acquisition_time#
+#
+#populate mz_time_intensity matrix#
+for (i in 1:n_scans)#
+{#
+  current_scan_start <- scan_index[i]+1#
+  if (i!=n_scans) {current_scan_end <- scan_index[i+1]}#
+  if (i==n_scans) {current_scan_end <- n_total_measurements}#
+  sat_value_current_scan <- as.character(scan_acquisition_time[i]) #the current column in mz_time_intensity to be populated#
+  mzs_of_current_scan <- as.character(mass_values_whole[current_scan_start:current_scan_end]) #the mz values measured in the current scan, the rows to be populated in the mz_time_intensity matrix#
+  intensity_values_current_scan <- intensity_values[current_scan_start:current_scan_end]#
+  mz_time_intensity[mzs_of_current_scan,sat_value_current_scan] <- intensity_values_current_scan #fill in the desired rows (corresponding to measured m/z's) in the desired column (corresponding to the current scan acquisition time)#
+}#
+#
+#Baseline Corrected Intensity Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the m/z values down the rows#
+#the matrix will be filled with corresponding baseline corrected ion count values#
+mz_time_intensity_baseline_corrected <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(mz_time_intensity_baseline_corrected) <- mz_whole_unique#
+colnames(mz_time_intensity_baseline_corrected) <- scan_acquisition_time#
+#
+#Baseline Correction Values Matrix Initialization#
+#initialize a matrix that will contain the scan acquisition times across the columns and the baseline m/z values down the rows#
+#the matrix will be filled with corresponding baseline ion count values#
+baseline_correction <- matrix(,nrow=n_mz,ncol=n_sat)#
+rownames(baseline_correction) <- mz_whole_unique#
+colnames(baseline_correction) <- scan_acquisition_time#
+#
+#Fill in both Baseline Matrices#
+print('finding baselines')#
+#correct the mz_time_intensity matrix for baseline#
+#install.packages("doMC")#
+require(doMC)#
+registerDoMC(4)#
+t_start_script <- proc.time()[3]#
+BaselineCorrect_return <- apply(mz_time_intensity,1,BaselineCorrect,scan_acquisition_time,2)#
+t_elapsed_script <- (proc.time()[3]-t_start_script)
+t_elapsed_script
+m <- matrix(c(2,3,4,5,6,7),nrow=2)
+m
+2^m
+mdf <- data.frame(m)
+mdf
+2^mdf
+install.packages(biocLite)
+source("https://bioconductor.org/biocLite.R")
+biocLite
+biocLite()
+biocLite("hgu133plus2.db")
+cols('hgu133plus2.db')
+cols(hgu133plus2.db)
+library('hgu133plus2.db')
+cols(hgu133plus2.db)
+colnames(hgu133plus2.db)
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids <- c("39730_at", "1635_at", "1674_at", "40504_at", "40202_at")
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+select(hgu133plus2.db,ids,'PROBEID','ENTREZID')
+select(hgu133plus2.db, ids, "ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID")
+select(hgu133plus2.db,"ENTREZID", "PROBEID",ids)
+keys('PROBEID')
+keys(PROBEID)
+keys(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids = c('65521_at','65493_at')
+select(hgu133plus2.db,ids,'PROBEID','SYMBOL')
+ids
+select(hgu133plus2.db,ids,'PROBEID')
+keytypes('hgu133plus2.db')
+keytypes(hgu133plus2.db)
+select(hgu133plus2.db,ids,'PROBEID','ENSEMBL')
+select(hgu133plus2.db,ids,'PROBEID','ACCNUM')
+select(hgu133plus2.db,ids,'SYMBOL','PROBEID')
+library(limma)
+source("https://bioconductor.org/biocLite.R")
+biocLite("limma")
+library(limma)
+library(leukemiaEset)
+library(leukemiasEset)
+biocLite("leukemiasEset")
+library(leukemiasEset)
+table(leukemiasEset$LeukemiaType)
+table(leukemiasEset)
+class(leukemiasEset)
+class("leukemiasEset")
+data(leukemiasEset)
+class(leukemiasEset)
+table(leukemiasEset$LeukemiaType)
+leukemiaEset[1:5,1:3]
+leukemiasEset[1:5,1:3]
+leukemiasEset
+leukemiasEset[1]
+leukemiasEset[2]
+ourdata <- leukemiasEset[,leukemiasEset$LeukemiaType %in% c('ALL','Nol')]
+ourdata
+leukemiasEset
+ourdata <- leukemiasEset[,leukemiasEset$LeukemiaType %in% c('ALL','NoL')]
+ourdata
+data_location <- '/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/quantification_jorrit_correct/protein_quantities_gene_symbol/'
+setwd('/Users/Nate/git_hub_projects/heatmap')
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5),)
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5))
-hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5))
+hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-2,2,0.5),ddt='cell_type')
 library('heatmap.plus')
-hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5))
-hm <- MakeHeatMap(data_location,c('pam50','cell_type','treatment'),'log2',seq(-2,2,0.5),ddt='cell_type')
-vp <- MakeVolcanoPlot(data_location,'treatment',)
-source('initialize_heatmap.R')
-vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Dropbox/Research/Lehtio_Laboratory/References/gene_lists/gsea_kegg_oxidative_phosphorylation.txt')
+hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-2,2,0.5),ddt='cell_type')
+hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-1,1,0.25),ddt='cell_type')
+hm <- MakeHeatMap(data_location,c('treatment','cell_type'),'log2',seq(-0.5,0.5,0.125),ddt='cell_type')
+hm
+DATA <- hm[4]
+class(DATA)
+DATA <- hm[[4]]
+class(DATA)
+data <- as.matrix(DATA)
+colnames(data)
+rownames(data)[1:10]
+sampleTable <- data.frame(sample=colnames(data),treatment=c('dmso','rot','dmso','rot','dmso','rot','dmso','rot','dmso','rot'))
+sampleTable
+design <- model.matrix(~0+treatment.sampleTable)
+design <- model.matrix(~0+treatment,sampleTable)
+design
+rownames(sampleTable) <- sampleTable[,'sample']
+design <- model.matrix(~0+treatment,sampleTable)
+design
+fit1 <- lmFit(data,design)
+library('limma')
+fit1 <- lmFit(data,design)
+fit1
+class(fit1)
+fit1$qr
+DATA[1:3,]
+mean(1,2)
+mean(1,2,3,4)
+mean(c(1,2,3,4))
+mean(c(0.063938367,-0.073068196,0.05018152,-0.212332625,0.06620945))
+fit2 <- eBayes(fit1)
+fit2
+dfs
+fit2 <- eBayes(fit1)
+fit2
+contrast.mat <- makeContrasts(Diff=rot-dmso,levels=design)
+design
+contrast.mat <- makeContrasts(Diff=treatmentrot-treatmentdmso,levels=design)
+contrast.mat
+fit2 <- contrasts.fit(fit1,contrast.mat)
+fit2
+fit3 <- eBayes(fit2)
+fit3
