@@ -6,6 +6,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
 #uses enrichR package to calculate cluster enrichments
 
 {
+    library(heatmap.plus)
     n_colors = length(break_seq)-1
     break_seq_0 <- break_seq #save the originally specified break_seq to use in the color key creation
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
