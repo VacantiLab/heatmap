@@ -49,6 +49,38 @@ transform_data <- function(DATA,transformation)
     transformed = TRUE
   }
 
+  if (transformation == 'med_norm_log2_columns')
+  {
+
+      #set the median to zero for each column by subtracting the median (for log transformed data)
+      for (specified_column in colnames(DATA))
+      {
+          sample_array <- DATA[,specified_column]
+          sample_raw <- sample_array^2
+          sample_median <- median(sample_raw)
+          sample_med_norm <- sample_raw/sample_median
+          sample_log2 <- log2(sample_med_norm)
+          DATA[,specified_column] <- sample_log2
+      }
+
+      column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+      DATA <- data.frame(lapply(Transposed_DATA, exp2_mednorm_log2))
+      DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+      colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+
+      #centering the columns to have a median of 0 creates large negative numbers and apparent division by 0 and infinity values
+      #    this replaces all infinity and anything greater than 10 with 10
+      DATA <- apply(DATA, 2, function(x) ifelse(x == Inf, 10, x))
+      DATA <- apply(DATA, 2, function(x) ifelse(x > 10, 10, x))
+
+      DATA <- apply(DATA, 2, function(x) ifelse(x == -Inf, -10, x))
+      DATA <- apply(DATA, 2, function(x) ifelse(x < -10, -10, x))
+
+      DATA <- apply(DATA, 2, function(x) ifelse(x > 10, 10, x))
+      transformed = TRUE
+  }
+
   #Normalize rows to row median and log2 transform
   if (transformation == 'median_norm_log2_transform')
   {
