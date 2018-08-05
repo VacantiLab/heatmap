@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/BaselineCorrect.R")#
 source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/GetDerivs.R")#
 source("/Users/Nate/Dropbox/Research/Lehtio_Laboratory/Tools/R Functions/NetCDF_Integrate_Scripts_dev_parallel/FindPeakBorders.R")#
@@ -200,3 +201,235 @@ fit2 <- contrasts.fit(fit1,contrast.mat)
 fit2
 fit3 <- eBayes(fit2)
 fit3
+=======
+dm <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)
+dm
+rownames(dm) <- c('W','X','Y','Z')
+dm
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm) <- c('W','X','Y','Z')#
+colnams(dm) <- c('W','X','Y','Z')
+colnames(dm) <- c('W','X','Y','Z')
+dm
+dm_df <- as.data.frame(dm)
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm_mat) <- c('W','X','Y','Z')#
+colnames(dm_mat) <- c('W','X','Y','Z')#
+dm_df <- as.data.frame(dm)
+dm_df
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm_mat) <- c('W','X','Y','Z')#
+colnames(dm_mat) <- c('W','X','Y','Z')#
+dm_df <- as.data.frame(dm_mat)
+dm_df
+D_col <- dist(t(dm_df))
+D_col
+dm_dist <- as.dist(dm_mat)
+dm_dist
+C_col <- hclust(dm_dist, method='complete',members=NULL)
+plot(C_row,hang=-1,lwd=0.5)
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'
+pdf(paste(filepath,'row_dendrogram',sep=''),height=4,width=4)
+plot(C_col,hang=-1,lwd=0.5)
+dev.off()
+C_col <- hclust(dm_dist, method='ward.d2',members=NULL)#
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
+pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
+plot(C_col,hang=-1,lwd=0.5)#
+dev.off() #turn off printing to the specified pdf
+C_col <- hclust(dm_dist, method='ward.D2',members=NULL)#
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
+pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
+plot(C_col,hang=-1,lwd=0.5)#
+dev.off() #turn off printing to the specified pdf
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm_mat) <- c('W','X','Y','Z')#
+colnames(dm_mat) <- c('W','X','Y','Z')#
+dm_df <- as.data.frame(dm_mat)#
+dm_dist <- as.dist(dm_mat)#
+C_col <- hclust(dm_dist, method='complete',members=NULL)#
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
+pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
+plot(C_col,hang=-1,lwd=0.5)#
+dev.off() #turn off printing to the specified pdf
+install.packages('enrichR')
+library('enrichR')
+glycolysis_extract <- c('HK3','HK1','HK2','HKDC1','GCK','GPI','PFKM','PFKP')
+enrichr(glycolysis_extract,'KEGG_2016')
+enrichr(glycolysis_extract,NULL)
+enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia')
+s
+enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia'))
+setwd('/Users/nate/git_hub_projects/heatmap')
+source('initialize_heatmap.R')
+data_location <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/breast_cancer/cell_lines/rotenone/rotenone_proteomics/quantification_jorrit_correct/protein_quantities_gene_symbol/'
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='DDIT3')
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'mtorc2',select_groups=c('high_rotenone','high_dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'mtorc2',select_groups=c('high_rotenone','high_dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'mtorc2',select_groups=c('high_rotenone','high_dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'mtorc2',select_groups=c('low_rotenone','low_dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'mtorc2',select_groups=list(c('low_rotenone','high_lum_rotenone'),c('low_dmso','high_lum_dmso')),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=list('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'pam50',select_groups=list('basal','luminal'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+vp <- MakeVolcanoPlot(data_location,'mtorc2',select_groups=c('high_rotenone','high_dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt')
+getwd()
+source('initialize_heatmap.R')
+data_location
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+vp <- MakeVolcanoPlot(data_location,'treatment',select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt=NULL)
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt=NULL)
+length(c(1,2))
+f=c('r','y','v')
+f
+f[f!='y']
+class('red')
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+traceback()
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+traceback()
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding[1:3,1:3]
+groups_corresponding
+ColGroupsScheme
+q
+quit
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+Q
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+visualization
+visualization != 'volcanoplot'
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+traceback()
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+traceback()
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+groups_corresponding[,colnames(groups_correpsonding != ddt)]
+groups_corresponding[,colnames(groups_corresponding != ddt)]
+ddt
+colnames(groups_corresponding)
+colnames(groups_corresponding) != ddt
+cols_to_keep = colnames(groups_corresponding != ddt)
+groups_corresponding = groups_corresponding[,colnames(groups_corresponding)[cols_to_keep]]
+groups_corresponding
+cols_to_keep
+groups_corresponding = groups_corresponding[,cols_to_keep]
+groups_corresponding
+cols_to_keep
+cols_to_keep = colnames(groups_corresponding) != ddt
+cols_to_keep
+groups_corresponding = groups_corresponding[,cols_to_keep]
+groups_corresponding
+colnbames(groups_corresponding)
+colnames(groups_corresponding)
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+c
+traceback()
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+c
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+c
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+ColGroupsScheme
+groups_corresponding
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+select_groups
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+group_divisions
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+groups_corresponding
+c
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+n_groups
+group_order
+Q
+source('initialize_heatmap.R')
+vp <- MakeVolcanoPlot(data_location,c('treatment','cell_type'),select_groups=c('rotenone','dmso'),genes_to_label='/Users/nate/Desktop/temp/top100.txt',ddt='cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),select_rows=c('RICTOR','MAPKAP1','DEPTOR'),ddt='cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),select_rows=c('RICTOR','MAPKAP1','DEPTOR'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('RICTOR','MAPKAP1','DEPTOR'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('DEPTOR'),ddt='cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('DEPTOR'),ddt='cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('DEPTOR'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('RICTOR','MAPKAP1'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A'),ddt='cell_type')
+bp
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A'),ddt='cell_type')
+y_bounds
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A'),ddt='cell_type')
+DATA_long
+Q
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A','ARNT'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A','ARNT'),ddt=NULL)
+bp <- MakeBoxPlot(data_location,c('treatment'),'log2',select_rows=c('HIF1A','ARNT'),ddt=NULL)
+bp
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A','ARNT'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A','ARNT','VHL'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A','ARNT','VHL'),ddt='cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('HIF1A','ARNT','VHL'),ddt='cell_type')
+bp
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('VHL','HIF','ARNT'),ddt='cell_type')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('VHL','HIF1A','ARNT'),ddt='cell_type')
+source('initialize_heatmap.R')
+bp <- MakeBoxPlot(data_location,c('treatment','cell_type'),'log2',select_rows=c('VHL','HIF1A','ARNT'),ddt='cell_type')
+>>>>>>> Stashed changes

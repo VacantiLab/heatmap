@@ -49,6 +49,7 @@ transform_data <- function(DATA,transformation)
     transformed = TRUE
   }
 
+  #this is a bit of a mess, is intended for microarray data
   if (transformation == 'med_norm_log2_columns')
   {
 
