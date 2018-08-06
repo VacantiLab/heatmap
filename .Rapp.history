@@ -1,279 +1,127 @@
-g <- probes_to_genes(probe_txt)
-class(g)
-g[1:3,1:4]
-source('probes_to_genes.r')
-g <- probes_to_genes(probe_txt)
-key1 <- g[[3]]
-class(key1)
-key1[1:3,1:2]
-dim(key1)
-key1[1:3,1:3]
-source('probes_to_genes.r')
-g <- probes_to_genes(probe_txt)
-DATA <- g[[1]]
-DATA[1:4,1:3]
-DATA[1:4,c(1,2,3)]
-DATA[1:4,c(1,2,3,'symbol')]
-DATA[1:4,c(1,2,3,'gene_symbol')]
-DATA[1:4,'gene_symbol']
-key1[,'SYMBOL'][1:4]
-colnames(DATA)
-DATA[,'gene_symbol'] <- key1[,'SYMBOL']
-g <- probes_to_genes(probe_txt)
-key1[1,5,]
-key1[1:5,]
-4 in c(4,5,6)
-4 %in% c(4,5,6)
-h <- mtcars
-h
-h['Merc 240D',] <- NULL
-h['Merc 240D',]
-h <- h[-'Merc 240D',]
-h <- h[-c('Merc 240D'),]
-h[-c('Merc 240D'),]
-h[-c(1,3),]
-h[-c('Valiant'),]
-h[c('Valiant'),]
-h[!rownames(h) %in% 'Valiant']
-h[!rownames(h) %in% 'Valiant',]
-g <- probes_to_genes(probe_txt)
-source(probes_to_genes)
-source('probes_to_genes.r')
-source('probes_to_genes.r')
-g <- probes_to_genes(probe_txt)
-source('probes_to_genes.r')
-g <- probes_to_genes(probe_txt)
-DATA <- g[[1]]
-DATA[1:4,c(1,2,3,'gene_symbol')]
-DATA[,'gene_symbol'][1:4]
-DATA[1:5,'gene_symbol']
-rownames(DATA)
-colnames(DATA)
-DATA[1:5,'gene_symbol','GSM239380']
-DATA[1:5,c('gene_symbol','GSM239380')]
-aggdata <-aggregate(mtcars, by=list(cyl,vs), #
-  FUN=mean, na.rm=TRUE)
-mtcars
-aggdata <-aggregate(mtcars, by='cyl',FUN=mean, na.rm=TRUE)
-aggdata <-aggregate(mtcars, by=list('cyl'),FUN=mean, na.rm=TRUE)
-aggdata <-aggregate(mtcars, by=list(mtcars[,'cyl']),FUN=mean, na.rm=TRUE)
-aggdata
-aggdata <-aggregate(mtcars, by=mtcars[,'cyl'],FUN=mean, na.rm=TRUE)
-class(aggdata)
-DATA2 <- aggregate(DATA,by=DATA[,'gene_symbol'],FUN=mean,na.rm=TRUE)
-DATA2 <- aggregate(DATA,by=list(DATA[,'gene_symbol']),FUN=mean,na.rm=TRUE)
-warnings()
-colnames(DATA)
-coonames(DATA2)
-colnames(DATA2)
-length(rownames(DATA2))
-DATA2[,'gene_symbol'][1:4]
-mtcars
-rownames(DATA2)[1:4]
-rownames(DATA)[1:4]
-rownames(DATA2)
-colnames(DATA2)
-DATA2['Group.1'][1:10]
-DATA2[,'Group.1'][1:10]
-100 % 6
-100 %% 6
-source('probes_to_genes.r')
-g <- probes_to_genes(probe_txt)
-g[1:5,1:5]
-colnames(DATA)
-colnames(g)
-num2str(3)
-str(3)
-tostring(3)
-toString(3)
-source('probes_to_genes.r')
-g <- probes_to_genes(probe_txt)
-source('probes_to_genes.r')
-g <- probes_to_genes(probe_txt)
-g[1:10,1:10]
-data_location <- '/Users/nate/Dropbox/Research/Vacanti_Laboratory/Greece_Conference_2018_09/dietary_protein_expression/transcript_quantities/'
-colgrous_scheme <- c('age','protein_intake')
-ColGroupsScheme <- c('age','protein_intake')
-transformation <- 'exp2_mednorm_log2'
-break_seq <- seq(-5,5,1)
-break_seq
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation,break_seq,label_cols=FALSE)
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation,break_seq,data=g,label_cols=FALSE)
-setwd('/Users/nate/git_hub_projects/heatmap')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation,break_seq,data=g,label_cols=FALSE)
-library('heatmap.plus')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation,break_seq,data=g,label_cols=FALSE)
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation,break_seq,data=g,label_cols=FALSE)
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation,break_seq,data=g,label_cols=FALSE,distance_method='euclidian')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation,break_seq,data=g,label_cols=FALSE,DistanceMethod='euclidian')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-h <- mtcars
-h[,'cyl'] - median(h[,'cyl'])
-h
-h[,'cyl'] - median(h[,'cyl']) <- h[,'cyl'] - median(h[,'cyl'])
-h[,'cyl'] <- h[,'cyl'] - median(h[,'cyl'])
-h
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-DATA[1:5,1:5]
-median(DATA[,1])
-median(DATA[,10])
-DATA[1:5,]
-c
-traceback()
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-j <- apply(DATA, 2, function(x) any(is.na(x)))
-j
-sum(j)
-j <- apply(DATA, 2, function(x) any(is.infinite(x)))
-j
-h <- mtcars
-h
-h[,'mpg'] <- h[,'mpg'] - median(h[,'mpg'])
-h
-median(h[,'mpg'])
-quit
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-j <- apply(DATA, 2, function(x) any(is.infinite(x)))
-j
-column_names <- colnames(DATA) #record the column names after the unecessary column is removed#
-      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
-DATA <- data.frame(lapply(Transposed_DATA, exp2_mednorm_log2))#
-      DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
-j <- apply(DATA, 2, function(x) any(is.infinite(x)))
-j
-colnames(DATA) <- column_names
-j <- apply(DATA, 2, function(x) any(is.infinite(x)))
-j
-Q
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-DATA2 <- DATA
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-for (specified_column in colnames(DATA))#
-      {#
-          DATA_centered[,specified_column] <- DATA[,specified_column] - median(DATA[,specified_column])#
-      }
-column_names <- colnames(DATA) #record the column names after the unecessary column is removed#
-      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns#
-      DATA_row_cent <- data.frame(lapply(Transposed_DATA, exp2_mednorm_log2))#
-      DATA_row_cent <- data.frame(t(DATA)) #transpose back resulting in scaled rows#
-      colnames(DATA_row_cent) <- column_names
-DATA_control <- DATA_row_cent
-j <- apply(DATA_control, 2, function(x) any(is.infinite(x)))
-j
-Q
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-for (specified_column in colnames(DATA))#
-      {#
-          DATA2[,specified_column] <- DATA[,specified_column] - median(DATA[,specified_column])#
-      }
-column_names <- colnames(DATA) #record the column names after the unecessary column is removed#
-      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns#
-      DATA2 <- data.frame(lapply(Transposed_DATA, exp2_mednorm_log2))#
-      DATA2 <- data.frame(t(DATA)) #transpose back resulting in scaled rows#
-      colnames(DATA2) <- column_names #give the column names back because they are lost when converted to a matrix by t() function#
-      transformed = TRUE
-j <- apply(DATA2, 2, function(x) any(is.infinite(x)))
-j
-column_names <- colnames(DATA) #record the column names after the unecessary column is removed#
-      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns#
-      DATA2 <- data.frame(lapply(Transposed_DATA, exp2_mednorm_log2))#
-      DATA2 <- data.frame(t(DATA2)) #transpose back resulting in scaled rows#
-      colnames(DATA2) <- column_names #give the column names back because they are lost when converted to a matrix by t() function#
-      transformed = TRUE
-j <- apply(DATA2, 2, function(x) any(is.infinite(x)))
-j
-DATA[1:10,1:10]
-for (specified_column in colnames(DATA))#
-      {#
-          DATA3[,specified_column] <- DATA[,specified_column] - median(DATA[,specified_column])#
-      }
-DATA3[1:10,1:10]
-DATA3 <- DATA
-for (specified_column in colnames(DATA))#
-      {#
-          DATA3[,specified_column] <- DATA[,specified_column] - median(DATA[,specified_column])#
-      }
-DATA3[1:10,1:10]
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-DATA[1:10,1:10]
-median([DATA[,1]])
-median(DATA[,1])
-median(DATA[,2])
-test_row <- DATA[1,]
-test_row
-2^test_row
-test_row_exp <- 2^test_row
-test_row_exp
-test_row_norm <- test_row_exp/median(test_row_exp)
-test_row_norm
-log2(-4)
-log2(test_row_norm)
-Q
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=g,label_cols=FALSE,DistanceMethod='pearson')
-j <- apply(DATA, 2, function(x) any(is.infinite(x)))
-j
-j <- apply(DATA, 1, function(x) any(is.infinite(x)))
-j
-sum(j)
-inf > 8
-Inf > 9
-apply(DATA, 2, function(x) ifelse(x > 10, 10, x))
-DATA2 <- apply(DATA, 2, function(x) ifelse(x > 10, 10, x))
-j <- apply(DATA2, 1, function(x) any(is.infinite(x)))
-sum(j)
-g <- mtcars
-apply(g, 2, function(x) ifelse(x > 10, 10, x))
-h <- apply(DATA, 2, function(x) ifelse(x > 10, 10, x))
-j <- apply(h, 1, function(x) any(is.infinite(x)))
-sum(j)
-h <- apply(DATA, 2, function(x) ifelse(is.infinite(x), 10, x))
-j <- apply(h, 1, function(x) any(is.infinite(x)))
-sum(j)
-Q
+dm <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)
+dm
+rownames(dm) <- c('W','X','Y','Z')
+dm
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm) <- c('W','X','Y','Z')#
+colnams(dm) <- c('W','X','Y','Z')
+colnames(dm) <- c('W','X','Y','Z')
+dm
+dm_df <- as.data.frame(dm)
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm_mat) <- c('W','X','Y','Z')#
+colnames(dm_mat) <- c('W','X','Y','Z')#
+dm_df <- as.data.frame(dm)
+dm_df
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm_mat) <- c('W','X','Y','Z')#
+colnames(dm_mat) <- c('W','X','Y','Z')#
+dm_df <- as.data.frame(dm_mat)
+dm_df
+D_col <- dist(t(dm_df))
+D_col
+dm_dist <- as.dist(dm_mat)
+dm_dist
+C_col <- hclust(dm_dist, method='complete',members=NULL)
+plot(C_row,hang=-1,lwd=0.5)
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'
+pdf(paste(filepath,'row_dendrogram',sep=''),height=4,width=4)
+plot(C_col,hang=-1,lwd=0.5)
+dev.off()
+C_col <- hclust(dm_dist, method='ward.d2',members=NULL)#
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
+pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
+plot(C_col,hang=-1,lwd=0.5)#
+dev.off() #turn off printing to the specified pdf
+C_col <- hclust(dm_dist, method='ward.D2',members=NULL)#
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
+pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
+plot(C_col,hang=-1,lwd=0.5)#
+dev.off() #turn off printing to the specified pdf
+dm_mat <- matrix(c(0,2,5,6,2,0,6,7,5,6,0,5,6,7,5,0),nrow=4,ncol=4)#
+rownames(dm_mat) <- c('W','X','Y','Z')#
+colnames(dm_mat) <- c('W','X','Y','Z')#
+dm_df <- as.data.frame(dm_mat)#
+dm_dist <- as.dist(dm_mat)#
+C_col <- hclust(dm_dist, method='complete',members=NULL)#
+filepath <- '/Users/nate/Dropbox/Research/Lehtio_Laboratory/Projects/Methods_in_molecular_biology_chapter/Figure_3/'#
+pdf(paste(filepath,'row_dendrogram.pdf',sep=''),height=4,width=4)#
+plot(C_col,hang=-1,lwd=0.5)#
+dev.off() #turn off printing to the specified pdf
+install.packages('enrichR')
+library('enrichR')
+glycolysis_extract <- c('HK3','HK1','HK2','HKDC1','GCK','GPI','PFKM','PFKP')
+enrichr(glycolysis_extract,'KEGG_2016')
+enrichr(glycolysis_extract,NULL)
+enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia')
+s
+enrichr(glycolysis_extract,c('KEGG_2016','Cancer_Cell_Line_Encyclopedia'))
+source("https://bioconductor.org/biocLite.R")
+library(limma)
+biocLite('limma')
+library(limma)
+cond = as.factor(c(rep("ctrl",5), rep("drug",5)))
+cond
+design  =  model.matrix(~cond)
+design
+design  =  model.matrix(0~cond)
+design  =  model.matrix(0 + ~cond)
+design  =  model.matrix(0+~cond)
+design  =  model.matrix(1+~cond)
+design  =  model.matrix(1 ~cond)
+design  =  model.matrix(~0+cond)
+design
+design  =  model.matrix(~1+cond)
+design
+sampleTable = data.frame(sample= 1:12, group = c(rep("CL1",6),rep("CL2",6)),#
+                         drug = rep(c(rep("ctrl",3),rep("treat",3)),2))
+sampleTable
+rownames(design)
+library(limma)
+cond = as.factor(c(rep("ctrl",5), rep("drug",5)))
+design  =  model.matrix(~cond)
+cont = makeContrasts(drug-ctrl, levels = design)
+sampleTable = data.frame(sample= 1:12, group = c(rep("CL1",6),rep("CL2",6)),#
+                         drug = rep(c(rep("ctrl",3),rep("treat",3)),2))
+cond
+design = model.matrix(~group+drug,sampleTable)
+sampleTable = data.frame(sample= 1:12, group = c(rep("CL1",6),rep("CL2",6)),#
++                          drug = rep(c(rep("ctrl",3),rep("treat",3)),2))
+design
+sampleTable
+sampleTable = data.frame(sample= 1:12, group = c(rep("CL1",6),rep("CL2",6)),#
+                         drug = rep(c(rep("ctrl",3),rep("treat",3)),2))
+design = model.matrix(~group+drug,sampleTable)
+design
+sampleTable
+sampleTable[,1] <- c('a','b','c','d','e','f','g','h','i','j','k','l')
+sampleTable
+design = model.matrix(~group+drug,sampleTable)
+design
+rownames(sampleTable) <- sampleTable[,'sample']
+sampleTable
+design = model.matrix(~group+drug,sampleTable)
+design
+sampleTable[,'sample'] <- NULL
+sampleTable
+design = model.matrix(~group+drug,sampleTable)
+design
 setwd('/Users/nate/git_hub_projects/microarray')
+source('probes_to_gene.py')
+source('probes_to_genes.py')
 source('probes_to_genes.r')
-microarray_data <- probes_to_genes(probe_txt)
+micro_array <- probes_to_genes('/Users/nate/Dropbox/Research/Vacanti_Laboratory/Greece_Conference_2018_09/dietary_protein_expression/GSE9419_series_matrix.txt')
+traceback()
+micro_array <- probes_to_genes('/Users/nate/Dropbox/Research/Vacanti_Laboratory/Greece_Conference_2018_09/dietary_protein_expression/transcript_quantities/quantities.txt')
+library('hgu133plus2.db')
+micro_array <- probes_to_genes('/Users/nate/Dropbox/Research/Vacanti_Laboratory/Greece_Conference_2018_09/dietary_protein_expression/transcript_quantities/quantities.txt')
+data_location <- '/Users/nate/Dropbox/Research/Vacanti_Laboratory/Greece_Conference_2018_09/dietary_protein_expression/transcript_quantities/'
 setwd('/Users/nate/git_hub_projects/heatmap')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-Q
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-is.inf(Inf)
-is.infinite(Inf)
-is.infinite(-Inf)
-Inf == Inf
-Inf == -Inf
+hm <- MakeHeatMap(data_location,c('age','protein_intake')'log2',break_seq(-5,5,1),data=micro_array,label_cols=FALSE,med_norm=TRUE)
+hm <- MakeHeatMap(data_location,c('age','protein_intake'),'log2',break_seq(-5,5,1),data=micro_array,label_cols=FALSE,med_norm=TRUE)
+hm <- MakeHeatMap(data_location,c('age','protein_intake'),'log2',seq(-5,5,1),data=micro_array,label_cols=FALSE,med_norm=TRUE)
 source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='zero_center_col_exp2_mednorm_log2_row',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_zero_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_zero_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_zero_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_zero_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_norm_log2_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_norm_log2_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation=NULL,break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation=NULL,break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_norm_log2_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-source('initialize_heatmap.R')
-source('initialize_heatmap.R')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation='med_norm_log2_columns',break_seq,data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-hm <- MakeHeatMap(data_location,ColGroupsScheme,transformation=NULL,seq(0,5000,100),data=microarray_data,label_cols=FALSE,DistanceMethod='pearson')
-library(GEOquery)
-biocLite("GEOquery")
-biocLite("GEOquery")
+hm <- MakeHeatMap(data_location,c('age','protein_intake'),'log2',seq(-5,5,1),data=micro_array,label_cols=FALSE,med_norm=TRUE)
+hm <- MakeHeatMap(data_location,c('age','protein_intake'),'median_norm_log2_transform',seq(-5,5,1),data=micro_array,label_cols=FALSE,med_norm=TRUE)
+hm <- MakeHeatMap(data_location,c('age','protein_intake'),'median_norm_log2_transform',seq(-3,3,1),data=micro_array,label_cols=FALSE,med_norm=TRUE)
