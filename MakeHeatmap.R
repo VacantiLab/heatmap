@@ -58,7 +58,6 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
 
     print('making the heatmap')
     #make numeric matrix out of data frame
-    browser()
     DifExpMatx=matrix(as.numeric(unlist(DATA)),nrow=nrow(DATA))
     rownames(DifExpMatx)<-rownames(DATA) #name the rows of the numeric matrix so they are transfered to the dendrogram in the heat map
     colnames(DifExpMatx)<-colnames(DATA) #name the columns of the numeric matrix so they are transfered to the dendrogram in the heat map
