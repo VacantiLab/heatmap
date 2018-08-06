@@ -121,7 +121,7 @@ transform_data <- function(DATA,transformation)
         Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
         DATA <- data.frame(lapply(Transposed_DATA, median_norm))
         DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
-        DATA <- data.frame(lapply(Transposed_DATA, median_norm_log2_transform)) #median norm the columns and then log2 transform everything
+        DATA <- data.frame(lapply(DATA, median_norm_log2_transform)) #median norm the columns and then log2 transform everything
         colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
         transformed = TRUE
     }
