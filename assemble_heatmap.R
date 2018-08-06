@@ -28,7 +28,6 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
         png(graphics_file,height=graphics_h,width=graphics_w,units='px',pointsize=24)
     }
 
-    browser()
     if (!is.null(GroupColorMatrix)){if (dim(GroupColorMatrix)[2]>1)
     {
         heatmap <- heatmap.plus(x=DifExpMatx,
