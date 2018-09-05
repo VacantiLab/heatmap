@@ -6,7 +6,22 @@ XAxisLimits <- 1.1*c(min(rp_df[,XData]),max(rp_df[,XData]))
 if (min(rp_df[,YData])>0){ymin=0}
 if (min(rp_df[,YData])<0){ymin=1.1*min(rp_df[,YData])}
 YAxisLimits <- 1.1*c(ymin,max(rp_df[,YData]))
-AxisLabels <- c('Log2 Ratio','-Log10(p-value)')
+XLabel <- 'Log2 Ratio'
+YLabel <- '-Log10(p-value)'
+
+#The data is standardized if the plot is for ranking the regulated genes
+if (min(rp_df[,YData])<0)
+{
+    XLabel <- 'Standardized Log2 Ratio'
+    YLabel <- 'Standardized -Log10(p-value)'
+
+    AxisLimits <- abs(c(XAxisLimits,YAxisLimits))
+    AxisLimits <- c(-max(AxisLimits),max(AxisLimits))
+    XAxisLimits <- AxisLimits
+    YAxisLimits <- AxisLimits
+}
+
+AxisLabels <- c(XLabel,YLabel)
 PlotDimensions <- c(4,4)
 
 #linear_fit <- geom_smooth(method = "lin_model", se = FALSE, col='red',size=0.1) +
