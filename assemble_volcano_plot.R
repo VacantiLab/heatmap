@@ -29,9 +29,13 @@ if (filename == 'volcano.pdf'){linear_fit <- NULL}
 if (filename == 'volcano_regression.pdf'){linear_fit <- geom_smooth(method = "lm", se = FALSE, col='red',size=0.1)} #lm is a function used to fit a line
 
 ScatterPlot <-  ggplot(rp_df,aes_string(x=XData,y=YData)) +
-    geom_point(color='black') + #specifying one color may remove the legend, May be necessary to make this a string when considering groups
-    annotate('point',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='red') + #points to highlight in red on the volcano plot, x-points first, then y-points
-    annotate('text',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='#0088B2',label=rownames(rp_df[genes_to_label,]),size=0.75) + #points to highlight in red on the volcano plot, x-points first, then y-points
+    #Make it a density plot with the number of bins specified
+    geom_hex(bins=100) +
+    #Set the color scale with a named palette, the direction specifying which end of the palette corresponds to high and low
+    scale_fill_distiller(palette= "Spectral", direction=-1) +
+    #geom_point(color='black') + #specifying one color may remove the legend, May be necessary to make this a string when considering groups
+    annotate('point',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='purple',size=0.5) + #points to highlight in red on the volcano plot, x-points first, then y-points
+    annotate('text',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='black',label=rownames(rp_df[genes_to_label,]),size=0.75) + #points to highlight in red on the volcano plot, x-points first, then y-points
     linear_fit +
     coord_cartesian(xlim=XAxisLimits,ylim=YAxisLimits,expand = 0) + #expand=0 removes extra space before and after first and last tick marks
     theme(axis.text.y=element_text(color='black',size=10)) +
@@ -50,6 +54,7 @@ ScatterPlot <-  ggplot(rp_df,aes_string(x=XData,y=YData)) +
     #theme(legend.position=LegendPosition) +
     theme(legend.key.size = unit(0.3, "cm")) + #Space between legend symbols and text, maybe?
     theme(legend.background = element_rect(fill="transparent",linetype = 0,colour = 'transparent')) +
+    theme(legend.position = c(0.10, 0.9)) +
     labs(x=AxisLabels[1]) +
     labs(y=AxisLabels[2])
 
