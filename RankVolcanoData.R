@@ -6,10 +6,6 @@ RankVolcanoData <- function(volcano_df,output_directory)
 #     necessary to retrieve gene descriptions from gene symbols
 library(biomaRt)
 
-# Set the mart object to point to the human genome in ensembl
-#    useEnsembl function is part of the biomaRt library
-ensembl = useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl")
-
 #create a data frame to perform a regression on the columns
 #DATA_reg <- DATA_annotated_less_groups #This is the output of the MakeVolcanoPlot function
 #genes_to_label <- c('ATIC')
@@ -45,21 +41,31 @@ ranked_gene_df[,'rank'] <- n_genes:1 #In GSEA the higher (larger number) the ran
 # Initialize the data frame
 ranked_gene_df_description <- ranked_gene_df
 
+# Set the mart object to point to the human genome in ensembl
+#    useEnsembl function is part of the biomaRt library
+ensembl = useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl")
+
+# retrieve a dataframe with the gene symbols and descriptions
+gene_description_df <- getBM(attributes=c('hgnc_symbol','description'), filters ='hgnc_symbol', values=ranked_gene_df[,'gene'], mart=ensembl)
+
 # keep track of the rows while iterating through the gene symbols
 row_iterator <- 1
 for (gene_symbol in ranked_gene_df[,'gene'])
 {
-    # retrieve a dataframe with the gene symbols
-    gene_description_df <- getBM(attributes=c('description'), filters ='hgnc_symbol', values=c(gene_symbol), mart=ensembl)
+    print(row_iterator)
+    row_number <- match(gene_symbol,ranked_gene_df[,'gene'])
+
     # initialize the gene description
     gene_description <- ''
     # if the description was found, record it
-    if (!nrow(gene_description_df)==0)
+    if (gene_symbol %in% gene_description_df[,'hgnc_symbol'])
     {
-        gene_description <- gene_description_df[1,'description']
+        gene_description_df_row_selector <- gene_description_df[,'hgnc_symbol'] == gene_symbol
+        gene_description_df_row <- gene_description_df[gene_description_df_row_selector,]
+        gene_description <- gene_description_df_row[1,'description']
     }
     # place the description in the data frame
-    ranked_gene_df_description[row_iterator,'description'] <- gene_description
+    ranked_gene_df_description[row_number,'description'] <- gene_description
     # iterate the row counter
     row_iterator <- row_iterator + 1
 }
