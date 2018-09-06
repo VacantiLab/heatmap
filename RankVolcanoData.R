@@ -2,6 +2,14 @@ RankVolcanoData <- function(volcano_df,output_directory)
 {
 #This script creates a descending list of ranked genes based on p-value and fold change of expression between groups
 
+# Load the biomaRt library
+#     necessary to retrieve gene descriptions from gene symbols
+library(biomaRt)
+
+# Set the mart object to point to the human genome in ensembl
+#    useEnsembl function is part of the biomaRt library
+ensembl = useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl")
+
 #create a data frame to perform a regression on the columns
 #DATA_reg <- DATA_annotated_less_groups #This is the output of the MakeVolcanoPlot function
 #genes_to_label <- c('ATIC')
@@ -33,8 +41,32 @@ colnames(ranked_gene_df) <- c('gene','rank')
 ranked_gene_df[,'gene'] <- ranked_gene_list
 ranked_gene_df[,'rank'] <- n_genes:1 #In GSEA the higher (larger number) the ranking the more up-regulated the gene
 
+# Create a new data frame with the gene descriptions
+# Initialize the data frame
+ranked_gene_df_description <- ranked_gene_df
+
+# keep track of the rows while iterating through the gene symbols
+row_iterator <- 1
+for (gene_symbol in ranked_gene_df[,'gene'])
+{
+    # retrieve a dataframe with the gene symbols
+    gene_description_df <- getBM(attributes=c('description'), filters ='hgnc_symbol', values=c(gene_symbol), mart=ensembl)
+    # initialize the gene description
+    gene_description <- ''
+    # if the description was found, record it
+    if (!nrow(gene_description_df)==0)
+    {
+        gene_description <- gene_description_df[1,'description']
+    }
+    # place the description in the data frame
+    ranked_gene_df_description[row_iterator,'description'] <- gene_description
+    # iterate the row counter
+    row_iterator <- row_iterator + 1
+}
+
 
 write.table(ranked_gene_df,paste(output_directory,'descending_regulated_gene_list.txt',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep='\t')
+write.table(ranked_gene_df_description,paste(output_directory,'descending_regulated_gene_list_description.txt',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep='\t')
 
 RankVolcanoData_return <- list(volcano_df,lin_model)
 return(RankVolcanoData_return)
