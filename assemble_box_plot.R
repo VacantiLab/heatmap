@@ -20,7 +20,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- unit(4,'cm')
+    pdf_width <- unit(2,'cm')
     pdf_height <- unit(4,'cm')
     bar_width <- 0.50
     inter_group_spacing <- 0.55
@@ -43,7 +43,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     }
 
     #If you want to add markers for points on the boxplot
-    boxplot_points <- TRUE #for now this needs to be changed in the source code to have points on the boxplot
+    boxplot_points <- FALSE #for now this needs to be changed in the source code to have points on the boxplot
     gtp <- NULL
     if(boxplot_points)
     {
