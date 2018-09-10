@@ -52,7 +52,6 @@ gene_description_df <- getBM(attributes=c('hgnc_symbol','description'), filters 
 row_iterator <- 1
 for (gene_symbol in ranked_gene_df[,'gene'])
 {
-    print(row_iterator)
     row_number <- match(gene_symbol,ranked_gene_df[,'gene'])
 
     # initialize the gene description
