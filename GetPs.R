@@ -1,4 +1,4 @@
-GetPs <- function(group_order,gene_name,DATA,groups_corresponding)
+GetPs <- function(group_order,gene_name,DATA,groups_corresponding,visualization)
 # This function returns a data frame with the rownames being the group-pair comparison and the column being the gene
 {
     #name the groupwise test: i.e. list the two groups being tested
@@ -26,7 +26,7 @@ GetPs <- function(group_order,gene_name,DATA,groups_corresponding)
 
     group1_members <- rownames(groups_corresponding[groups_corresponding[,1]==group_order[1],1,drop=FALSE])
     group2_members <- rownames(groups_corresponding[groups_corresponding[,1]==group_order[2],1,drop=FALSE])
-    SigTestApplyReturn <- t(apply(gene_name,1,SigTest,DATA=DATA,group1_members=group1_members,group2_members=group2_members))
+    SigTestApplyReturn <- t(apply(gene_name,1,SigTest,DATA=DATA,group1_members=group1_members,group2_members=group2_members,visualization=visualization))
     rownames(SigTestApplyReturn) <- gene_name
     colnames(SigTestApplyReturn) <- c('p_val','ratio')
 
@@ -43,7 +43,7 @@ GetPs <- function(group_order,gene_name,DATA,groups_corresponding)
 }
 
 #Supporting function to calculate p-values
-SigTest <- function(gene_name,DATA,group1_members,group2_members)
+SigTest <- function(gene_name,DATA,group1_members,group2_members,visualization)
 {
     value_group1 <- as.numeric(DATA[gene_name,group1_members])
     value_group2 <- as.numeric(DATA[gene_name,group2_members])
@@ -51,7 +51,18 @@ SigTest <- function(gene_name,DATA,group1_members,group2_members)
     #alternative_option = 'less'
     alternative_option = 'two.sided'
 
-    t_test_result <- t.test(value_group1,value_group2,var.equal=TRUE,alternative=alternative_option)
+    # perform the t-tests on log2 transformed values if specified
+    #     this true for volcano plots and not boxplots!
+    #     volcano plots never have a transformation specified becuase that is done automatically in the program
+    value_group1_transformed = value_group1
+    value_group2_transformed = value_group2
+    if (visualization == 'volcanoplot')
+    {
+        value_group1_transformed = log2(value_group1)
+        value_group2_transformed = log2(value_group2)
+    }
+
+    t_test_result <- t.test(value_group1_transformed,value_group2_transformed,var.equal=TRUE,alternative=alternative_option)
     p_val <- t_test_result[[3]]
     ratio <- median(value_group1)/median(value_group2)
     SigTestReturn <- c(p_val,ratio)

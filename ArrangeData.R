@@ -191,7 +191,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         n_groups <- length(group_order)
         if (n_groups==2)
         {
-            sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding)
+            sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding,visualization)
         }
     }
 
