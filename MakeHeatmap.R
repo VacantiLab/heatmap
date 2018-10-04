@@ -35,6 +35,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
 #    It can also be a string that is one of the members of ColGroupsScheme
 #        If this is the case, the data within groups designated by the ddt grouping scheme will be normalized to the median of the group
 # med_norm specifies to median normalize columns, will occur before rows are selected or other transformations performed (Done within OpenDataFile)
+# handle_blanks is used in OpenDataFile in the SupportingFunctions.R file. It is a string that specifies what to do with blank values
 
 {
     #Extract the data required to make a heatmap
