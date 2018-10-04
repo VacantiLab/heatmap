@@ -38,6 +38,34 @@ transform_data <- function(DATA,transformation)
         transformed = TRUE
     }
 
+    #center rows on median and normalize by IQR
+    if (transformation == 'row_median_center_range_norm')
+    {
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+        DATA <- data.frame(lapply(Transposed_DATA, median_center_range_norm))
+        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        transformed = TRUE
+    }
+
+    if (transformation == 'row_median_center_iqr_norm_col_iqr_norm')
+    {
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+        DATA <- data.frame(lapply(Transposed_DATA, median_center_iqr_norm))
+        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        row_names <- rownames(DATA)
+        DATA <- data.frame(lapply(DATA, iqr_norm))
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        rownames(DATA) <- row_names
+
+        transformed = TRUE
+    }
+
     #raise to power 2, median norm, then log2 transform
     if (transformation == 'exp2_row_mednorm_log2')
     {
@@ -139,6 +167,22 @@ transform_data <- function(DATA,transformation)
 median_center_iqr_norm <- function(vector)
 {
   centered <- vector - median(vector)
+  scaled <- centered/IQR(vector)
+  return(scaled)
+}
+
+#Function to center on median and scale by IQR
+median_center_range_norm <- function(vector)
+{
+  centered <- vector - median(vector)
+  scaled <- centered/(max(vector)-min(vector))
+  return(scaled)
+}
+
+#Function to center on median and scale by IQR
+iqr_norm <- function(vector)
+{
+  centered <- vector
   scaled <- centered/IQR(vector)
   return(scaled)
 }

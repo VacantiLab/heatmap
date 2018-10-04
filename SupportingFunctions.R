@@ -1,13 +1,31 @@
-OpenDataFile <- function(data,select_rows,med_norm)
+OpenDataFile <- function(data,select_rows,med_norm,handle_blanks)
 #Takes a data file location and reads the data into a data frame compatible with the MakeHeatMap function
 {
     #Import the data
     if (is.data.frame(data)) {DATA <- data} #If the input, data, is provided as a data frame, it is the data
     if (is.character(data)) {DATA <- read_txt_to_df(data)} #If the input, data, is provided as a string it is the directory to the text file with the data
 
-    #remove any rows with NA as an entry
-    has_no_na_row_indices <- apply(DATA,1,NoNA)
-    DATA <- DATA[has_no_na_row_indices,]
+    #handle blank entries
+    if (handle_blanks == 'remove_row')
+    {
+        has_no_na_row_indices <- apply(DATA,1,NoNA)
+        DATA <- DATA[has_no_na_row_indices,]
+    }
+
+    if (handle_blanks == 'replace_with_tenthrowmin')
+    {
+        has_no_na_row_indices <- apply(DATA,1,NoNA)
+        has_na_indices <- !has_no_na_row_indices
+        rows_of_interest <- rownames(DATA)[has_na_indices]
+        for (row in rows_of_interest)
+        {
+            columns_na = is.na(DATA[row,])
+            columns_not_na = !is.na(DATA[row,])
+            not_na_entries = DATA[row,][columns_not_na]
+            replacement_value = (1/10)*min(not_na_entries)
+            DATA[row,][columns_na] = replacement_value
+        }
+    }
 
     #median-normalize columns if specified to do so
     if (med_norm)
