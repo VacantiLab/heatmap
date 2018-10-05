@@ -1,4 +1,4 @@
-assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot)
+assemble_violin_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot)
 {
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
     x_var <- 'gene'
@@ -20,16 +20,16 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- unit(2,'cm')
+    pdf_width <- unit(4,'cm')
     pdf_height <- unit(4,'cm')
-    bar_width <- 0.50
+    bar_width <- 1.0
     inter_group_spacing <- 0.55
     legend_position <- c(0.12,0.98)
 
     #If there are groups, the group color is specified by the color_var
     if(!is.null(FillColors))
     {
-        gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2)
+        gbp <- geom_violin(aes_string(fill=color_var),width=bar_width,position=position_dodge(width=inter_group_spacing),lwd=0,draw_quantiles=c(0.5))
         #gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=20,lwd=0.2)
             # second line provides outlier shape
     }
@@ -37,7 +37,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     #If there are no groups, the group color is specified by no_groups_color
     if(is.null(FillColors))
     {
-        gbp <- geom_boxplot(outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2,fill=no_groups_color)
+        gbp <- geom_violin(width=bar_width,position=position_dodge(width=inter_group_spacing),lwd=0,fill=no_groups_color)
         #gbp <- geom_boxplot(outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=20,lwd=0.2,fill=no_groups_color)
         # second line provides outlier shape
     }
@@ -56,7 +56,6 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
 
 
     b <- ggplot(DATA_long,aes_string(x=x_var, y=y_var)) +
-         #gvp +
          gbp +
          gtp +
          theme(axis.text.y=element_text(color='black',size=TextSize)) +
