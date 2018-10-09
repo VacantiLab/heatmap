@@ -12,15 +12,15 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-    graphics_type <- '.png'
+    graphics_type <- '.pdf'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
-    graphics_w = 1000
-    graphics_h = 1000
+    graphics_w = 20
+    graphics_h = 20
 
     if (graphics_type == '.pdf')
     {
-        pdf(graphics_file,height=4,width=4) #not sure of the units of width and height
+        pdf(graphics_file,height=graphics_h,width=graphics_w) #not sure of the units of width and height
     }
 
     if (graphics_type == '.png')
@@ -33,8 +33,8 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
         heatmap <- heatmap.plus(x=DifExpMatx,
                                 Colv=colv,
                                 Rowv=rowv,
-                                cexRow=1,
-                                cexCol=0.5,
+                                cexRow=0.25,
+                                cexCol=0.25,
                                 ColSideColors = GroupColorMatrix,
                                 col=heat_map_colors,
                                 breaks=break_seq,

@@ -12,7 +12,7 @@ OpenDataFile <- function(data,select_rows,med_norm,handle_blanks)
         DATA <- DATA[has_no_na_row_indices,]
     }
 
-    if (handle_blanks == 'replace_with_tenthrowmin')
+    if (handle_blanks == 'replace_with_rowmin')
     {
         has_no_na_row_indices <- apply(DATA,1,NoNA)
         has_na_indices <- !has_no_na_row_indices
@@ -22,7 +22,7 @@ OpenDataFile <- function(data,select_rows,med_norm,handle_blanks)
             columns_na = is.na(DATA[row,])
             columns_not_na = !is.na(DATA[row,])
             not_na_entries = DATA[row,][columns_not_na]
-            replacement_value = (1/10)*min(not_na_entries)
+            replacement_value = (1/1)*min(not_na_entries)
             DATA[row,][columns_na] = replacement_value
         }
     }

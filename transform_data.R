@@ -121,6 +121,17 @@ transform_data <- function(DATA,transformation)
         transformed = TRUE
     }
 
+    #Normalize rows to row median and log2 transform
+    if (transformation == 'row_average_norm_log2')
+    {
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+        DATA <- data.frame(lapply(Transposed_DATA, average_norm_log2_transform))
+        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        transformed = TRUE
+    }
+
     #normalize by iqr, log2 trasform, then center on resulting median
     if (transformation == 'row_iqr_norm_log2_median_center')
     {
@@ -191,6 +202,14 @@ iqr_norm <- function(vector)
 median_norm_log2_transform <- function(vector)
 {
   normalized <- vector/median(vector)
+  transformed <- log2(normalized)
+  return(transformed)
+}
+
+#Function to normalize by median and log2 transform
+average_norm_log2_transform <- function(vector)
+{
+  normalized <- vector/mean(vector)
   transformed <- log2(normalized)
   return(transformed)
 }
