@@ -12,7 +12,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-    graphics_type <- '.png'
+    graphics_type <- '.jpeg'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
     graphics_w = 8
@@ -26,6 +26,11 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (graphics_type == '.png')
     {
         png(graphics_file,height=graphics_h,width=graphics_w,units='in',pointsize=24,res=600)
+    }
+
+    if (graphics_type == '.jpeg')
+    {
+        jpeg(graphics_file,height=graphics_h,width=graphics_w,units='in',pointsize=24,res=600)
     }
 
     # Redefine parameters passed to heatmap function (the matrix and the column dendrogram) if specified to make a correlation matrix
