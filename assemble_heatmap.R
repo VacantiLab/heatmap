@@ -1,4 +1,4 @@
-assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row)
+assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation)
 #This function is needed because heatmap.plus cannot handle only a single grouping scheme, it must be provided at least two
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
 #uses dendextend package for coloring dendrogram branches
@@ -12,11 +12,11 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-    graphics_type <- '.pdf'
+    graphics_type <- '.png'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
-    graphics_w = 20
-    graphics_h = 20
+    graphics_w = 8
+    graphics_h = 8
 
     if (graphics_type == '.pdf')
     {
@@ -25,7 +25,14 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
 
     if (graphics_type == '.png')
     {
-        png(graphics_file,height=graphics_h,width=graphics_w,units='px',pointsize=24)
+        png(graphics_file,height=graphics_h,width=graphics_w,units='in',pointsize=24,res=600)
+    }
+
+    # Redefine parameters passed to heatmap function (the matrix and the column dendrogram) if specified to make a correlation matrix
+    if (presentation=='correlation_matrix')
+    {
+      DifExpMatx <- Cor_row
+      colv <- rowv
     }
 
     if (!is.null(GroupColorMatrix)){if (dim(GroupColorMatrix)[2]>1)
@@ -54,7 +61,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           ColSideColors = GroupColorMatrix,
                           col=heat_map_colors,
                           breaks=break_seq,
-                          margins=c(5,10),
+                          #margins=c(5,10),
                           scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
                           labRow=label_rows,
                           labCol=label_cols)
@@ -69,7 +76,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           cexCol=0.5,
                           col=heat_map_colors,
                           breaks=break_seq,
-                          margins=c(5,10),
+                          #margins=c(5,10),
                           scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
                           labRow=label_rows,
                           labCol=label_cols)

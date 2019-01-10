@@ -101,6 +101,7 @@ ClusterData <- function(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
         D_row <- (1-Cor_row)/2
         D_row <- as.dist(D_row)
     }
+
     #This function computes the distance matrix where the rows are points. This is the desired output in this instance.
 
     #A distance matrix looks like the following where 1->2 indicates distance from the point
@@ -140,7 +141,7 @@ ClusterData <- function(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
     if (rev_c_dend) {colv <- rev(colv)}
 
     #return used variables
-    ClusterData_return <- list(colv,rowv,C_col,C_row)
+    ClusterData_return <- list(colv,rowv,C_col,C_row,Cor_col,Cor_row)
 }
 
 ###############################################################################

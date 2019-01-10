@@ -1,4 +1,4 @@
-MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,break_seq=NULL,replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=TRUE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row')
+MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal')
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -36,6 +36,8 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
 #        If this is the case, the data within groups designated by the ddt grouping scheme will be normalized to the median of the group
 # med_norm specifies to median normalize columns, will occur before rows are selected or other transformations performed (Done within OpenDataFile)
 # handle_blanks is used in OpenDataFile in the SupportingFunctions.R file. It is a string that specifies what to do with blank values
+# presentation: can be set to 'correlation_matrix' to display the correlation of each row vs. each other row as the matrix visualization
+#    The original clustering of the rows of the input data will determine the visualization dendrograms (along the rows and colums - they're the same)
 
 {
     #Extract the data required to make a heatmap
@@ -56,6 +58,8 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
     rowv <- ClusterData_return[[2]] #dendrogram object
     C_col <- ClusterData_return[[3]]
     C_row <- ClusterData_return[[4]] #hclust object
+    Cor_col <- ClusterData_return[[5]] #column correlation matrix
+    Cor_row <- ClusterData_return[[6]] #row correlation matrix
 
     print('making the heatmap')
     #make numeric matrix out of data frame
@@ -68,7 +72,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,b
     label_cols <- FindColLabels(label_cols,DifExpMatx)
 
     #Draw and save the heatmap
-    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row)
+    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation)
     heat_map_colors <- assemble_heatmap_return[[1]]
 
     #Draw and save the legends
