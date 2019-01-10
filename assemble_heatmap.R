@@ -90,13 +90,13 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     dev.off() #turn off printing to the specified pdf
 
     #print the column dendrogram as pdf
-    pdf(paste(HeatmapDirectory,'col_dendrogram',sep=''),height=4,width=4) #not sure of the units of width and height
+    pdf(paste(HeatmapDirectory,'col_dendrogram',sep=''),height=4,width=10) #not sure of the units of width and height
     plot(C_col,hang=-1)
     dev.off() #turn off printing to the specified pdf
 
     #print the column dendrogram as pdf
     color_dend = FALSE
-    pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=10) #not sure of the units of width and height
+    pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=2500) #not sure of the units of width and height
     if (color_dend == TRUE)
     {
         n_clusters <- 12
