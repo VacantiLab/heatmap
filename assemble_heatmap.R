@@ -12,26 +12,25 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-    graphics_type <- '.png'
+    graphics_type <- '.pdf'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
     graphics_w = 8
     graphics_h = 8
 
-    if (graphics_type == '.pdf')
+    #color the dendrogram
+    color_dend = TRUE
+    if (color_dend == TRUE)
     {
-        pdf(graphics_file,height=graphics_h,width=graphics_w) #not sure of the units of width and height
+        library(dendextend)
+        n_clusters <- 12
+        rowv <- rowv %>% set("branches_k_color", k = n_clusters)
     }
 
-    if (graphics_type == '.png')
-    {
-        png(graphics_file,height=graphics_h,width=graphics_w,units='in',pointsize=24,res=600)
-    }
-
-    if (graphics_type == '.jpeg')
-    {
-        jpeg(graphics_file,height=graphics_h,width=graphics_w,units='in',pointsize=24,res=600)
-    }
+    #open the heatmap graphics file
+    if (graphics_type == '.pdf'){pdf(graphics_file,height=graphics_h,width=graphics_w)} #not sure of the units of width and height}
+    if (graphics_type == '.png'){png(graphics_file,height=graphics_h,width=graphics_w,units='in',pointsize=24,res=600)}
+    if (graphics_type == '.jpeg'){jpeg(graphics_file,height=graphics_h,width=graphics_w,units='in',pointsize=24,res=600)}
 
     # Redefine parameters passed to heatmap function (the matrix and the column dendrogram) if specified to make a correlation matrix
     if (presentation=='correlation_matrix')
@@ -40,13 +39,14 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
       colv <- rowv
     }
 
+    #make the heat map
     if (!is.null(GroupColorMatrix)){if (dim(GroupColorMatrix)[2]>1)
     {
         heatmap <- heatmap.plus(x=DifExpMatx,
                                 Colv=colv,
                                 Rowv=rowv,
-                                cexRow=0.25,
-                                cexCol=0.25,
+                                cexRow=0.5,
+                                cexCol=0.5,
                                 ColSideColors = GroupColorMatrix,
                                 col=heat_map_colors,
                                 breaks=break_seq,
@@ -72,9 +72,11 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           labCol=label_cols)
     }}
 
+
     if (is.null(GroupColorMatrix))
     {
-        heatmap <- heatmap(x=DifExpMatx,
+        library('gplots')
+        heatmap <- heatmap.2(x=DifExpMatx,
                           Colv=colv,
                           Rowv=rowv,
                           cexRow=0.5,
@@ -84,7 +86,10 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           #margins=c(5,10),
                           scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
                           labRow=label_rows,
-                          labCol=label_cols)
+                          labCol=label_cols,
+                          trace = 'none',
+                          #lhei = c(1,20), #controls the height proportions of the dentrogram with respect to the heat map
+                          key = FALSE)
     }
 
     dev.off() #turn off printing to the specified pdf
@@ -95,44 +100,44 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     dev.off() #turn off printing to the specified pdf
 
     #print the column dendrogram as pdf
-    color_dend = FALSE
-    pdf(paste(HeatmapDirectory,'row_dendrogram',sep=''),height=10,width=2500) #not sure of the units of width and height
-    if (color_dend == TRUE)
-    {
-        n_clusters <- 12
-        par(mfrow = c(1,1))
-        C_row = as.dendrogram(C_row)
-        #requires the dendextend package
-        C_row %>% set("branches_k_color", k = n_clusters) %>% plot(main = "Row Dendrogram")
-        cluster_assignments <- cutree(C_row, k=n_clusters)
-        cluster_members <- vector(mode='list',length=n_clusters)
-        enrichment_list <- vector(mode='list',length=n_clusters)
-        for (i in 1:n_clusters)
-        {
-            current_indices = cluster_assignments == i
-            current_members = names(cluster_assignments[current_indices])
-            cluster_members[[i]] <- current_members
-            current_cluster_members <- cluster_members[[i]]
-            current_enrichment <- enrichr(current_cluster_members,'KEGG_2016')
-            current_enrichment_df <- as.data.frame(current_enrichment)
-            enrichment_list[[i]] <- current_enrichment_df[1:10,]
-
-        }
-    }
-
-    dynamic_cut_of_tree = FALSE
-    if (dynamic_cut_of_tree == TRUE)
-    {
-        dtc <- cutreeDynamic(C_row,minClusterSize=100,deepSplit=0) #requires dynamicTreeCut package
-    }
-
-    #print the column dendrogram as pdf
-    if (color_dend == FALSE)
-    {
-        plot(C_row,hang=-1,lwd=0.5)
-    }
+    pdf(paste(HeatmapDirectory,'row_dendrogram.pdf',sep=''),height=2500,width=100) #not sure of the units of width and height
+    plot(rowv,main = "Default colors",lwd=0.5,horiz=TRUE)
     dev.off() #turn off printing to the specified pdf
 
     #return used variables
     assemble_heatmap_return <- list(heat_map_colors)
 }
+
+
+
+# old stuff##########################
+
+# if (color_dend == TRUE)
+# {
+#     library(dendextend)
+#     n_clusters <- 12
+#     #par(mfrow = c(1,1))
+#     C_row = as.dendrogram(C_row)
+#     #requires the dendextend package
+#     C_row <- C_row %>% set("branches_k_color", k = n_clusters)
+#     #cluster_assignments <- cutree(C_row, k=n_clusters)
+#     #cluster_members <- vector(mode='list',length=n_clusters)
+#     #enrichment_list <- vector(mode='list',length=n_clusters)
+#     #for (i in 1:n_clusters)
+#     #{
+#     #    current_indices = cluster_assignments == i
+#     #    current_members = names(cluster_assignments[current_indices])
+#     #    cluster_members[[i]] <- current_members
+#     #    current_cluster_members <- cluster_members[[i]]
+#     #    current_enrichment <- enrichr(current_cluster_members,'KEGG_2016')
+#     #    current_enrichment_df <- as.data.frame(current_enrichment)
+#     #    enrichment_list[[i]] <- current_enrichment_df[1:10,]
+#
+#     #}
+# }
+#
+# dynamic_cut_of_tree = FALSE
+# if (dynamic_cut_of_tree == TRUE)
+# {
+#     dtc <- cutreeDynamic(C_row,minClusterSize=100,deepSplit=0) #requires dynamicTreeCut package
+# }
