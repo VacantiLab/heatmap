@@ -72,13 +72,17 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation='log2'
     label_cols <- FindColLabels(label_cols,DifExpMatx)
 
     #Draw and save the heatmap
-    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation)
+    n_clusters = 12
+    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters)
     heat_map_colors <- assemble_heatmap_return[[1]]
+    cluster_colors <- assemble_heatmap_return[[2]]
+    cutree_genes <- assemble_heatmap_return[[3]]
 
     #Draw and save the legends
     MakeColorKey(break_seq,heat_map_colors,output_directory)
     MakeGroupLegend(groups_corresponding,GroupColorMatrix,ColGroupsScheme,output_directory)
+    MakeClusterLegend(n_clusters,cluster_colors,output_directory)
 
     #Return what could be used
-    return(list(C_col,C_row,groups_corresponding,DATA))
+    return(list(C_col,C_row,groups_corresponding,DATA,cutree_genes))
 }

@@ -1,4 +1,4 @@
-assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation)
+assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters)
 #This function is needed because heatmap.plus cannot handle only a single grouping scheme, it must be provided at least two
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
 #uses dendextend package for coloring dendrogram branches
@@ -19,13 +19,15 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     graphics_h = 8
 
     #color the dendrogram
+    library("RColorBrewer")
+    cluster_palette <- brewer.pal(n = n_clusters, name = 'Set3')
     color_dend = TRUE
     if (color_dend == TRUE)
     {
         library(dendextend)
-        n_clusters <- 12
-        rowv <- rowv %>% set("branches_k_color", k = n_clusters)
+        rowv <- rowv %>% set("branches_k_color", k = n_clusters, value=cluster_palette)
     }
+    cutree_genes <- cutree(C_row,n_clusters,order_clusters_as_data=FALSE)
 
     #open the heatmap graphics file
     if (graphics_type == '.pdf'){pdf(graphics_file,height=graphics_h,width=graphics_w)} #not sure of the units of width and height}
@@ -99,13 +101,14 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     plot(C_col,hang=-1)
     dev.off() #turn off printing to the specified pdf
 
+
     #print the column dendrogram as pdf
     pdf(paste(HeatmapDirectory,'row_dendrogram.pdf',sep=''),height=2500,width=100) #not sure of the units of width and height
     plot(rowv,main = "Default colors",lwd=0.5,horiz=TRUE)
     dev.off() #turn off printing to the specified pdf
 
     #return used variables
-    assemble_heatmap_return <- list(heat_map_colors)
+    assemble_heatmap_return <- list(heat_map_colors,cluster_palette,cutree_genes)
 }
 
 
