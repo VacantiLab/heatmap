@@ -4,6 +4,7 @@ OpenDataFile <- function(data,select_rows,med_norm,handle_blanks)
     #Import the data
     if (is.data.frame(data)) {DATA <- data} #If the input, data, is provided as a data frame, it is the data
     if (is.character(data)) {DATA <- read_txt_to_df(data)} #If the input, data, is provided as a string it is the directory to the text file with the data
+    DATA_original <- DATA
 
     #handle blank entries
     if (handle_blanks == 'remove_row')
@@ -50,7 +51,7 @@ OpenDataFile <- function(data,select_rows,med_norm,handle_blanks)
     #selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
     #is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
 
-    OpenDataFile_return <- list(DATA,select_rows)
+    OpenDataFile_return <- list(DATA,select_rows,DATA_original)
     return(OpenDataFile_return)
 }
 
@@ -92,6 +93,8 @@ ClusterData <- function(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
         D_row <- dist(DATA) #This function computes the distance matrix where the rows are points. This is the desired output in this instance.
     }
 
+    Cor_col <- NULL
+    Cor_row <- NULL
     if (DistanceMethod == 'pearson' || DistanceMethod == 'spearman')
     {
         Cor_col <- cor(DATA,method=DistanceMethod) #transpose oppsitely as when using dist() function?

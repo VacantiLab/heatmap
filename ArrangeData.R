@@ -37,6 +37,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     OpenDataFile_return <- OpenDataFile(data,select_rows,med_norm,handle_blanks)
     DATA <- OpenDataFile_return[[1]]
     select_rows <- OpenDataFile_return[[2]]
+    DATA_original <- OpenDataFile_return[[3]]
 
     #Retrieve the corresponding column groupings and keep only those specified
     #Also take the medians if there is a replicate scheme provided (this will not work if the replicate scheme is the only grouping scheme used)
@@ -195,7 +196,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         }
     }
 
-    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full)
+    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,DATA_original)
     if (visualization == 'volcanoplot')
     {
         ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,ColGroupsScheme)

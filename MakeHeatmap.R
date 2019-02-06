@@ -1,5 +1,5 @@
-MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal')
-# data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
+MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal')
+# DL: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
 #        The group names within each grouping scheme must not match any of those of another grouping scheme
@@ -41,6 +41,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation='log2'
 
 {
     #Extract the data required to make a heatmap
+    data_location <- dl
     ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='heatmap',ddt,med_norm,handle_blanks)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
@@ -51,6 +52,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation='log2'
     DATA <- ArrangeData_return[[7]]
     GroupColorMatrix <- ArrangeData_return[[8]]
     groups_corresponding <- ArrangeData_return[[9]]
+    DATA_original <- ArrangeData_return[[11]] #the data before any transformations or exclusions were made
 
     #Retrieve the clusters for creating the dendrograms
     ClusterData_return <- ClusterData(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
@@ -72,7 +74,7 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation='log2'
     label_cols <- FindColLabels(label_cols,DifExpMatx)
 
     #Draw and save the heatmap
-    n_clusters = 12
+    n_clusters = 7
     assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters)
     heat_map_colors <- assemble_heatmap_return[[1]]
     cluster_colors <- assemble_heatmap_return[[2]]
@@ -84,5 +86,5 @@ MakeHeatMap <- function(data_location,ColGroupsScheme=NULL,transformation='log2'
     MakeClusterLegend(n_clusters,cluster_colors,output_directory)
 
     #Return what could be used
-    return(list(C_col,C_row,groups_corresponding,DATA,cutree_genes))
+    return(list(C_col,C_row,groups_corresponding,DATA,cutree_genes,DATA_original))
 }
