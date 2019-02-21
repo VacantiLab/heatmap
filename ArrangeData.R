@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme=NULL)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 # med_norm specifies to median normalize columns
 {
@@ -52,6 +52,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #Match the group names to the samples by referencing the group_key
     print('retrieving group and color assignments')
     ColGroupsScheme_concat <- c(ColGroupsScheme,replicate_scheme)
+    if (replicate_scheme != inclusion_grouping_scheme){ColGroupsScheme_concat <- c(ColGroupsScheme,inclusion_grouping_scheme)}
     RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme_concat,group_designations_file,group_color_designations_file,select_groups)
     groups_corresponding <- RetrieveGroups_return[[1]]
     GroupColorMatrix <- RetrieveGroups_return[[2]]
@@ -75,12 +76,23 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #Select the groups that are considered for this box plot
     #    This is automatically performed on the first ColGroupsScheme provided
+    if (is.null(inclusion_grouping_scheme)){inclusion_grouping_scheme=ColGroupsScheme[1]}
     print('selecting groups if necessary')
-    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme=ColGroupsScheme[1])
+    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
-    groups_corresponding <- SelectGroups_return[[2]]
+    #remove the inclusion grouping scheme as a category in groups_corresponding if it is not part of the ColGroupsScheme
+    #    this means your plot does not consider the inclusion grouping scheme, it was just used to select the data to plot
+    #    i.e. I only want to plot data of a certain cell type, but I do not want cell type to be a category in my plot
     GroupColorMatrix <- SelectGroups_return[[3]]
+    if (!(inclusion_grouping_scheme %in% ColGroupsScheme) && (replicate_scheme != inclusion_grouping_scheme))
+    {
+      current_group_categories <- colnames(groups_corresponding)
+      group_categories_to_keep <- current_group_categories != inclusion_grouping_scheme
+      # do not consider the inclusion grouping scheme as a group to plot
+      groups_corresponding <- groups_corresponding[,group_categories_to_keep,drop=FALSE]
+      GroupColorMatrix <- GroupColorMatrix[,group_categories_to_keep,drop=FALSE]
+    }
 
 
     #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
@@ -176,7 +188,10 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     {
         #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
         if (is.character(select_rows)){gene_name <- select_rows}
-        OrderGroups_return <- OrderGroups(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
+        groups_to_order <- select_groups
+        #if you are not selecting groups based on the ColGroupsScheme, groups_to_order should be the default NULL (it will be assumed to be the order of the ColGroupsScheme?)
+        if (!(inclusion_grouping_scheme %in% ColGroupsScheme)){groups_to_order <- NULL}
+        OrderGroups_return <- OrderGroups(groups_to_order,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
         DATA_long <- OrderGroups_return[[1]]
         FillColors <- OrderGroups_return[[2]]
         group_order <- OrderGroups_return[[3]]

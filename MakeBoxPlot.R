@@ -1,4 +1,4 @@
-MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE)
+MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -21,6 +21,8 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
 #    If it is an array of group names, those groups are the only ones plotted
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
 #    If it is NULL, all groups in the ColGroupsScheme are plotted
+# inclusion_grouping_scheme: This is the grouping scheme that you want to specify to select the columns with
+#    It can remain as the default NULL and the columns will be selected based on the first grouping scheme in ColGroupsScheme
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
@@ -28,7 +30,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
 
 {
     #Extract the data required to make a box plot
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='boxplot',ddt,med_norm,handle_blanks)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='boxplot',ddt,med_norm,handle_blanks,inclusion_grouping_scheme)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
@@ -38,6 +40,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
     DATA_transformed <- ArrangeData_return[[7]]
     DATA_transformed_full <- ArrangeData_return[[10]]
 
+    browser()
     #Find the y-limits for the boxplot based on the data
     y_bounds <- get_y_bounds(group_order,gene_name,DATA_long)
 
