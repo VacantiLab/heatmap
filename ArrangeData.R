@@ -51,8 +51,18 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #Match the group names to the samples by referencing the group_key
     print('retrieving group and color assignments')
+
+    #The replicate scheme needs to be considered to find the medians
+    #    It is not considered for plotting different groups
     ColGroupsScheme_concat <- c(ColGroupsScheme,replicate_scheme)
-    if (replicate_scheme != inclusion_grouping_scheme){ColGroupsScheme_concat <- c(ColGroupsScheme,inclusion_grouping_scheme)}
+
+    #Column grouping schemes needed to consider will include the inclusion_grouping_scheme as well
+    #    However this only needs to be included if it is different from the replicate scheme (otherwise it is already there from above)
+    if (!(is.null(replicate_scheme)) & !(is.null(inclusion_grouping_scheme))) #logical statements return emtpy values if they deal with NULL
+    {
+        if (replicate_scheme != inclusion_grouping_scheme){ColGroupsScheme_concat <- c(ColGroupsScheme,inclusion_grouping_scheme)}
+    }
+
     RetrieveGroups_return <- RetrieveGroups(DATA,ColGroupsScheme_concat,group_designations_file,group_color_designations_file,select_groups)
     groups_corresponding <- RetrieveGroups_return[[1]]
     GroupColorMatrix <- RetrieveGroups_return[[2]]
@@ -81,6 +91,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
+    groups_corresponding <- SelectGroups_return[[2]]
     #remove the inclusion grouping scheme as a category in groups_corresponding if it is not part of the ColGroupsScheme
     #    this means your plot does not consider the inclusion grouping scheme, it was just used to select the data to plot
     #    i.e. I only want to plot data of a certain cell type, but I do not want cell type to be a category in my plot

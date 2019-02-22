@@ -40,7 +40,6 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
     DATA_transformed <- ArrangeData_return[[7]]
     DATA_transformed_full <- ArrangeData_return[[10]]
 
-    browser()
     #Find the y-limits for the boxplot based on the data
     y_bounds <- get_y_bounds(group_order,gene_name,DATA_long)
 
