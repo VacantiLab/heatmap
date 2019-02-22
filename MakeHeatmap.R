@@ -1,4 +1,4 @@
-MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal')
+MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal')
 # DL: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -42,7 +42,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 {
     #Extract the data required to make a heatmap
     data_location <- dl
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='heatmap',ddt,med_norm,handle_blanks)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='heatmap',ddt,med_norm,handle_blanks,inclusion_grouping_scheme)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
