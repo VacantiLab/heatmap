@@ -12,22 +12,24 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-    graphics_type <- '.pdf'
+    graphics_type <- '.png'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
     graphics_w = 8
     graphics_h = 8
 
+
     #color the dendrogram
+    color_dend = FALSE
     library("RColorBrewer")
     cluster_palette <- brewer.pal(n = n_clusters, name = 'Set3')
-    color_dend = TRUE
     if (color_dend == TRUE)
     {
         library(dendextend)
         rowv <- rowv %>% set("branches_k_color", k = n_clusters, value=cluster_palette)
     }
     cutree_genes <- cutree(C_row,n_clusters,order_clusters_as_data=FALSE)
+
 
     #open the heatmap graphics file
     if (graphics_type == '.pdf'){pdf(graphics_file,height=graphics_h,width=graphics_w)} #not sure of the units of width and height}

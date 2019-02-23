@@ -1,10 +1,24 @@
 assemble_scatter_bar <- function(DATA_long,GroupColorMatrix,output_directory,select_rows)
 {
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
-    x_var <- 'sample'
-    y_var <- 'value'
-    color_var <- 'gene'
-    no_groups_color <- 'grey'
+
+    sample_on_x_axis = TRUE
+    if(sample_on_x_axis)
+    {
+        x_var <- 'sample'
+        y_var <- 'value'
+        color_var <- 'gene'
+        no_groups_color <- 'grey'
+    }
+
+    gene_on_x_axis = FALSE
+    if(gene_on_x_axis)
+    {
+        x_var <- 'gene'
+        y_var <- 'value'
+        color_var <- 'sample'
+        no_groups_color <- 'grey'
+    }
 
     XLabel <- ''
     YLabel <- 'expression'
@@ -13,8 +27,9 @@ assemble_scatter_bar <- function(DATA_long,GroupColorMatrix,output_directory,sel
     pdf_width <- unit(8,'cm')
     pdf_height <- unit(4,'cm')
 
-    gsp <- geom_point(aes_string(color=color_var,x=x_var,y=y_var))
-    glp <- geom_line(aes_string(x='sample',y='value',group='gene',color=color_var)) #the group designation is needed to say that those dots with this group should be connected
+    #gsp <- geom_point(aes_string(color=color_var,x=x_var,y=y_var))
+    gsp = NULL
+    glp <- geom_line(aes_string(x=x_var,y=y_var,group=color_var,color=color_var),size=0.5) #the group designation is needed to say that those dots with this group should be connected
 
     ScatterPlot <-  ggplot(DATA_long) +
       gsp +
