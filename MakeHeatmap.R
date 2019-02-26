@@ -66,7 +66,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
     #Create the edge table if specified to do so
     if(visualization=='edge_table')
     {
-        CreateEdgeTable(Cor_row)
+        CreateEdgeTable(Cor_row,DATA)
     }
 
     print('making the heatmap')
