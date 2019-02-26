@@ -14,7 +14,7 @@ CheckStop <- function(check_flag,parameters)
         }
 
         #Stop the program if more than one ColGroupsScheme is specified for a boxplot
-        if (length(ColGroupsScheme)>1 && visualization != 'heatmap'){stop('Custom Message: Cannot have more than one ColGroupsScheme if not a heatmap')}
+        if (length(ColGroupsScheme)>1 && (visualization != 'heatmap' & visualization != 'edge_table')){stop('Custom Message: Cannot have more than one ColGroupsScheme if not a heatmap')}
 
         #Stop the program if more than one replicate_scheme is specified
         if (length(replicate_scheme)>1){stop('Custom Message: Cannot have more than one replicate_scheme')}
