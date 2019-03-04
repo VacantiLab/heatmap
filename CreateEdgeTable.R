@@ -9,17 +9,16 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
     DATA['m3malate',c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone')] <- log2(c(1.87,0.575,0.515,0.300,1.26))
 
-    # selection_criteria <- rep(0,n_genes)
-    # for (i in 1:n_genes)
-    # {
-    #     selection_criteria[i] <- max(abs(DATA_matrix[i,])) ==  abs(DATA_matrix[i,'bt20_rotenone'])
-    # }
-    # selection_criteria <- as.logical(selection_criteria)
-    #
-    # gene_names <- gene_names[selection_criteria]
-    # Cor_row <- Cor_row[gene_names,gene_names]
-    # n_genes <- length(gene_names)
+    selection_criteria <- rep(0,n_genes)
+    for (i in 1:n_genes)
+    {
+        selection_criteria[i] <- (max(DATA_matrix[i,]) > 0) & (min(DATA_matrix[i,]) < 0) & (max(abs(DATA_matrix[i,])) > 0.13)
+    }
+    selection_criteria <- as.logical(selection_criteria)
 
+    gene_names <- gene_names[selection_criteria]
+    Cor_row <- Cor_row[gene_names,gene_names]
+    n_genes <- length(gene_names)
 
     # Go through the lower left traingle of the correlation matrix and set values equal to TRUE if the meet the correlation threshold
     EdgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
@@ -58,20 +57,23 @@ CreateEdgeTable <- function(Cor_row,DATA)
         }
     }
 
-    nodesDF <- data.frame(matrix(0,nrow(DATA),3))
-    rownames(nodesDF) <- rownames(DATA)
+    DATA_nodes <- DATA[c(gene_names,'m3malate'),]
+    nodesDF <- data.frame(matrix(0,nrow(DATA_nodes),3))
+    rownames(nodesDF) <- rownames(DATA_nodes)
     colnames(nodesDF) <- c('ID','m3malcor','color')
-    colfunc <- colorRampPalette(c("blue", "red"))
-    custom_palette <- colfunc(11)
+    colfunc <- colorRampPalette(c("blue","white","red"))
+    n_colors <- 10
+    custom_palette <- colfunc(n_colors)
     # Make the node file
-    for (i in 1:length(rownames(DATA)))
+    for (i in 1:length(rownames(DATA_nodes)))
     {
         print(paste('node: ',i,sep=''))
-        current_gene <- rownames(DATA)[i]
+        current_gene <- rownames(DATA_nodes)[i]
         nodesDF[current_gene,'ID'] <- current_gene
-        cor_to_m3mal <- cor(as.matrix(DATA)[current_gene,],as.matrix(DATA)['m3malate',],method='pearson')
+        cor_to_m3mal <- cor(as.matrix(DATA_nodes)[current_gene,],as.matrix(DATA_nodes)['m3malate',],method='pearson')
         nodesDF[current_gene,'m3malcor'] <- cor_to_m3mal
-        color_index <- round(cor_to_m3mal*5+6)
+        fraction_up_scale <- (cor_to_m3mal - (-1))/2
+        color_index <- round(1 + fraction_up_scale*(n_colors-1))
         nodesDF[current_gene,'color'] <- custom_palette[color_index]
     }
 
