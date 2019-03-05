@@ -23,7 +23,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     # Go through the lower left traingle of the correlation matrix and set values equal to TRUE if the meet the correlation threshold
     EdgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
     colnames(EdgeDF) <- c('source','target')
-    cor_thresh = 0.95
+    cor_thresh = 0.975
     Cor_thresh_logical <- Cor_row
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
