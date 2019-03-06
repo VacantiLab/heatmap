@@ -2,16 +2,16 @@ CreateEdgeTable <- function(Cor_row,DATA)
 {
     #Filter the genes you want to consider: this must be hardcoded
     select_samples <- c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone')
-    DATA <- DATA[,select_samples]
+    DATA <- DATA[,select_samples] #this is only used to select genes. All columns are used in the correlation filter (already included in Cor_row)
     DATA_matrix <- as.matrix(DATA)
     gene_names <- rownames(Cor_row)
     n_genes <- length(gene_names)
 
-
+    #Filter genes
     selection_criteria <- rep(0,n_genes)
     for (i in 1:n_genes)
     {
-        selection_criteria[i] <- (max(DATA_matrix[i,]) > 0) & (min(DATA_matrix[i,]) < 0) & (max(abs(DATA_matrix[i,])) > 0.13)
+        selection_criteria[i] <- (max(DATA_matrix[i,]) > 0.13) & (min(DATA_matrix[i,]) < -0.13)
     }
     selection_criteria <- as.logical(selection_criteria)
 
@@ -21,6 +21,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     n_genes <- length(gene_names)
 
     # Go through the lower left traingle of the correlation matrix and set values equal to TRUE if the meet the correlation threshold
+    # Note m3malate data is hardcoded into the DATA matrix by the ArrangeData function if visualization is edge_table
     edgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
     colnames(edgeDF) <- c('source','target')
     cor_thresh = 0.95
@@ -71,12 +72,17 @@ CreateEdgeTable <- function(Cor_row,DATA)
         print(paste('node: ',i,sep=''))
         current_gene <- rownames(DATA)[i]
         nodeDF[current_gene,'ID'] <- current_gene
-        cor_to_m3mal <- cor(as.matrix(DATA)[current_gene,],as.matrix(DATA)['m3malate',],method='pearson')
+        cor_to_m3mal <- Cor_row['m3malate',current_gene]
         nodeDF[current_gene,'m3malcor'] <- cor_to_m3mal
         fraction_up_scale <- (cor_to_m3mal - (-1))/2
         color_index <- round(1 + fraction_up_scale*(n_colors-1))
         nodeDF[current_gene,'color'] <- custom_palette[color_index]
     }
+
+    #write the tables required to make the graph file (gdf file) made by make_gdf.py
+    write_directory <- '/Users/nate/Desktop/temporary/'
+    write.table(edgeDF,file=paste(write_directory,'edges.csv'),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
+    write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv'),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
 
     browser()
 }
