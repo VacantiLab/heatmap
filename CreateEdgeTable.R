@@ -11,7 +11,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     selection_criteria <- rep(0,n_genes)
     for (i in 1:n_genes)
     {
-        selection_criteria[i] <- (max(DATA_matrix[i,]) > 0.13) & (min(DATA_matrix[i,]) < -0.13)
+        selection_criteria[i] <- (max(DATA_matrix[i,]) > 0.2) & (min(DATA_matrix[i,]) < -0.2)
     }
     selection_criteria <- as.logical(selection_criteria)
 
@@ -24,7 +24,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     # Note m3malate data is hardcoded into the DATA matrix by the ArrangeData function if visualization is edge_table
     edgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
     colnames(edgeDF) <- c('source','target')
-    cor_thresh = 0.95
+    cor_thresh = 0.90
     Cor_thresh_logical <- Cor_row
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
@@ -81,8 +81,8 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
     #write the tables required to make the graph file (gdf file) made by make_gdf.py
     write_directory <- '/Users/nate/Desktop/temporary/'
-    write.table(edgeDF,file=paste(write_directory,'edges.csv'),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
-    write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv'),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
+    write.table(edgeDF,file=paste(write_directory,'edges.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
+    write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
 
     browser()
 }
