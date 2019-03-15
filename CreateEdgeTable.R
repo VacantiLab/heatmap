@@ -24,7 +24,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     # Note m3malate data is hardcoded into the DATA matrix by the ArrangeData function if visualization is edge_table
     edgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
     colnames(edgeDF) <- c('source','target')
-    cor_thresh = 0.90
+    cor_thresh = 0.85
     Cor_thresh_logical <- Cor_row
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
@@ -61,11 +61,11 @@ CreateEdgeTable <- function(Cor_row,DATA)
     nodeDF <- data.frame(matrix(0,nrow(DATA),3))
     rownames(nodeDF) <- rownames(DATA)
     colnames(nodeDF) <- c('ID','m3malcor','color')
-    colfunc <- colorRampPalette(c("blue","white","red"))
+    colfunc <- colorRampPalette(c('#081875',"blue","white","red",'#620C0C'))
     n_colors <- 20
     custom_palette <- colfunc(n_colors)
-    custom_palette <- c(custom_palette,'#4CFF33')
-    n_colors <- n_colors + 1
+    custom_palette <- c(custom_palette)
+    n_colors <- n_colors
     # Make the node file
     for (i in 1:length(rownames(DATA)))
     {
