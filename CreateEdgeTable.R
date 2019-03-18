@@ -61,7 +61,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     nodeDF <- data.frame(matrix(0,nrow(DATA),3))
     rownames(nodeDF) <- rownames(DATA)
     colnames(nodeDF) <- c('ID','m3malcor','color')
-    colfunc <- colorRampPalette(c('#081875',"blue","white","red",'#620C0C'))
+    colfunc <- colorRampPalette(c('#000055',"#006CFF","white","#FF6B6B",'#4A0000'))
     n_colors <- 20
     custom_palette <- colfunc(n_colors)
     custom_palette <- c(custom_palette)
