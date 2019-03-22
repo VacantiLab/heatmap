@@ -29,18 +29,19 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     #If there are groups, the group color is specified by the color_var
     if(!is.null(FillColors))
     {
-        #gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2)
+        gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2)
 
         #If you want labeled outliers
         #gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=20,lwd=0.2)
 
-        #If you want a scatter plot with mean and SD
-        library(plyr) #this package contains the ddply function which allows for making a data frame with summary statistics
-        DATA_long_summary <- ddply(DATA_long,c(color_var,x_var),summarise,value2=mean(value),sd=sd(value))
-        #  if you use 'value' to name the column instead of 'value2', the standard deviations will not calculate
-        colnames(DATA_long_summary)[colnames(DATA_long_summary)=='value2']='value'
-        #  putting the name, 'value', back as the column name
-        gbp <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=bar_width,position=position_dodge(width=inter_group_spacing))
+        ##need this for point-errorbar format
+        ##If you want a scatter plot with mean and SD
+        #library(plyr) #this package contains the ddply function which allows for making a data frame with summary statistics
+        #DATA_long_summary <- ddply(DATA_long,c(color_var,x_var),summarise,value2=mean(value),sd=sd(value))
+        ##  if you use 'value' to name the column instead of 'value2', the standard deviations will not calculate
+        #colnames(DATA_long_summary)[colnames(DATA_long_summary)=='value2']='value'
+        ##  putting the name, 'value', back as the column name
+        #gbp <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=bar_width,position=position_dodge(width=inter_group_spacing))
 
     }
 
@@ -65,10 +66,13 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     }
 
     #set y-bounds manually if desired
-    manual_ybounds <- TRUE
+    manual_ybounds <- FALSE
     if(manual_ybounds){y_bounds <- c(-2,3)}
 
-    scatter_box <- TRUE
+    #need this for point-errorbar format
+    #scatter_box here indicates that you just want points and error bars
+    #    for now this is hardcoded
+    scatter_box <- FALSE
     if(scatter_box){DATA_to_plot <- DATA_long_summary}
     if(!scatter_box){DATA_to_plot <- DATA_long}
 
