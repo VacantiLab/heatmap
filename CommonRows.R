@@ -9,5 +9,8 @@ CommonRows <- function(df1,df2)
     df1 <- df1[common,]
     df2 <- df2[common,]
 
+    df1 <- df1[order(rownames(df1)),]
+    df2 <- df1[order(rownames(df2)),]
+
     return(list(df1,df2))
 }
