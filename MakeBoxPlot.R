@@ -49,7 +49,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
     if (violin){b <- assemble_violin_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot)}
 
     #assemble variables to return
-    MakeBoxPlot_return <- list(sig_test_list,DATA_transformed,DATA_transformed_full)
+    MakeBoxPlot_return <- list(sig_test_list,DATA_transformed,DATA_transformed_full,DATA_long)
 
     return(MakeBoxPlot_return)
 }
