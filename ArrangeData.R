@@ -216,8 +216,9 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     }
 
     sig_test_list <- list() #need to be designated because it is returned
+    perform_ttest <- FALSE #hardcoded for now
     #only performed now if rows are not selected because if a gene is listed in select_rows that is not in the database, GetPs currently causes an error (2017-07-12)
-    if (visualization=='boxplot' | visualization=='volcanoplot' | is.null(select_rows))
+    if ((visualization=='boxplot' | visualization=='volcanoplot' | is.null(select_rows)) & perform_ttest)
     {
         #calculate p-values: currently can only do if there are 2 groups with an equal-variance t-test
         #returns a data frame with the row naming the group pairwise comparison (e.g. basal-her2) and the column the parameter measured (e.g. glucose)
