@@ -133,7 +133,7 @@ transform_data <- function(DATA,transformation)
         transformed = TRUE
     }
 
-    #Normalize rows to row median and log2 transform
+    #Normalize rows to row average and log2 transform
     if (transformation == 'row_average_norm_log2')
     {
         column_names <- colnames(DATA) #record the column names after the unecessary column is removed
@@ -166,7 +166,7 @@ transform_data <- function(DATA,transformation)
         transformed = TRUE
     }
 
-    if (transformation == 'row_med_norm_col_med_norm_log2')
+    if (transformation == 'row_mednorm_col_mednorm_log2')
     {
         column_names <- colnames(DATA) #record the column names after the unecessary column is removed
         Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
