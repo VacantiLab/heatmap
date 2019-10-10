@@ -38,6 +38,17 @@ transform_data <- function(DATA,transformation)
         transformed = TRUE
     }
 
+    #center rows on mean and normalize by sample SD
+    if (transformation == 'mean_center_sd_norm')
+    {
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+        DATA <- data.frame(lapply(Transposed_DATA, mean_center_sd_norm))
+        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        transformed = TRUE
+    }
+
     #log2, center rows on median, and normalize by IQR
     if (transformation == 'log2_row_median_center_iqr_norm')
     {
@@ -191,6 +202,13 @@ median_center_iqr_norm <- function(vector)
 {
   centered <- vector - median(vector)
   scaled <- centered/IQR(vector)
+  return(scaled)
+}
+
+mean_center_sd_norm <- function(vector)
+{
+  centered <- vector - mean(vector)
+  scaled <- centered/sd(vector)
   return(scaled)
 }
 
