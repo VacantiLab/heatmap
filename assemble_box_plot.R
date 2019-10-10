@@ -59,10 +59,10 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     if(boxplot_points)
     {
         #If you want to include all points
-        #gtp <- geom_text(aes_string(label='sample',group=color_var),size=2,position=position_dodge(width=inter_group_spacing))
+        gtp <- geom_text(aes_string(label='sample',group=color_var),size=2,position=position_dodge(width=inter_group_spacing))
 
         #If you want the point to be the mean - the points are colored
-        gtp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=2.5)
+        #gtp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=2.5)
     }
 
     #set y-bounds manually if desired

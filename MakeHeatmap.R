@@ -34,6 +34,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 #        The second array contains the names of the columns of the original DATA set that will be the denominators
 #    It can also be a string that is one of the members of ColGroupsScheme
 #        If this is the case, the data within groups designated by the ddt grouping scheme will be normalized to the median of the group
+#        ddt would not actually be a group that is presented in the plot but must be a member of the ColGroupsScheme input
 # med_norm specifies to median normalize columns, will occur before rows are selected or other transformations performed (Done within OpenDataFile)
 # handle_blanks is used in OpenDataFile in the SupportingFunctions.R file. It is a string that specifies what to do with blank values
 # presentation: can be set to 'correlation_matrix' to display the correlation of each row vs. each other row as the matrix visualization

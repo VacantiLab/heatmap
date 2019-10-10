@@ -209,7 +209,10 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         groups_to_order <- select_groups
         #if you are not selecting groups based on the ColGroupsScheme, groups_to_order should be the default NULL (it will be assumed to be the order of the ColGroupsScheme?)
         if (!(inclusion_grouping_scheme %in% ColGroupsScheme)){groups_to_order <- NULL}
-        OrderGroups_return <- OrderGroups(groups_to_order,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
+        groups_corresponding_ForOrder <- groups_corresponding
+        #if there is a ddt, it needs to be removed from the groups_corresponding when determining the order of the groups because ddt is not actually a group but a reference for a transformation
+        if (!is.null(ddt)){groups_corresponding_ForOrder <- groups_corresponding[groups_corresponding != ddt]}
+        OrderGroups_return <- OrderGroups(groups_to_order,group_concationation,groups_corresponding_ForOrder,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
         DATA_long <- OrderGroups_return[[1]]
         FillColors <- OrderGroups_return[[2]]
         group_order <- OrderGroups_return[[3]]
