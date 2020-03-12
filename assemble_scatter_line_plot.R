@@ -1,4 +1,4 @@
-assemble_scatter_bar <- function(DATA_long,GroupColorMatrix,output_directory,select_rows)
+assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directory,select_rows)
 {
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
 

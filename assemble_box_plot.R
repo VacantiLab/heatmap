@@ -1,5 +1,7 @@
-assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot)
+assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type)
 {
+    #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
+
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
     x_var <- 'gene'
     y_var <- 'value'
@@ -24,24 +26,31 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     pdf_height <- unit(2,'in')
     bar_width <- 0.30
     inter_group_spacing <- 0.40
-    legend_position <- c(0.10,0.92)
+    legend_position <- c(0.80,0.92)
 
     #If there are groups, the group color is specified by the color_var
     if(!is.null(FillColors))
     {
+        #box_plot_type='boxplot'
         gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2)
 
         #If you want labeled outliers
         #gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=20,lwd=0.2)
 
-        ##need this for point-errorbar format
-        ##If you want a scatter plot with mean and SD
-        #library(plyr) #this package contains the ddply function which allows for making a data frame with summary statistics
-        #DATA_long_summary <- ddply(DATA_long,c(color_var,x_var),summarise,value2=mean(value),sd=sd(value))
-        ##  if you use 'value' to name the column instead of 'value2', the standard deviations will not calculate
-        #colnames(DATA_long_summary)[colnames(DATA_long_summary)=='value2']='value'
-        ##  putting the name, 'value', back as the column name
-        #gbp <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=bar_width,position=position_dodge(width=inter_group_spacing))
+        #need this for point-errorbar format
+        #If you want a scatter plot with mean and SD
+        library(plyr) #this package contains the ddply function which allows for making a data frame with summary statistics
+        DATA_long_summary <- ddply(DATA_long,c(color_var,x_var),summarise,value2=mean(value),sd=sd(value))
+        #  if you use 'value' to name the column instead of 'value2', the standard deviations will not calculate
+        colnames(DATA_long_summary)[colnames(DATA_long_summary)=='value2']='value'
+        #  putting the name, 'value', back as the column name
+
+        #box_plot_type='scatter_bar_plot'
+        gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=bar_width,position=position_dodge(width=inter_group_spacing))
+        gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing))
+
+        #box_plot_type='bar_plot'
+        grp <- geom_bar(aes(fill=group),position=position_dodge(width=inter_group_spacing),width=bar_width,stat='identity')
 
     }
 
@@ -54,7 +63,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     }
 
     #If you want to add markers for points on the boxplot
-    boxplot_points <- TRUE #for now this needs to be changed in the source code to have points on the boxplot
+    boxplot_points <- FALSE #for now this needs to be changed in the source code to have points on the boxplot
     gtp <- NULL
     if(boxplot_points)
     {
@@ -69,17 +78,28 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     manual_ybounds <- FALSE
     if(manual_ybounds){y_bounds <- c(-2,3)}
 
-    #need this for point-errorbar format
-    #scatter_box here indicates that you just want points and error bars
-    #    for now this is hardcoded
-    scatter_box <- FALSE
-    if(scatter_box){DATA_to_plot <- DATA_long_summary}
-    if(!scatter_box){DATA_to_plot <- DATA_long}
+    axis_limits <- coord_cartesian(ylim=y_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+
+    if(box_plot_type=='boxplot'){gpp<-NULL; gep<-NULL; grp<-NULL; DATA_to_plot <- DATA_long}
+    if(box_plot_type=='scatter_bar_plot'){grp<-NULL; gbp<-NULL; DATA_to_plot <- DATA_long_summary}
+    if(box_plot_type=='bar_plot')
+    {
+        gpp<-NULL
+        gbp<-NULL
+        DATA_to_plot <- DATA_long_summary
+        y_bounds <- c(0,1)
+        x_bounds <- c(0.5,length(unique(DATA_long$gene))+0.5) #when used with expand=F in coord_cartesian, sets a little space on either side of x-axis variables
+        axis_limits <- coord_cartesian(ylim=y_bounds, expand=F, xlim=x_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+    }
+
+
 
     b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var)) +
-         #gvp +
+         gpp +
          gbp +
          gtp +
+         gep +
+         grp +
          theme(axis.text.y=element_text(color='black',size=TextSize)) +
          theme(axis.ticks.y=element_line(colour='black',size=0.5)) +
          theme(axis.ticks.x=element_line(colour='black',size=0.5)) +
@@ -102,7 +122,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
          #theme(legend.key.size = unit(0.2, "cm")) +
          labs(x = XLabel) +
          labs(y = YLabel) +
-         coord_cartesian(ylim=y_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+         axis_limits #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
 
     ggsave(paste(output_directory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)

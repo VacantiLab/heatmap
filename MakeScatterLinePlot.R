@@ -1,4 +1,4 @@
-MakeScatterBarPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row')
+MakeScatterLinePlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row')
 #This function lists samples across the x axis and expression along the y
 #Each gene is treated as a group
 
@@ -16,5 +16,5 @@ MakeScatterBarPlot <- function(data_location,ColGroupsScheme=NULL,transformation
   groups_corresponding <- ArrangeData_return[[9]]
 
   #Make the scatter plot
-  b <- assemble_scatter_bar(DATA_long,GroupColorMatrix,output_directory,select_rows)
+  b <- assemble_scatter_line_plot(DATA_long,GroupColorMatrix,output_directory,select_rows)
 }
