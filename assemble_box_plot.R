@@ -1,7 +1,6 @@
 assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
-
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
     x_var <- 'gene'
     y_var <- 'value'
@@ -88,10 +87,14 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
         gpp<-NULL
         gbp<-NULL
         DATA_to_plot <- DATA_long_summary
-        y_bounds <- c(0,1)
+
+        upper_y_bound <- ceiling(y_bounds[2]*10)*0.1 #the ybound as it's calculated from the data rounded up to an even tenth
+        y_bounds <- c(0,upper_y_bound)
         x_bounds <- c(0.5,length(unique(DATA_long$gene))+0.5) #when used with expand=F in coord_cartesian, sets a little space on either side of x-axis variables
         axis_limits <- coord_cartesian(ylim=y_bounds, expand=F, xlim=x_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
-        y_scale <- scale_y_continuous(breaks = seq(y_bounds[1],y_bounds[2], by=0.5))
+        y_scale <- scale_y_continuous(breaks = seq(y_bounds[1],y_bounds[2], by=upper_y_bound/2)) #scale_y_continuous can be used with coord_cartesian without affecting data calculations
+
+        #axis label placement
         hjust_value <- 0
         if (text_angle==90 | text_angle==45){hjust_value <- 1; vjust_value <- 1}
         if (text_angle==0){hjust_value <- 0.5; vjust_value <- 0.5}
