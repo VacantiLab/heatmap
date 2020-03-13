@@ -1,4 +1,4 @@
-assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type)
+assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
 
@@ -18,15 +18,14 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
 
     no_groups_color <- 'grey'
 
-    YLabel <- 'Relative Abundance'
+    inter_group_spacing <- bar_width
+
+    YLabel <- ''
     XLabel <- ''
     TextSize = 8
 
-    pdf_width <- unit(3,'in')
-    pdf_height <- unit(2,'in')
-    bar_width <- 0.30
-    inter_group_spacing <- 0.40
-    legend_position <- c(0.80,0.92)
+    pdf_width <- unit(plot_width,'in')
+    pdf_height <- unit(plot_height,'in')
 
     #If there are groups, the group color is specified by the color_var
     if(!is.null(FillColors))
@@ -46,7 +45,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
         #  putting the name, 'value', back as the column name
 
         #box_plot_type='scatter_bar_plot'
-        gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=bar_width,position=position_dodge(width=inter_group_spacing))
+        gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing))
         gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing))
 
         #box_plot_type='bar_plot'
@@ -79,6 +78,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     if(manual_ybounds){y_bounds <- c(-2,3)}
 
     axis_limits <- coord_cartesian(ylim=y_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+    y_scale <- NULL
 
     if(box_plot_type=='boxplot'){gpp<-NULL; gep<-NULL; grp<-NULL; DATA_to_plot <- DATA_long}
     if(box_plot_type=='scatter_bar_plot'){grp<-NULL; gbp<-NULL; DATA_to_plot <- DATA_long_summary}
@@ -90,16 +90,15 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
         y_bounds <- c(0,1)
         x_bounds <- c(0.5,length(unique(DATA_long$gene))+0.5) #when used with expand=F in coord_cartesian, sets a little space on either side of x-axis variables
         axis_limits <- coord_cartesian(ylim=y_bounds, expand=F, xlim=x_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+        y_scale <- scale_y_continuous(breaks = seq(y_bounds[1],y_bounds[2], by=0.5))
     }
 
-
-
-    b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var)) +
+    b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var, fill=color_var)) +
          gpp +
          gbp +
          gtp +
-         gep +
          grp +
+         gep +
          theme(axis.text.y=element_text(color='black',size=TextSize)) +
          theme(axis.ticks.y=element_line(colour='black',size=0.5)) +
          theme(axis.ticks.x=element_line(colour='black',size=0.5)) +
@@ -115,15 +114,18 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
          theme(legend.title=element_blank()) +
          theme(legend.background=element_rect(fill=NA)) + #No background color in legend
          theme(legend.key.size=unit(0.3,'cm')) +
-         theme(legend.text = element_text(colour="black", size=(TextSize-2))) +
+         theme(legend.text = element_text(colour="black", size=(TextSize))) +
          theme(legend.position=legend_position) +
+         theme(plot.margin = margin(10,10,0,0)) +
          scale_fill_manual(values=FillColors) +
          scale_color_manual(values=FillColors) +
          #theme(legend.key.size = unit(0.2, "cm")) +
          labs(x = XLabel) +
          labs(y = YLabel) +
-         axis_limits #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+         axis_limits + #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+         y_scale
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
+
 
     ggsave(paste(output_directory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
     return(b)

@@ -1,4 +1,4 @@
-MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE,box_plot_type='boxplot')
+MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE,box_plot_type='boxplot',plot_width=2,plot_height=1.5,bar_width=0.75,legend_position=c(0.8,0.92))
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -28,6 +28,9 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
 #    If this is specified, all members of a single group are treated as a single sample and the median values are used
 # box_plot_type: This specifies the representation of box-plot like data. Inputs can be 'boxplot', 'scatter_bar_plot', 'bar_plot'.
+# plot_width and plot_height are in inches
+# bar_width is in units on the x-axis. For discrete units, the distance between units is considered 1. bar_width specifies the combined width of the bars at a discrete unit.
+# the legend position is specified in relative cartesian coordinates in the plot area
 
 {
     #Extract the data required to make a box plot
@@ -46,7 +49,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
 
 
     #Make the plot
-    if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type)}
+    if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position)}
     if (violin){b <- assemble_violin_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot)}
 
     #assemble variables to return
