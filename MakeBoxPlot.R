@@ -1,4 +1,4 @@
-MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE,box_plot_type='boxplot',plot_width=2,plot_height=1.5,bar_width=0.75,legend_position=c(0.8,0.92))
+MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_plot',plot_width=2.0,plot_height=1.5,bar_width=0.75,legend_position=c(0.8,0.92),text_angle=0,ttest=FALSE,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE,output_in_dl=TRUE)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -31,10 +31,11 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
 # plot_width and plot_height are in inches
 # bar_width is in units on the x-axis. For discrete units, the distance between units is considered 1. bar_width specifies the combined width of the bars at a discrete unit.
 # the legend position is specified in relative cartesian coordinates in the plot area
+# ttest dictates whether to perform pairwise ttests. Will give an error if a select_genes has a gene not in the dataset
 
 {
     #Extract the data required to make a box plot
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='boxplot',ddt,med_norm,handle_blanks,inclusion_grouping_scheme)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='boxplot',ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
@@ -47,9 +48,10 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,transformation=NULL,d
     #Find the y-limits for the boxplot based on the data
     y_bounds <- get_y_bounds(group_order,gene_name,DATA_long)
 
+    if (output_in_dl){output_directory <- dl}
 
     #Make the plot
-    if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position)}
+    if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle)}
     if (violin){b <- assemble_violin_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot)}
 
     #assemble variables to return

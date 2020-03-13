@@ -1,4 +1,4 @@
-assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position)
+assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
 
@@ -79,6 +79,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
 
     axis_limits <- coord_cartesian(ylim=y_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
     y_scale <- NULL
+    text_angle_indicator <- NULL
 
     if(box_plot_type=='boxplot'){gpp<-NULL; gep<-NULL; grp<-NULL; DATA_to_plot <- DATA_long}
     if(box_plot_type=='scatter_bar_plot'){grp<-NULL; gbp<-NULL; DATA_to_plot <- DATA_long_summary}
@@ -91,6 +92,10 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
         x_bounds <- c(0.5,length(unique(DATA_long$gene))+0.5) #when used with expand=F in coord_cartesian, sets a little space on either side of x-axis variables
         axis_limits <- coord_cartesian(ylim=y_bounds, expand=F, xlim=x_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
         y_scale <- scale_y_continuous(breaks = seq(y_bounds[1],y_bounds[2], by=0.5))
+        hjust_value <- 0
+        if (text_angle==90 | text_angle==45){hjust_value <- 1; vjust_value <- 1}
+        if (text_angle==0){hjust_value <- 0.5; vjust_value <- 0.5}
+        text_angle_indicator <- theme(axis.text.x = element_text(angle=text_angle,hjust=hjust_value,vjust=vjust_value))
     }
 
     b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var, fill=color_var)) +
@@ -123,7 +128,8 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
          labs(x = XLabel) +
          labs(y = YLabel) +
          axis_limits + #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
-         y_scale
+         y_scale +
+         text_angle_indicator
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
 
 
