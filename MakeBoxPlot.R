@@ -48,7 +48,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_pl
     #Find the y-limits for the boxplot based on the data
     y_bounds <- get_y_bounds(group_order,gene_name,DATA_long)
 
-    if (output_in_dl){output_directory <- dl}
+    if (output_in_dl){output_directory <- data_location}
 
     #Make the plot
     if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle)}
