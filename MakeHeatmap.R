@@ -43,7 +43,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 {
     #Extract the data required to make a heatmap
     data_location <- dl
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization=visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization=visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest=FALSE)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]

@@ -180,22 +180,26 @@ transform_data <- function(DATA,transformation)
     if (transformation == 'row_mednorm_col_mednorm_log2')
     {
         column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        row_names <- rownames(DATA)
         Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
         DATA <- data.frame(lapply(Transposed_DATA, median_norm))
         DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
         DATA <- data.frame(lapply(DATA, median_norm_log2_transform)) #median norm the columns and then log2 transform everything
         colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
         transformed = TRUE
     }
 
     if (transformation == 'row_mednorm_col_mednorm')
     {
         column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        row_names <- rownames(DATA)
         Transposed_DATA <- data.frame(t(DATA)) #normalize to row median, transpose because can only scale columns
         DATA <- data.frame(lapply(Transposed_DATA, median_norm))
         DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
         DATA <- data.frame(lapply(DATA, median_norm)) #median norm the columns
         colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
         transformed = TRUE
     }
 
