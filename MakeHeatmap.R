@@ -55,7 +55,6 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
     groups_corresponding <- ArrangeData_return[[9]]
     DATA_original <- ArrangeData_return[[11]] #the data before any transformations or exclusions were made
 
-
     #Retrieve the clusters for creating the dendrograms
     ClusterData_return <- ClusterData(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
     colv <- ClusterData_return[[1]]

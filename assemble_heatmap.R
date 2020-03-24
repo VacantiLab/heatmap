@@ -15,8 +15,8 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     graphics_type <- '.png'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
-    graphics_w = 8
-    graphics_h = 8
+    graphics_w = 16
+    graphics_h = 12
 
 
     #color the dendrogram
