@@ -1,4 +1,4 @@
-transform_data <- function(DATA,transformation)
+transform_data <- function(DATA,transformation,select_rows_after_transform)
 {
     transformed = FALSE
 
@@ -204,6 +204,8 @@ transform_data <- function(DATA,transformation)
     }
 
     if (transformed==FALSE && !is.null(transformation)){stop('custom message: You have specified a transformation that does not exist.')}
+
+    if (!is.null(select_rows_after_transform)){DATA <- DATA[select_rows_after_transform,]}
 
     return(DATA)
 }

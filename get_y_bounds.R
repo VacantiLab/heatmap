@@ -13,6 +13,7 @@ get_y_bounds <- function(group_order,gene_name,DATA_long)
     {
           for (j in 1:n_group)
           {
+
               #For each gene-group combination, get arrays of values
               if (!is.null(group_order)){indices <- DATA_long[,'gene']==gene_name[i] & DATA_long[,'group']==group_order[j]}
               if (is.null(group_order)){indices <- DATA_long[,'gene']==gene_name[i]}
@@ -41,6 +42,7 @@ get_y_bounds <- function(group_order,gene_name,DATA_long)
     {
         y_bounds <- c(min(DATA_long[,'value']),max(DATA_long[,'value']))
     }
+
 
     #Manual y-bounds
     #y_bounds <- c(-0.25,0.4)

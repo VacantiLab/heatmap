@@ -1,4 +1,4 @@
-assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle)
+assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle,transformation)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
@@ -74,7 +74,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
 
     #set y-bounds manually if desired
     manual_ybounds <- FALSE
-    if(manual_ybounds){y_bounds <- c(-2,3)}
+    if(manual_ybounds){y_bounds <- c(-5,5)}
 
     axis_limits <- coord_cartesian(ylim=y_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
     y_scale <- NULL
@@ -89,7 +89,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
         DATA_to_plot <- DATA_long_summary
 
         upper_y_bound <- ceiling(y_bounds[2]*10)*0.1 #the ybound as it's calculated from the data rounded up to an even tenth
-        y_bounds <- c(0,upper_y_bound)
+        if (!grepl('log',transformation) || is.null(transformation)){y_bounds <- c(0,upper_y_bound)} #only set 0 to ymin if not log transformed
         x_bounds <- c(0.5,length(unique(DATA_long$gene))+0.5) #when used with expand=F in coord_cartesian, sets a little space on either side of x-axis variables
         axis_limits <- coord_cartesian(ylim=y_bounds, expand=F, xlim=x_bounds) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
         y_scale <- scale_y_continuous(breaks = seq(y_bounds[1],y_bounds[2], by=upper_y_bound/2)) #scale_y_continuous can be used with coord_cartesian without affecting data calculations
@@ -100,6 +100,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     if (text_angle==90 | text_angle==45){hjust_value <- 1; vjust_value <- 1}
     if (text_angle==0){hjust_value <- 0.5; vjust_value <- 0.5}
     text_angle_indicator <- theme(axis.text.x = element_text(angle=text_angle,hjust=hjust_value,vjust=vjust_value))
+
 
     b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var, fill=color_var)) +
          gpp +

@@ -64,12 +64,12 @@ GetGroupColorList <- function(GROUP_KEY,DATA,group_color_designations_file,ColGr
 
 ###############################################################################
 
-SelectGroups <- function(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
+SelectGroups <- function(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme,visualization)
 #Select the specified group names (if applicable)
 {
     if (is.character(select_groups))
     {
-        CheckStop(4,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme)) #ensure all select_group entries are in the specified grouping scheme to select them from
+        if (visualization == 'heatmap'){CheckStop(4,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme))} #ensure all select_group entries are in the specified grouping scheme to select them from
         #not really relevant for boxplots - check for heatmaps
         DATA2 <- DATA #make a copy of the DATA data frame because appending non-numeric rows changes the numeric class of its contents
         DATA2[ColGroupsScheme_concat,sort(colnames(DATA))] <- t(groups_corresponding[sort(colnames(DATA)),ColGroupsScheme_concat]) #add rows corresponding to the group classifications of each sample

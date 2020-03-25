@@ -1,12 +1,16 @@
 OrderGroups <- function(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
 {
   #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
-  #If there is nothing specified in select_groups, the order is by the order of appearance in the data
+  #If there is nothing specified in select_groups, the order is by the order of appearance in group_color_key.txt
   group_order = NULL
   FillColors = NULL
+
   if (!is.null(groups_corresponding) && !group_concationation)
   {
-      group_order <- matrix(as.character(unique(groups_corresponding)),ncol=1)
+      groups_in_plot <- as.character(unique(groups_corresponding))
+      indices_to_keep <- rownames(COLOR_KEY) %in% groups_in_plot
+      group_order <- rownames(COLOR_KEY)[indices_to_keep]
+      group_order <- matrix(as.character(group_order))
       FillColors <- matrix(as.character(COLOR_KEY[group_order,1]),ncol=1)
   }
 

@@ -27,7 +27,8 @@ CheckStop <- function(check_flag,parameters)
     {
         select_groups = parameters[[1]]
         groups_corresponding = parameters[[2]]
-        if (!is.null(select_groups) && !is.null(groups_corresponding))
+        inclusion_grouping_scheme = parameters[[3]]
+        if (!is.null(select_groups) && !is.null(groups_corresponding) && is.null(inclusion_grouping_scheme))
         {
             all_select_groups_used <- sum(select_groups %in% groups_corresponding) == length(select_groups)
             if (!all_select_groups_used){stop('Custom Message: select_groups contains a member that no sample is assinged to in the specified ColGroupsScheme - check spelling')}

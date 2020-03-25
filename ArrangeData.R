@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme=NULL,ttest)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme=NULL,ttest,select_rows_after_transform,transform_after_column_exclusion)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 # med_norm specifies to median normalize columns
 {
@@ -25,7 +25,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #specify if transformation occurs before or after groups of samples are excluded
     #    TRUE for after - default, FALSE for before
-    transform_after_exclusion = TRUE
+    #transform_after_column_exclusion = TRUE
 
     #Input data
     if (!(class(data)=='data.frame')){data <- paste(data_location,'quantities.txt',sep='')}
@@ -63,6 +63,13 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #    It is not considered for plotting different groups
     ColGroupsScheme_concat <- c(ColGroupsScheme,replicate_scheme)
 
+    #The inclusion grouping scheme needs to be added to ColGroupsScheme if it is not already there
+    #    It's removed later
+    if (!(inclusion_grouping_scheme %in% ColGroupsScheme))
+    {
+        ColGroupsScheme_concat <- c(ColGroupsScheme,inclusion_grouping_scheme)
+    }
+
     #Column grouping schemes needed to consider will include the inclusion_grouping_scheme as well
     #    However this only needs to be included if it is different from the replicate scheme (otherwise it is already there from above)
     if (!(is.null(replicate_scheme)) & !(is.null(inclusion_grouping_scheme))) #logical statements return emtpy values if they deal with NULL
@@ -77,33 +84,33 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     CheckStop(5,parameters=list(COLOR_KEY)) #makes sure each group name only has one color assignment
 
     #See if all of the specified input groups are actually specified in group_key.txt file
-    CheckStop(2,parameters=list(select_groups,groups_corresponding))
+    CheckStop(2,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme))
 
     #transform if specified to do so before excluding groups or samples
     DATA_transformed_full <- NULL
-    if (transform_after_exclusion == FALSE)
+    if (transform_after_column_exclusion == FALSE)
     {
         print('transforming data if necessary')
-        DATA <- transform_data(DATA,transformation)
+        DATA <- transform_data(DATA,transformation,select_rows_after_transform)
         DATA_transformed_full <- DATA
         gene_name <- rownames(DATA)
         n_gene <- length(gene_name)
     }
 
-
     #Select the groups that are considered for this box plot
     #    This is automatically performed on the first ColGroupsScheme provided
     if (is.null(inclusion_grouping_scheme)){inclusion_grouping_scheme=ColGroupsScheme[1]}
     print('selecting groups if necessary')
-    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme)
+    SelectGroups_return <- SelectGroups(select_groups,DATA,ColGroupsScheme_concat,groups_corresponding,GroupColorMatrix,inclusion_grouping_scheme,visualization)
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
+
     #remove the inclusion grouping scheme as a category in groups_corresponding if it is not part of the ColGroupsScheme
     #    this means your plot does not consider the inclusion grouping scheme, it was just used to select the data to plot
     #    i.e. I only want to plot data of a certain cell type, but I do not want cell type to be a category in my plot
     GroupColorMatrix <- SelectGroups_return[[3]]
-    if (!(inclusion_grouping_scheme %in% ColGroupsScheme) && (replicate_scheme != inclusion_grouping_scheme))
+    if (!(inclusion_grouping_scheme %in% ColGroupsScheme) && ((replicate_scheme != inclusion_grouping_scheme) || is.null(replicate_scheme)))
     {
       current_group_categories <- colnames(groups_corresponding)
       group_categories_to_keep <- current_group_categories != inclusion_grouping_scheme
@@ -111,7 +118,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
       groups_corresponding <- groups_corresponding[,group_categories_to_keep,drop=FALSE]
       GroupColorMatrix <- GroupColorMatrix[,group_categories_to_keep,drop=FALSE]
     }
-
 
     #If you are concatonating groups, name the new groups and replace all of the groups they map to those with names
     #    There can only be one ColGroupsScheme provided if there is group concatonation
@@ -177,10 +183,10 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     }
 
     #transform if specified to do so after excluding groups or samples
-    if (transform_after_exclusion == TRUE)
+    if (transform_after_column_exclusion == TRUE)
     {
         print('transforming data if necessary')
-        DATA <- transform_data(DATA,transformation)
+        DATA <- transform_data(DATA,transformation,select_rows_after_transform)
         gene_name <- rownames(DATA)
         n_gene <- length(gene_name)
     }
@@ -205,7 +211,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     if (visualization=='boxplot' | visualization=='volcanoplot')
     {
         #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
-        if (is.character(select_rows)){gene_name <- select_rows}
+        #if (is.character(select_rows)){gene_name <- select_rows}
         groups_to_order <- select_groups
         #if you are not selecting groups based on the ColGroupsScheme, groups_to_order should be the default NULL (it will be assumed to be the order of the ColGroupsScheme?)
         if (!(inclusion_grouping_scheme %in% ColGroupsScheme)){groups_to_order <- NULL}
@@ -217,6 +223,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         FillColors <- OrderGroups_return[[2]]
         group_order <- OrderGroups_return[[3]]
     }
+
 
     sig_test_list <- list() #need to be designated because it is returned
 
@@ -238,5 +245,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     {
         ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,ColGroupsScheme)
     }
+
     return(ArrangeData_return)
 }
