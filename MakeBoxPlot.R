@@ -21,6 +21,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_pl
 #    If it is an array of group names, those groups are the only ones plotted
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
 #    If it is NULL, all groups in the ColGroupsScheme are plotted
+#    These can be groups outside of ColGroupsScheme, but the scheme must then be specified as the inclusion_grouping_scheme
 # inclusion_grouping_scheme: This is the grouping scheme that you want to specify to select the columns with
 #    It can remain as the default NULL and the columns will be selected based on the first grouping scheme in ColGroupsScheme
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates

@@ -7,6 +7,7 @@ CheckStop <- function(check_flag,parameters)
         ColGroupsScheme = parameters[[1]]
         replicate_scheme = parameters[[2]]
         visualization = parameters[[3]]
+        inclusion_grouping_scheme = parameters[[4]]
         if (!is.null(ColGroupsScheme) && !is.null(replicate_scheme))
         {
             replicate_scheme_unique = sum(replicate_scheme %in% ColGroupsScheme)==0
@@ -14,7 +15,7 @@ CheckStop <- function(check_flag,parameters)
         }
 
         #Stop the program if more than one ColGroupsScheme is specified for a boxplot
-        if (length(ColGroupsScheme)>1 && (visualization != 'heatmap' & visualization != 'edge_table')){stop('Custom Message: Cannot have more than one ColGroupsScheme if not a heatmap')}
+        if (length(ColGroupsScheme)>1 && (visualization != 'heatmap' & visualization != 'edge_table' & is.null(inclusion_grouping_scheme))){stop('Custom Message: Cannot have more than one ColGroupsScheme if not a heatmap')}
 
         #Stop the program if more than one replicate_scheme is specified
         if (length(replicate_scheme)>1){stop('Custom Message: Cannot have more than one replicate_scheme')}

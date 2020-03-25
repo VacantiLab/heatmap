@@ -12,7 +12,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #Stop the program if the replicate scheme is in the ColGroupsScheme
     #Stop the program if more than one ColGroupsScheme or replicate_scheme is specified
-    CheckStop(1,parameters=list(ColGroupsScheme,replicate_scheme,visualization))
+    CheckStop(1,parameters=list(ColGroupsScheme,replicate_scheme,visualization,inclusion_grouping_scheme))
 
     #Reset the ColGroupsScheme if it was disguised above
     ColGroupsScheme = ColGroupsScheme_holder
