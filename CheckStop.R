@@ -95,4 +95,17 @@ CheckStop <- function(check_flag,parameters)
             if (transformation == 'log2'){stop('Custom Message: The transformation cannot be log2 for a volcano plot.')}
         }
     }
+
+    if (check_flag==8) #For data dependent transformations
+    {
+        ddt <- parameters[[1]]
+        transformation <- parameters[[2]]
+        transform_after_column_exclusion <- parameters[[3]]
+
+        if (!is.null(ddt))
+        {
+            if (transform_after_column_exclusion == TRUE){stop('Custom Message: When using a ddt, the transform_after_column_exclusion should be FALSE because accounting for loading should be done first.')}
+            if (grepl('log',transformation)){stop('Custom Message: When using a ddt, the initial transformation should be linear because DDT returns log2 transformed ratios.')}
+        }
+    }
 }

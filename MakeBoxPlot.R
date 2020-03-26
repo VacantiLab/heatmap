@@ -23,14 +23,26 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_pl
 # transform_after_column_exclusion: if TRUE, transformations happen after groups (columns) are selected, not on the whole data set
 #     If TRUE, select_groups impacts the values
 #     If FALSE, select_groups does not impact the values
+#     If TRUE, this may impact values if ddt is specified
+#     If FALSE, this will not impact values if ddt is specified
 # select_groups: This can be an array of the group names that are to be plotted or a list of arrays of group names or NULL
 #    If it is an array of group names, those groups are the only ones plotted
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
 #    If it is NULL, all groups in the ColGroupsScheme are plotted
 #    These can be groups outside of ColGroupsScheme, but the scheme must then be specified as the inclusion_grouping_scheme
+#    The spcification of transform_after_column_exclusion determines if this impacts data transformation/normalization
 # inclusion_grouping_scheme: This is the grouping scheme that you want to specify to select the columns with
 #    It can remain as the default NULL and the groups will be selected based on the first grouping scheme in ColGroupsScheme if select_groups is specified
 #    It can be outside of the ColGroupsScheme as well
+# ddt: data dependent transformation; this is a grouping scheme that all samples within that group are normalized to its median and then log2 transformed
+#    It must be one of the groups specified in the ColGroupsScheme
+#    It is not presented as a ColGroupsScheme, it is just used for normalization purposes
+#        For example, say you have cell lines control and treated
+#            You can specify to normalize within cell lines and then use select_groups and inclusion_grouping_scheme to plot only the treated samples
+#                The result would be the treatment response for each cell line
+#    transform_after_column_exclusion must be FALSE because the transformation would also occur after DDT which doesn't make sense
+#        Sample loading should be accounted for before DDT
+#        The transformation should also be linear because DDT log2 transforms resulting ratios
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt

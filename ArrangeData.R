@@ -97,6 +97,22 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         n_gene <- length(gene_name)
     }
 
+    #Perform the data dependent transformation if specified to do so
+    #This is done before any columns are excluded
+    #    There may never be a need to do it after columnms are excluded because the values only depend on other values within the group
+    #    This should be done before the exclusion and after the transformation. The transformation should be linear because DDT log2 transforms the ratios returned
+
+    #Make sure the trasnformation occurs before column exclusion and the transformation is linear because DDT includes log2 transformation of returned ratios
+    CheckStop(8,parameters=list(ddt,transformation,transform_after_column_exclusion))
+
+    if (!is.null(ddt))
+    {
+        PerformDDT_return <- PerformDDT(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
+        DATA <- PerformDDT_return[[1]]
+        groups_corresponding <- PerformDDT_return[[2]]
+        GroupColorMatrix <- PerformDDT_return[[3]]
+    }
+
     #Select the groups that are considered for this box plot
     #    This is automatically performed on the first ColGroupsScheme provided
     if (is.null(inclusion_grouping_scheme)){inclusion_grouping_scheme=ColGroupsScheme[1]}
@@ -139,28 +155,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     DATA <- MedianGroup_return[[1]]
     groups_corresponding <- MedianGroup_return[[2]]
     GroupColorMatrix <- MedianGroup_return[[3]]
-
-
-    #transform the columns based on other columns if specified to do so
-    if (class(ddt)=='list')
-    {
-        print('transforming columns')
-        TransformColumns_return <- TransformColumns(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
-        DATA <- TransformColumns_return[[1]]
-        groups_corresponding <- TransformColumns_return[[2]]
-        GroupColorMatrix <- TransformColumns_return[[3]]
-    }
-
-
-    #median normalize within each of the groups as designated by the grouping scheme specified by the input ddt
-    if (!is.null(ddt))
-    {
-        if (class(ddt) == 'character')
-        {
-            med_norm_scheme = ddt
-            DATA = med_norm_within_groups(DATA,groups_corresponding,med_norm_scheme)
-        }
-    }
 
     #reset the ColGroupsScheme and groups_corresponding to what they would have been without a ddt
     #    may not be necessary
