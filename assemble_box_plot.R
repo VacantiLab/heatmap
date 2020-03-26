@@ -17,11 +17,11 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
 
     no_groups_color <- 'grey'
 
-    inter_group_spacing <- bar_width
+    inter_group_spacing <- 1.1*bar_width
 
     YLabel <- ''
     XLabel <- ''
-    TextSize = 8
+    TextSize = 10
 
     pdf_width <- unit(plot_width,'in')
     pdf_height <- unit(plot_height,'in')
@@ -45,7 +45,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
 
         #box_plot_type='scatter_bar_plot'
         gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing))
-        gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing))
+        gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=3)
 
         #box_plot_type='bar_plot'
         grp <- geom_bar(aes(fill=group),position=position_dodge(width=inter_group_spacing),width=bar_width,stat='identity')
@@ -81,7 +81,17 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,y_bounds,qc_
     text_angle_indicator <- NULL
 
     if(box_plot_type=='boxplot'){gpp<-NULL; gep<-NULL; grp<-NULL; DATA_to_plot <- DATA_long}
-    if(box_plot_type=='scatter_bar_plot'){grp<-NULL; gbp<-NULL; DATA_to_plot <- DATA_long_summary}
+    if(box_plot_type=='scatter_bar_plot')
+    {
+        grp<-NULL
+        gbp<-NULL
+        DATA_to_plot <- DATA_long_summary
+        if(!is.null(FillColors))
+        {
+            gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing),size=0.75)
+        }
+
+    }
     if(box_plot_type=='bar_plot')
     {
         gpp<-NULL
