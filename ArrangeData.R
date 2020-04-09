@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme=NULL,ttest,select_rows_after_transform,transform_after_column_exclusion)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 # med_norm specifies to median normalize columns
 {
@@ -65,7 +65,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #The inclusion grouping scheme needs to be added to ColGroupsScheme if it is not already there
     #    It's removed later
-    if (!(inclusion_grouping_scheme %in% ColGroupsScheme))
+    if (!(inclusion_grouping_scheme %in% ColGroupsScheme) && !is.null(inclusion_grouping_scheme))
     {
         ColGroupsScheme_concat <- c(ColGroupsScheme,inclusion_grouping_scheme)
     }

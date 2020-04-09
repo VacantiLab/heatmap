@@ -1,4 +1,4 @@
-MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal',visualization='heatmap')
+MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal',visualization='heatmap',select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE)
 # DL: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -14,13 +14,35 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 #    Options include: 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform'
 # data: Is a data frame containing the data to be plotted if the data is passed as a data frame instead of through the quantities.txt file in data_location
 #    This option could use more testing
-# select_rows: These are the genes that you want to plot
-#    #If it is NULL, all genes are plotted
+# select_rows: These are the rows that you want to select before transforming - the transformation will be done on these rows
+#    If it is NULL, all genes included
 #    If it is a path to a .txt file, that file must contain the gene names, one on each line, and they will be used as the select_rows
-# select_groups: This can be an array of the group names (from the provided ColGroupsScheme) that are to be plotted or a list of arrays of group names or NULL
+#    The transformations will not be done on the whole data set and this does impact the values
+# select_rows_after_transform: these rows are selected to be plotted after tranformations have been completed
+#     This does not impact values
+# transform_after_column_exclusion: if TRUE, transformations happen after groups (columns) are selected, not on the whole data set
+#     If TRUE, select_groups impacts the values
+#     If FALSE, select_groups does not impact the values
+#     If TRUE, this may impact values if ddt is specified
+#     If FALSE, this will not impact values if ddt is specified
+# select_groups: This can be an array of the group names that are to be plotted or a list of arrays of group names or NULL
 #    If it is an array of group names, those groups are the only ones plotted
 #    If it is a list of arrays of group names, groups in the same array are combined into a single group
-#    The ratio plotted is the first group median over the second group median
+#    If it is NULL, all groups in the ColGroupsScheme are plotted
+#    These can be groups outside of ColGroupsScheme, but the scheme must then be specified as the inclusion_grouping_scheme
+#    The spcification of transform_after_column_exclusion determines if this impacts data transformation/normalization
+# inclusion_grouping_scheme: This is the grouping scheme that you want to specify to select the columns with
+#    It can remain as the default NULL and the groups will be selected based on the first grouping scheme in ColGroupsScheme if select_groups is specified
+#    It can be outside of the ColGroupsScheme as well
+# ddt: data dependent transformation; this is a grouping scheme that all samples within that group are normalized to its median and then log2 transformed
+#    It must be one of the groups specified in the ColGroupsScheme
+#    It is not presented as a ColGroupsScheme, it is just used for normalization purposes
+#        For example, say you have cell lines control and treated
+#            You can specify to normalize within cell lines and then use select_groups and inclusion_grouping_scheme to plot only the treated samples
+#                The result would be the treatment response for each cell line
+#    transform_after_column_exclusion must be FALSE because the transformation would also occur after DDT which doesn't make sense
+#        Sample loading should be accounted for before DDT
+#        The transformation should also be linear because DDT log2 transforms resulting ratios
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
@@ -43,7 +65,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 {
     #Extract the data required to make a heatmap
     data_location <- dl
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization=visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest=FALSE)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization=visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest=FALSE,select_rows_after_transform,transform_after_column_exclusion)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
