@@ -171,7 +171,7 @@ FindRowLabels <- function(label_rows,DifExpMatx)
     {
         heatmap_rownames <- rownames(DifExpMatx)
         heatmap_rowname_indices_to_remove <- !(heatmap_rownames %in% label_rows)
-        heatmap_rownames[heatmap_rowname_indices_to_remove] <- ''
+        heatmap_rownames[heatmap_rowname_indices_to_remove] <- NA
         label_rows <- heatmap_rownames
     }
 return(label_rows)
