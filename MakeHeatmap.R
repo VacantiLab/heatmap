@@ -47,8 +47,6 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
 #    If this is specified, all members of a single group are treated as a single sample and the median values are used
-# genes_to_label is either an array of strings corresponding to the genes to be highlighed and labeled in the volcano plot
-#    or it is a string that is the name of a text file (ending in .txt) contained within the data_location/gene_lists file that is a column list of the genes to label
 # ddt: data dependent transform
 #    Allows for the transformation of the columns to ratios of columns
 #    It is a list of two arrays
@@ -61,6 +59,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 # handle_blanks is used in OpenDataFile in the SupportingFunctions.R file. It is a string that specifies what to do with blank values
 # presentation: can be set to 'correlation_matrix' to display the correlation of each row vs. each other row as the matrix visualization
 #    The original clustering of the rows of the input data will determine the visualization dendrograms (along the rows and colums - they're the same)
+# label_rows: TRUE or FALSE to label all rows, a vector to label rows in the vector, or a text file to label rows stated on each line
 
 {
     #Extract the data required to make a heatmap
