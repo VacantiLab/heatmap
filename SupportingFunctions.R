@@ -160,20 +160,33 @@ NoNA <- function(vector)
 FindRowLabels <- function(label_rows,DifExpMatx)
 #Function to return row label_rows
 {
+  #If there are rownames specified to be labeled, ensure those are the only ones that are labeled
+  if (is.character(label_rows))
+      # Only have the genes in the array be labeled if label_rows is not a path to a text file
+      if (!(grepl('.txt',label_rows)))
+      {
+          heatmap_rownames <- rownames(DifExpMatx)
+          heatmap_rowname_indices_to_remove <- !(heatmap_rownames %in% label_rows)
+          heatmap_rownames[heatmap_rowname_indices_to_remove] <- NA
+          label_rows <- heatmap_rownames
+      }
+
+      if (grepl('.txt',label_rows))
+      {
+          label_rows <- read.table(file=label_rows,head=FALSE,check.names=FALSE,colClasses ="character",sep='\n')
+          label_rows <- label_rows[,1]
+          heatmap_rownames <- rownames(DifExpMatx)
+          heatmap_rowname_indices_to_remove <- !(heatmap_rownames %in% label_rows)
+          heatmap_rownames[heatmap_rowname_indices_to_remove] <- NA
+          label_rows <- heatmap_rownames
+      }
+
     #Provide all of the rownames if label_rows input is TRUE
     if (is.logical(label_rows))
     {
         if(label_rows){label_rows <- rownames(DifExpMatx)}
     }
 
-    #If there are rownames specified to be labeled, ensure those are the only ones that are labeled
-    if (is.character(label_rows))
-    {
-        heatmap_rownames <- rownames(DifExpMatx)
-        heatmap_rowname_indices_to_remove <- !(heatmap_rownames %in% label_rows)
-        heatmap_rownames[heatmap_rowname_indices_to_remove] <- NA
-        label_rows <- heatmap_rownames
-    }
 return(label_rows)
 }
 

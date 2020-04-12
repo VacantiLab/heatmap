@@ -67,7 +67,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
         heatmap <- heatmap(x=DifExpMatx,
                           Colv=colv,
                           Rowv=rowv,
-                          cexRow=0.5,
+                          cexRow=0.1,
                           cexCol=0.5,
                           ColSideColors = GroupColorMatrix,
                           col=heat_map_colors,

@@ -143,7 +143,6 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_p
          text_angle_indicator
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
 
-
     ggsave(paste(output_directory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
     return(b)
 }
