@@ -1,4 +1,4 @@
-MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal',visualization='heatmap',select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE)
+MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal',visualization='heatmap',select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE,graphics_type='.png')
 # DL: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -60,6 +60,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 # presentation: can be set to 'correlation_matrix' to display the correlation of each row vs. each other row as the matrix visualization
 #    The original clustering of the rows of the input data will determine the visualization dendrograms (along the rows and colums - they're the same)
 # label_rows: TRUE or FALSE to label all rows, a vector to label rows in the vector, or a text file to label rows stated on each line
+# graphics_type: can be either '.pdf', '.png', or '.jpeg' and dictates the type of file the heatmap will be printed to
 
 {
     #Extract the data required to make a heatmap
@@ -103,7 +104,7 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 
     #Draw and save the heatmap
     n_clusters = 7
-    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters)
+    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters,graphics_type)
     heat_map_colors <- assemble_heatmap_return[[1]]
     cluster_colors <- assemble_heatmap_return[[2]]
     cutree_genes <- assemble_heatmap_return[[3]]

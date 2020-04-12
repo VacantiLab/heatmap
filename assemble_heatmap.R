@@ -1,4 +1,4 @@
-assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters)
+assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters,graphics_type)
 #This function is needed because heatmap.plus cannot handle only a single grouping scheme, it must be provided at least two
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
 #uses dendextend package for coloring dendrogram branches
@@ -12,7 +12,6 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (min(DifExpMatx)<break_seq[1]) {break_seq[1]=min(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
-    graphics_type <- '.png'
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
     graphics_w = 16
@@ -67,7 +66,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
         heatmap <- heatmap(x=DifExpMatx,
                           Colv=colv,
                           Rowv=rowv,
-                          cexRow=0.1,
+                          cexRow=0.5,
                           cexCol=0.5,
                           ColSideColors = GroupColorMatrix,
                           col=heat_map_colors,
