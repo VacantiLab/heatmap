@@ -57,7 +57,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                                 col=heat_map_colors,
                                 breaks=break_seq,
                                 margins=c(5,10),
-                                scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
+                                scale='none', #This has to be specified to stop the visualization from row scaling (does not impact clustering)
                                 labRow=label_rows,
                                 labCol=label_cols)
     }}
@@ -73,7 +73,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           col=heat_map_colors,
                           breaks=break_seq,
                           #margins=c(5,10),
-                          scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
+                          scale='none', #This has to be specified to stop the visualization from row scaling (does not impact clustering)
                           labRow=label_rows,
                           labCol=label_cols)
     }}
@@ -90,7 +90,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
                           col=heat_map_colors,
                           breaks=break_seq,
                           #margins=c(5,10),
-                          scale='none', #This has to be specified in heatmap.plus and heatmap but not in heatmap.2
+                          scale='none', #This has to be specified to stop the visualization from row scaling (does not impact clustering)
                           labRow=label_rows,
                           labCol=label_cols,
                           trace = 'none',
