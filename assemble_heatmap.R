@@ -17,20 +17,19 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     graphics_w = 16
     graphics_h = 12
 
-
     #color the dendrogram
-    color_dend = FALSE
-    cutree_genes = FALSE
-    library("RColorBrewer")
-    cluster_palette <- brewer.pal(n = n_clusters, name = 'Set3')
+    color_dend <- FALSE
+    if (n_clusters > 1){color_dend = TRUE} # specifies whether or not to color the dendrogram
+    cutree_genes = FALSE # initializes the variable containing the cluster membership of genes
+    library("RColorBrewer") # loads a library required to select a color palette
     if (color_dend == TRUE)
     {
-        library(dendextend)
+        if (n_clusters>2){cluster_palette <- brewer.pal(n = n_clusters, name = 'Paired')}
+        if (n_clusters==2){cluster_palette <- c('#6B1106','#D18D06')}
+        suppressPackageStartupMessages(library(dendextend))
         rowv <- rowv %>% set("branches_k_color", k = n_clusters, value=cluster_palette)
         cutree_genes <- cutree(C_row,n_clusters,order_clusters_as_data=FALSE)
     }
-
-
 
     #open the heatmap graphics file
     if (graphics_type == '.pdf'){pdf(graphics_file,height=graphics_h,width=graphics_w)} #not sure of the units of width and height}
