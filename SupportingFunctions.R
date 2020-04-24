@@ -86,7 +86,7 @@ StoreHeatmap <- function()
 ClusterData <- function(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
 {
     #compute the distance matrix depending on the desired method (euclidan, pearson, or spearman)
-    print('computing distnace matrix')
+    print('computing distance matrix')
     if (DistanceMethod == 'euclidian')
     {
         D_col <- dist(t(DATA)) #This function computes the distance matrix where the rows are points, but in this instance the columns should be points, so use the transpose of the data matrix.

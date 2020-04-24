@@ -110,7 +110,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     dev.off() #turn off printing to the specified pdf
 
     #return used variables
-    assemble_heatmap_return <- list(heat_map_colors,cluster_palette,cutree_genes)
+    assemble_heatmap_return <- list(heat_map_colors,cutree_genes)
 }
 
 

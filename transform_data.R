@@ -39,7 +39,7 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
     }
 
     #center rows on mean and normalize by sample SD
-    if (transformation == 'mean_center_sd_norm')
+    if (transformation == 'row_mean_center_sd_norm')
     {
         column_names <- colnames(DATA) #record the column names after the unecessary column is removed
         Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
@@ -97,39 +97,6 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         DATA <- data.frame(lapply(Transposed_DATA, exp2_mednorm_log2))
         DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
         colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
-        transformed = TRUE
-    }
-
-    #this is a bit of a mess, is intended for microarray data
-    if (transformation == 'med_norm_log2_columns')
-    {
-
-        #set the median to zero for each column by subtracting the median (for log transformed data)
-        for (specified_column in colnames(DATA))
-        {
-            sample_array <- DATA[,specified_column]
-            sample_raw <- sample_array^2
-            sample_median <- median(sample_raw)
-            sample_med_norm <- sample_raw/sample_median
-            sample_log2 <- log2(sample_med_norm)
-            DATA[,specified_column] <- sample_log2
-        }
-
-        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
-        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
-        DATA <- data.frame(lapply(Transposed_DATA, exp2_mednorm_log2))
-        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
-        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
-
-        #centering the columns to have a median of 0 creates large negative numbers and apparent division by 0 and infinity values
-        #    this replaces all infinity and anything greater than 10 with 10
-        DATA <- apply(DATA, 2, function(x) ifelse(x == Inf, 10, x))
-        DATA <- apply(DATA, 2, function(x) ifelse(x > 10, 10, x))
-
-        DATA <- apply(DATA, 2, function(x) ifelse(x == -Inf, -10, x))
-        DATA <- apply(DATA, 2, function(x) ifelse(x < -10, -10, x))
-
-        DATA <- apply(DATA, 2, function(x) ifelse(x > 10, 10, x))
         transformed = TRUE
     }
 
@@ -203,6 +170,33 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         transformed = TRUE
     }
 
+    if (transformation == 'row_meannorm_col_mednorm_log2')
+    {
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        row_names <- rownames(DATA)
+        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+        DATA <- data.frame(lapply(Transposed_DATA, mean_norm))
+        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+        DATA <- data.frame(lapply(DATA, median_norm_log2_transform)) #median norm the columns and then log2 transform everything
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
+        transformed = TRUE
+    }
+
+    if (transformation == 'add_halfnon0min_row_meannorm_col_mednorm_log2')
+    {
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        row_names <- rownames(DATA)
+        DATA <- DATA + 0.5*min(DATA[DATA!=0])
+        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+        DATA <- data.frame(lapply(Transposed_DATA, mean_norm))
+        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+        DATA <- data.frame(lapply(DATA, median_norm_log2_transform)) #median norm the columns and then log2 transform everything
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
+        transformed = TRUE
+    }
+
     if (transformed==FALSE && !is.null(transformation)){stop('custom message: You have specified a transformation that does not exist.')}
 
     if (!is.null(select_rows_after_transform)){DATA <- DATA[select_rows_after_transform,]}
@@ -265,6 +259,14 @@ average_norm_log2_transform <- function(vector)
 median_norm <- function(vector)
 {
   normalized <- vector/median(vector)
+  transformed <- normalized
+  return(transformed)
+}
+
+#Function to normalize by median and log2 transform
+mean_norm <- function(vector)
+{
+  normalized <- vector/mean(vector)
   transformed <- normalized
   return(transformed)
 }
