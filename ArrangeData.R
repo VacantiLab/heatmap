@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 # med_norm specifies to median normalize columns
 {
@@ -190,6 +190,13 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         #However in measruing 10k protein abundances across few samples, this could happen by chance
     #print('searching for and removing rows with zero variance')
     #DATA <- remove_zero_var_rows(DATA)
+
+    #Remove the rows with too many minimum values
+    if (class(FilterRowsForMeanSpread) == 'numeric')
+    {
+        proportion <- FilterRowsForMeanSpread
+        DATA <- RemoveMinValRows(DATA,proportion)
+    }
 
     DATA_long <- NULL
     if (visualization=='boxplot' | visualization=='volcanoplot' | visualization=='scatterbar')

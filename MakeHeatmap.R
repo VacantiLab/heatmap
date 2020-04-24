@@ -1,4 +1,4 @@
-MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal',visualization='heatmap',select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE,graphics_type='.png',n_clusters=1)
+MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal',visualization='heatmap',select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE,graphics_type='.png',n_clusters=1,FilterRowsForMeanSpread=FALSE)
 # DL: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -62,11 +62,14 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 # label_rows: TRUE or FALSE to label all rows, a vector to label rows in the vector, or a text file to label rows stated on each line
 # graphics_type: can be either '.pdf', '.png', or '.jpeg' and dictates the type of file the heatmap will be printed to
 # n_clusters: Specifies the number of clusters on the rows that are identified by different colors
+# FilterRowsForMeanSpread: If it is a decimal fraction (such as 0.7), rows are filtered out who have more than 70% of their values below or above 0
+#     This is meant for log2 transformed data where there may be a small cluster of columns driving the profile
+#     Corrects red or blue streaks across the heat map
 
 {
     #Extract the data required to make a heatmap
     data_location <- dl
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization=visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest=FALSE,select_rows_after_transform,transform_after_column_exclusion)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization=visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest=FALSE,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
