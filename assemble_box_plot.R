@@ -108,7 +108,6 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_p
     if (text_angle==0){hjust_value <- 0.5; vjust_value <- 0.5}
     text_angle_indicator <- theme(axis.text.x = element_text(angle=text_angle,hjust=hjust_value,vjust=vjust_value))
 
-
     b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var, fill=color_var)) +
          gpp +
          gbp +

@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread=FALSE)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 # med_norm specifies to median normalize columns
 {
@@ -147,7 +147,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     groups_concatonated <- ConcatonateGroups_return[[3]]
     colors_concatonated <- ConcatonateGroups_return[[4]]
     group_concationation <- is.list(group_divisions)
-
 
     #return median of replicates if specified to do so
     print('aggregating group members if necessary')
