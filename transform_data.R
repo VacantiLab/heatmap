@@ -1,8 +1,11 @@
 transform_data <- function(DATA,transformation,select_rows_after_transform)
 {
     transformed = FALSE
-
-    if (is.null(transformation)){return(DATA)}
+    if (is.null(transformation))
+    {
+        transformation <- 'none'
+        transformed <- TRUE
+    }
 
     #Log transform the data if specified to do so
     if (transformation == 'log2')
@@ -211,9 +214,26 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         transformed = TRUE
     }
 
+    if (transformation == 'zrow')
+    {
+        column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+        row_names <- rownames(DATA)
+        Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+        DATA <- data.frame(lapply(Transposed_DATA, zscore))
+        DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+        colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+        rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
+        transformed = TRUE
+    }
+
     if (transformed==FALSE && !is.null(transformation)){stop('custom message: You have specified a transformation that does not exist.')}
 
-    if (!is.null(select_rows_after_transform)){DATA <- DATA[select_rows_after_transform,]}
+    if (!is.null(select_rows_after_transform))
+    {
+        select_rows_after_transform_in_data_set <- select_rows_after_transform %in% rownames(DATA)
+        select_rows_after_transform <- select_rows_after_transform[select_rows_after_transform_in_data_set]
+        DATA <- DATA[select_rows_after_transform,]
+    }
 
     return(DATA)
 }
@@ -313,5 +333,12 @@ exp2_iqrnorm_log2_mediancenter <- function(vector)
   normalized <- exp2_raised/IQR(exp2_raised)
   transformed <- log2(normalized)
   transformed <- transformed - median(transformed)
+  return(transformed)
+}
+
+#Function to transform to z scores
+zscore <- function(vector)
+{
+  transformed <- (vector - mean(vector))/sd(vector)
   return(transformed)
 }

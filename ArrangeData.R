@@ -1,4 +1,4 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread=FALSE)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread=FALSE,zscore_rows=FALSE)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 # med_norm specifies to median normalize columns
 {
@@ -97,6 +97,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         n_gene <- length(gene_name)
     }
 
+
     #Perform the data dependent transformation if specified to do so
     #This is done before any columns are excluded
     #    There may never be a need to do it after columnms are excluded because the values only depend on other values within the group
@@ -112,6 +113,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
         groups_corresponding <- PerformDDT_return[[2]]
         GroupColorMatrix <- PerformDDT_return[[3]]
     }
+
 
     #Select the groups that are considered for this box plot
     #    This is automatically performed on the first ColGroupsScheme provided
@@ -195,6 +197,12 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     {
         proportion <- FilterRowsForMeanSpread
         DATA <- RemoveMinValRows(DATA,proportion)
+    }
+
+    # transform rows to zscores if specified to do so
+    if (zscore_rows)
+    {
+        DATA <- transform_data(DATA,'zrow',NULL)
     }
 
     DATA_long <- NULL

@@ -1,4 +1,4 @@
-MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_plot',plot_width=2.0,plot_height=1.5,bar_width=0.75,legend_position=c(0.8,0.92),text_angle=0,ttest=FALSE,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE,output_in_dl=TRUE,select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE,ybounds=NULL,ytick=NULL)
+MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_plot',plot_width=2.0,plot_height=1.5,bar_width=0.75,legend_position=c(0.8,0.92),text_angle=0,ttest=FALSE,transformation=NULL,data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,replicate_scheme=NULL,qc_plot=FALSE,med_norm=FALSE,ddt=NULL,handle_blanks='remove_row',violin=FALSE,output_in_dl=TRUE,select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE,ybounds=NULL,ytick=NULL,zscore_rows=FALSE,ErrorBarSize=0.75,PointSize=3)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -56,9 +56,10 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_pl
 #          if NULL, these values will be calculated automatically
 # ytick: sets the division between tick marks on the y-axis. For example it could be 0.1, 1, or whatever other value
 #        if NULLm these values will be calculated automatically
+# zscore_rows: if TRUE, will tranform the rows to z scores AFTER all other transformations and column exclusions
 {
     #Extract the data required to make a box plot
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='boxplot',ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='boxplot',ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,zscore_rows)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
@@ -75,7 +76,7 @@ MakeBoxPlot <- function(data_location,ColGroupsScheme=NULL,box_plot_type='bar_pl
     if (output_in_dl){output_directory <- data_location}
 
     #Make the plot
-    if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,ybounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle,transformation,ytick)}
+    if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,ybounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle,transformation,ytick,ErrorBarSize,PointSize)}
     if (violin){b <- assemble_violin_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot)}
 
     #assemble variables to return

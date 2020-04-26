@@ -1,4 +1,4 @@
-assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle,transformation,ytick)
+assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle,transformation,ytick,ErrorBarSize=0.75,PointSize=3)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
@@ -45,7 +45,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_p
 
         #box_plot_type='scatter_bar_plot'
         gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing))
-        gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=3)
+        gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=PointSize)
 
         #box_plot_type='bar_plot'
         grp <- geom_bar(aes(fill=group),position=position_dodge(width=inter_group_spacing),width=bar_width,stat='identity')
@@ -84,7 +84,7 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_p
         DATA_to_plot <- DATA_long_summary
         if(!is.null(FillColors))
         {
-            gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing),size=0.75)
+            gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing),size=ErrorBarSize)
         }
 
     }
