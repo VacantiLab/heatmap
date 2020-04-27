@@ -1,5 +1,28 @@
-MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=seq(-2,2,0.5),replicate_scheme=NULL,DistanceMethod='pearson',ClusterMethod='ward.D2',data=NULL,select_rows=NULL,select_groups=NULL,inclusion_grouping_scheme=NULL,label_rows=FALSE,label_cols=FALSE,rev_c_dend=FALSE,ddt=NULL,med_norm=FALSE,handle_blanks='remove_row',presentation='normal',visualization='heatmap',select_rows_after_transform=NULL,transform_after_column_exclusion=FALSE,graphics_type='.png',n_clusters=1,FilterRowsForMeanSpread=FALSE)
-# DL: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
+MakeHeatMap <- function(dl,
+                        ColGroupsScheme=NULL,
+                        transformation='log2',
+                        break_seq=seq(-2,2,0.5),
+                        replicate_scheme=NULL,
+                        DistanceMethod='pearson',
+                        ClusterMethod='ward.D2',
+                        data=NULL,
+                        select_rows=NULL,
+                        select_groups=NULL,
+                        inclusion_grouping_scheme=NULL,
+                        label_rows=FALSE,
+                        label_cols=FALSE,
+                        rev_c_dend=FALSE,
+                        ddt=NULL,
+                        med_norm=FALSE,
+                        handle_blanks='remove_row',
+                        presentation='normal',
+                        visualization='heatmap',
+                        select_rows_after_transform=NULL,
+                        transform_after_column_exclusion=FALSE,
+                        graphics_type='.png',
+                        n_clusters=1,
+                        FilterRowsForMeanSpread=FALSE)
+# dl: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
 #        The group names within each grouping scheme must not match any of those of another grouping scheme
@@ -8,10 +31,10 @@ MakeHeatMap <- function(dl,ColGroupsScheme=NULL,transformation='log2',break_seq=
 #        All of the group names are listed down the rows with no indication of their scheme membership (thus the names must be unique)
 #        Each column must have a header
 #    These files must all be tab delimited
-# ColGroupsScheme: the name of the grouping scheme used, indicates which row to take from group_key.txt
+# ColGroupsScheme: the name of the grouping scheme used indicates which column to take from group_key.txt
 #    There can only be one for the MakeBoxPlot() function
 # transformation: This specifies how the rows should be transformed.
-#    Options include: 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform'
+#    Options include: 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform', and others. See transform_data.R for a complete list of possible transformations.
 # data: Is a data frame containing the data to be plotted if the data is passed as a data frame instead of through the quantities.txt file in data_location
 #    This option could use more testing
 # select_rows: These are the rows that you want to select before transforming - the transformation will be done on these rows
