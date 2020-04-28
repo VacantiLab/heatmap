@@ -1,4 +1,4 @@
-assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,HeatmapDirectory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters,graphics_type)
+assemble_heatmap <- function(AHI)
 #This function is needed because heatmap.plus cannot handle only a single grouping scheme, it must be provided at least two
 #Thus this function determines if there is one or more than one grouping scheme and uses the appropriate heatmap creating function
 #uses dendextend package for coloring dendrogram branches
@@ -6,6 +6,25 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
 #uses enrichR package to calculate cluster enrichments
 
 {
+    #unpack the inputs
+    GroupColorMatrix <- AHI[[1]]
+    DifExpMatx <- AHI[[2]]
+    colv <- AHI[[3]]
+    rowv <- AHI[[4]]
+    break_seq <- AHI[[5]]
+    label_rows <- AHI[[6]]
+    label_cols <- AHI[[7]]
+    output_directory <- AHI[[8]]
+    DistanceMethod <- AHI[[9]]
+    ClusterMethod <- AHI[[10]]
+    C_col <- AHI[[11]]
+    C_row <- AHI[[12]]
+    Cor_col <- AHI[[13]]
+    Cor_row <- AHI[[14]]
+    presentation <- AHI[[15]]
+    n_clusters <- AHI[[16]]
+    graphics_type <- AHI[[17]]
+
     library(heatmap.plus)
     n_colors = length(break_seq)-1
     break_seq_0 <- break_seq #save the originally specified break_seq to use in the color key creation
@@ -13,7 +32,7 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     if (max(DifExpMatx)>break_seq[length(break_seq)]) {break_seq[length(break_seq)]=max(DifExpMatx)} #This needs to be done because heatmap.plus assigns white to everything outside the range
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
-    graphics_file <- paste(HeatmapDirectory,HeatmapName,sep='')
+    graphics_file <- paste(output_directory,HeatmapName,sep='')
     graphics_w = 16
     graphics_h = 12
 
@@ -41,6 +60,14 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     {
       DifExpMatx <- Cor_row
       colv <- rowv
+    }
+
+    if (class(label_rows)=='character')
+    {
+        genes_to_label <- label_rows
+        label_rows <- rownames(DifExpMatx)
+        gene_indices <- label_rows %in% genes_to_label
+        label_rows[!gene_indices] <- NA
     }
 
     #make the heat map
@@ -99,13 +126,13 @@ assemble_heatmap <- function(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,lab
     dev.off() #turn off printing to the specified pdf
 
     #print the column dendrogram as pdf
-    pdf(paste(HeatmapDirectory,'col_dendrogram',sep=''),height=4,width=10) #not sure of the units of width and height
+    pdf(paste(output_directory,'col_dendrogram',sep=''),height=4,width=10) #not sure of the units of width and height
     plot(C_col,hang=-1)
     dev.off() #turn off printing to the specified pdf
 
 
     #print the column dendrogram as pdf
-    pdf(paste(HeatmapDirectory,'row_dendrogram.pdf',sep=''),height=2500,width=300) #not sure of the units of width and height
+    pdf(paste(output_directory,'row_dendrogram.pdf',sep=''),height=2500,width=300) #not sure of the units of width and height
     plot(rowv,main = "Default colors",lwd=0.5,horiz=TRUE)
     dev.off() #turn off printing to the specified pdf
 
