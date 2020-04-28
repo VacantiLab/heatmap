@@ -1,5 +1,8 @@
-OpenDataFile <- function(data,select_rows,med_norm,handle_blanks)
-#Takes a data file location and reads the data into a data frame compatible with the MakeHeatMap function
+OpenDataFile <- function(data,select_rows,handle_blanks)
+# Takes a data file location and reads the data into a data frame compatible with the MakeHeatMap function
+# select_rows: an array of rownames that are extracted from the data file
+#     if NULL, than all rows are selected
+# handle_blanks: can be 'remove_row' or 'replace_with_rowmin'
 {
     #Import the data
     if (is.data.frame(data)) {DATA <- data} #If the input, data, is provided as a data frame, it is the data
@@ -25,15 +28,6 @@ OpenDataFile <- function(data,select_rows,med_norm,handle_blanks)
             not_na_entries = DATA[row,][columns_not_na]
             replacement_value = (1/1)*min(not_na_entries)
             DATA[row,][columns_na] = replacement_value
-        }
-    }
-
-    #median-normalize columns if specified to do so
-    if (med_norm)
-    {
-        for (specified_column in colnames(DATA))
-        {
-            DATA[,specified_column] <- DATA[,specified_column]/median(DATA[,specified_column])
         }
     }
 

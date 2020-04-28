@@ -13,7 +13,6 @@ MakeHeatMap <- function(dl,
                         label_cols=FALSE,
                         rev_c_dend=FALSE,
                         ddt=NULL,
-                        med_norm=FALSE,
                         handle_blanks='remove_row',
                         presentation='normal',
                         visualization='heatmap',
@@ -21,7 +20,7 @@ MakeHeatMap <- function(dl,
                         transform_after_column_exclusion=FALSE,
                         graphics_type='.png',
                         n_clusters=1,
-                        FilterRowsForMeanSpread=FALSE)
+                        FilterRowsForMeanSpread=NULL)
 # dl: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -78,7 +77,6 @@ MakeHeatMap <- function(dl,
 #    It can also be a string that is one of the members of ColGroupsScheme
 #        If this is the case, the data within groups designated by the ddt grouping scheme will be normalized to the median of the group
 #        ddt would not actually be a group that is presented in the plot but must be a member of the ColGroupsScheme input
-# med_norm specifies to median normalize columns, will occur before rows are selected or other transformations performed (Done within OpenDataFile)
 # handle_blanks is used in OpenDataFile in the SupportingFunctions.R file. It is a string that specifies what to do with blank values
 # presentation: can be set to 'correlation_matrix' to display the correlation of each row vs. each other row as the matrix visualization
 #    The original clustering of the rows of the input data will determine the visualization dendrograms (along the rows and colums - they're the same)
@@ -92,7 +90,21 @@ MakeHeatMap <- function(dl,
 {
     #Extract the data required to make a heatmap
     data_location <- dl
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization=visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest=FALSE,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme,
+                                      replicate_scheme,
+                                      transformation,
+                                      data,
+                                      data_location,
+                                      select_rows,
+                                      select_groups,
+                                      visualization=visualization,
+                                      ddt,
+                                      handle_blanks,
+                                      inclusion_grouping_scheme,
+                                      ttest=FALSE,
+                                      select_rows_after_transform,
+                                      transform_after_column_exclusion,
+                                      FilterRowsForMeanSpread)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
@@ -130,7 +142,23 @@ MakeHeatMap <- function(dl,
     label_cols <- FindColLabels(label_cols,DifExpMatx)
 
     #Draw and save the heatmap
-    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,DifExpMatx,colv,rowv,break_seq,label_rows,label_cols,output_directory,DistanceMethod,ClusterMethod,C_col,C_row,Cor_col,Cor_row,presentation,n_clusters,graphics_type)
+    assemble_heatmap_return <- assemble_heatmap(GroupColorMatrix,
+                                                DifExpMatx,
+                                                colv,
+                                                rowv,
+                                                break_seq,
+                                                label_rows,
+                                                label_cols,
+                                                output_directory,
+                                                DistanceMethod,
+                                                ClusterMethod,
+                                                C_col,
+                                                C_row,
+                                                Cor_col,
+                                                Cor_row,
+                                                presentation,
+                                                n_clusters,
+                                                graphics_type)
     heat_map_colors <- assemble_heatmap_return[[1]]
     cutree_genes <- assemble_heatmap_return[[2]]
 

@@ -1,6 +1,5 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread=FALSE,zscore_rows=FALSE)
+ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread=FALSE,zscore_rows=FALSE)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
-# med_norm specifies to median normalize columns
 {
     #if more than one ColGroupsScheme is specified for a volcano plot because of a data dependent transformation (ddt)
     #    that needs to be disguised for the CheckStop
@@ -34,7 +33,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #Import the data and only keep selected rows and median-nomralize columns if specified
     print('opening data file')
-    OpenDataFile_return <- OpenDataFile(data,select_rows,med_norm,handle_blanks)
+    OpenDataFile_return <- OpenDataFile(data,select_rows,handle_blanks)
     DATA <- OpenDataFile_return[[1]]
     select_rows <- OpenDataFile_return[[2]]
     DATA_original <- OpenDataFile_return[[3]]
