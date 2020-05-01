@@ -205,7 +205,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     }
 
     DATA_long <- NULL
-    if (visualization=='boxplot' | visualization=='volcanoplot' | visualization=='scatterbar')
+    if (visualization=='boxplot' | visualization=='volcanoplot' | visualization=='scatterbar' | visualization=='ScatterLinePlot')
     {
         #put the data in long data frame format for plotting
         print('arranging data in long data frame format')

@@ -1,7 +1,6 @@
-assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directory,select_rows)
+assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directory,select_rows,plot_width,plot_height)
 {
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
-
     sample_on_x_axis = TRUE
     if(sample_on_x_axis)
     {
@@ -24,8 +23,8 @@ assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directo
     YLabel <- 'expression'
     TextSize = 8
 
-    pdf_width <- unit(8,'cm')
-    pdf_height <- unit(4,'cm')
+    pdf_width <- unit(plot_width,'cm')
+    pdf_height <- unit(plot_height,'cm')
 
     #gsp <- geom_point(aes_string(color=color_var,x=x_var,y=y_var))
     gsp = NULL
