@@ -1,6 +1,14 @@
-assemble_volcano_plot <- function(rp_df,output_directory,genes_to_label,XData,YData,filename)
+assemble_volcano_plot <- function(AVPI)
 # rp_df is ratio p-value data frame
 {
+
+rp_df <- AVPI[[1]]
+output_directory <- AVPI[[2]]
+genes_to_label <- AVPI[[3]]
+XData <- AVPI[[4]]
+YData <- AVPI[[5]]
+filename <- AVPI[[6]]
+
 #set the plot parameters
 XAxisLimits <- 1.1*c(min(rp_df[,XData]),max(rp_df[,XData]))
 if (min(rp_df[,YData])>0){ymin=0}

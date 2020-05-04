@@ -12,8 +12,72 @@ ArrangeData <- function(ColGroupsScheme,
                        ttest,
                        select_rows_after_transform,
                        transform_after_column_exclusion,
-                       FilterRowsForMeanSpread=FALSE,
-                       zscore_rows=FALSE)
+                       FilterRowsForMeanSpread=FALSE)
+
+ # Inputs:
+ # ColGroupsScheme (required): the name of the grouping scheme used indicates which column to take from group_key.txt
+ #    There can only be one for the MakeBoxPlot() function
+ # replicate_scheme (can be NULL): This specifies the grouping scheme that is used to specify groups of replicates
+ #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
+ #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
+ #    If this is specified, all members of a single group are treated as a single sample and the median values are used
+ # transformation (can be NULL): This specifies how the rows should be transformed.
+ #    Options include: 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform', and others.
+ #    See transform_data.R for a complete list of possible transformations.
+ # data (can be NULL): Is a data frame containing the data to be plotted if the data is passed as a data frame
+ #       If this is used then the data is not passed through the quantities.txt file in data_location
+ # data_location (required): a pathway to where the text file containing the data is stored, must have '/' at the end
+ #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
+ #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
+ #        The group names within each grouping scheme must not match any of those of another grouping scheme
+ #        Each column must have a header
+ #    There must also be a group_color_key.txt file with the group names down the rows and the colors beside them
+ #        All of the group names are listed down the rows with no indication of their scheme membership (thus the names must be unique)
+ #        Each column must have a header
+ #    These files must all be tab delimited
+ # select_rows (can be NULL): These are the rows that you want to select before transforming - the transformation will be done on these rows
+ #    If it is NULL, all genes included
+ #    If it is a path to a .txt file, that file must contain the gene names, one on each line, and they will be used as the select_rows
+ #    The transformations will not be done on the whole data set and this does impact the values
+ # select_groups (can be NULL): This can be an array of the group names that are to be plotted or a list of arrays of group names or NULL
+ #    If it is an array of group names, those groups are the only ones plotted
+ #    If it is a list of arrays of group names, groups in the same array are combined into a single group
+ #    If it is NULL, all groups in the ColGroupsScheme are plotted
+ #    These can be groups outside of ColGroupsScheme, but the scheme must then be specified as the inclusion_grouping_scheme
+ #    The spcification of transform_after_column_exclusion determines if this impacts data transformation/normalization
+ # visualization (can be NULL): A string describing the type of plot
+ #    Should be specified if is a 'volcanoplot' or a 'boxplot'
+ # ddt (can be NULL): data dependent transformation; this is a grouping scheme that all samples within that group are normalized to its median and then log2 transformed
+ #    It must be one of the groups specified in the ColGroupsScheme
+ #    It is not presented as a ColGroupsScheme, it is just used for normalization purposes
+ #        For example, say you have cell lines control and treated
+ #            You can specify to normalize within cell lines and then use select_groups and inclusion_grouping_scheme to plot only the treated samples
+ #                The result would be the treatment response for each cell line
+ #    transform_after_column_exclusion must be FALSE because the transformation would also occur after DDT which doesn't make sense
+ #        Sample loading should be accounted for before DDT
+ #        The transformation should also be linear because DDT log2 transforms resulting ratios
+ # handle_blanks (required): Used in OpenDataFile in the SupportingFunctions.R file.
+ #                It is a string that specifies what to do when blank values are encountered
+ #                Can be 'remove_row' or 'replace_with_rowmin'
+ # inclusion_grouping_scheme (can be NULL): This is the grouping scheme that you want to specify to select the columns with
+ #    It can remain as the default NULL and the groups will be selected based on the first grouping scheme in ColGroupsScheme if select_groups is specified
+ #    It can be outside of the ColGroupsScheme as well
+ # ttest (required): Indicates whether ttests should be performed by being either TRUE of FALSE
+ #    only works if there are two select_groups
+ # select_rows_after_transform (can be NULL): these rows are selected to be plotted after tranformations have been completed
+ #     This does not impact values
+ # transform_after_column_exclusion (required): if TRUE, transformations happen after groups (columns) are selected, not on the whole data set
+ #     If TRUE, select_groups impacts the values
+ #     If FALSE, select_groups does not impact the values
+ #     If TRUE, this may impact values if ddt is specified
+ #     If FALSE, this will not impact values if ddt is specified
+ # FilterRowsForMeanSpread (can be NULL): If it is a decimal fraction (such as 0.7), rows are filtered out who have more than 70% of their values below or above 0
+ #     This is meant for log2 transformed data where there may be a small cluster of columns driving the profile
+ #     Corrects red or blue streaks across the heat map
+
+ #Outputs
+
+
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 {
     #if more than one ColGroupsScheme is specified for a volcano plot because of a data dependent transformation (ddt)
@@ -101,6 +165,7 @@ ArrangeData <- function(ColGroupsScheme,
     CheckStop(2,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme))
 
     #Filter out rows depending on their distribution around the mean
+    DATA_after_filter <- NULL
     if (class(FilterRowsForMeanSpread) == 'numeric')
     {
         proportion <- FilterRowsForMeanSpread
@@ -214,12 +279,6 @@ ArrangeData <- function(ColGroupsScheme,
     #print('searching for and removing rows with zero variance')
     #DATA <- remove_zero_var_rows(DATA)
 
-    # transform rows to zscores if specified to do so
-    if (zscore_rows)
-    {
-        DATA <- transform_data(DATA,'zrow',NULL)
-    }
-
     DATA_long <- NULL
     if (visualization=='boxplot' | visualization=='volcanoplot' | visualization=='scatterbar' | visualization=='ScatterLinePlot')
     {
@@ -266,7 +325,18 @@ ArrangeData <- function(ColGroupsScheme,
     ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,DATA_original)
     if (visualization == 'volcanoplot')
     {
-        ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,ColGroupsScheme,DATA_after_filter)
+        ArrangeData_return <- list(sig_test_list,
+                                   output_directory,
+                                   group_order,
+                                   gene_name,
+                                   DATA_long,
+                                   FillColors,
+                                   DATA,
+                                   GroupColorMatrix,
+                                   groups_corresponding,
+                                   DATA_transformed_full,
+                                   ColGroupsScheme,
+                                   DATA_after_filter)
     }
 
     return(ArrangeData_return)
