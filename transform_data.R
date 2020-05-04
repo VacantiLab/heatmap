@@ -213,6 +213,33 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
         transformed = TRUE
     }
+    
+    if (transformation == 'add_halfnon0min_row_meannorm_log2')
+    {
+      column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+      row_names <- rownames(DATA)
+      DATA <- DATA + 0.5*min(DATA[DATA!=0])
+      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+      DATA <- data.frame(lapply(Transposed_DATA, mean_norm))
+      DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+      DATA <- log2(DATA)
+      colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+      rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
+      transformed = TRUE
+    }
+    
+    if (transformation == 'add_halfnon0min_row_meannorm')
+    {
+      column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+      row_names <- rownames(DATA)
+      DATA <- DATA + 0.5*min(DATA[DATA!=0])
+      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+      DATA <- data.frame(lapply(Transposed_DATA, mean_norm))
+      DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+      colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+      rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
+      transformed = TRUE
+    }
 
     if (transformation == 'zrow')
     {
