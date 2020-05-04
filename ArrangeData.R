@@ -1,4 +1,19 @@
-ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization,ddt,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,FilterRowsForMeanSpread=FALSE,zscore_rows=FALSE)
+ArrangeData <- function(ColGroupsScheme,
+                       replicate_scheme,
+                       transformation,
+                       data,
+                       data_location,
+                       select_rows,
+                       select_groups,
+                       visualization,
+                       ddt,
+                       handle_blanks,
+                       inclusion_grouping_scheme,
+                       ttest,
+                       select_rows_after_transform,
+                       transform_after_column_exclusion,
+                       FilterRowsForMeanSpread=FALSE,
+                       zscore_rows=FALSE)
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
 {
     #if more than one ColGroupsScheme is specified for a volcano plot because of a data dependent transformation (ddt)
@@ -84,6 +99,14 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
 
     #See if all of the specified input groups are actually specified in group_key.txt file
     CheckStop(2,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme))
+
+    #Filter out rows depending on their distribution around the mean
+    if (class(FilterRowsForMeanSpread) == 'numeric')
+    {
+        proportion <- FilterRowsForMeanSpread
+        DATA <- RemoveMinValRows(DATA,proportion)
+        DATA_after_filter <- DATA
+    }
 
     #transform if specified to do so before excluding groups or samples
     DATA_transformed_full <- NULL
@@ -191,13 +214,6 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     #print('searching for and removing rows with zero variance')
     #DATA <- remove_zero_var_rows(DATA)
 
-    #Remove the rows with too many minimum values
-    if (class(FilterRowsForMeanSpread) == 'numeric')
-    {
-        proportion <- FilterRowsForMeanSpread
-        DATA <- RemoveMinValRows(DATA,proportion)
-    }
-
     # transform rows to zscores if specified to do so
     if (zscore_rows)
     {
@@ -250,7 +266,7 @@ ArrangeData <- function(ColGroupsScheme,replicate_scheme,transformation,data,dat
     ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,DATA_original)
     if (visualization == 'volcanoplot')
     {
-        ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,ColGroupsScheme)
+        ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,ColGroupsScheme,DATA_after_filter)
     }
 
     return(ArrangeData_return)

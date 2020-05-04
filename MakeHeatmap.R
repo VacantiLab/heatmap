@@ -148,6 +148,7 @@ MakeHeatMap <- function(dl,
                        select_rows_after_transform,
                        transform_after_column_exclusion,
                        FilterRowsForMeanSpread)
+    browser()
 
     sig_test_list <- ADR[[1]]
     output_directory <- ADR[[2]]

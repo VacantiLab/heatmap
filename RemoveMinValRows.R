@@ -16,8 +16,8 @@ RemoveMinValRows <- function(DATA,proportion)
             print(paste('filtering ',toString(i),'th row',sep=''))
         }
         i = i+1
-        n_less <- sum(DATA[row,] < 0)
-        n_greater <- sum(DATA[row,] > 0)
+        n_less <- sum(DATA[row,] < mean(as.numeric(DATA[row,])))
+        n_greater <- sum(DATA[row,] > mean(as.numeric(DATA[row,])))
         criteria <- (n_less/n_samples < proportion) & (n_greater/n_samples < proportion)
         if (criteria){rows_to_keep <- c(rows_to_keep,row)}
         if (!criteria){rows_discarded <- rows_discarded + 1}
