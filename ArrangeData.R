@@ -45,8 +45,8 @@ ArrangeData <- function(ColGroupsScheme,
  #    If it is NULL, all groups in the ColGroupsScheme are plotted
  #    These can be groups outside of ColGroupsScheme, but the scheme must then be specified as the inclusion_grouping_scheme
  #    The spcification of transform_after_column_exclusion determines if this impacts data transformation/normalization
- # visualization (can be NULL): A string describing the type of plot
- #    Should be specified if is a 'volcanoplot' or a 'boxplot'
+ # visualization (required): A string describing the type of plot
+ #    Can be one of the visualizations this function is used to produce such as: 'volcanoplot'
  # ddt (can be NULL): data dependent transformation; this is a grouping scheme that all samples within that group are normalized to its median and then log2 transformed
  #    It must be one of the groups specified in the ColGroupsScheme
  #    It is not presented as a ColGroupsScheme, it is just used for normalization purposes
