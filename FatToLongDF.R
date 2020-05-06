@@ -10,6 +10,7 @@ FatToLongDF <- function(DATA,groups_corresponding)
 
     for (i in 1:n_col_DATA)
     {
+        if (i%%100 == 0){print(paste('converting ',toString(i),'th column to long data frame',sep=''))}
         current_sample <- sample_names[i]
         start_iteration <- (i-1)*n_row_DATA + 1
         end_iteration <- i*n_row_DATA

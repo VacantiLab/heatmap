@@ -110,6 +110,13 @@ MakeVolcanoPlot <- function(data_location,
     #Designate the data visualized in the volcano plot
     volcano_df <- sig_test_list[[1]] #there is only one member of this list for a volcano plot because there are must only be two grouping schemes compared
 
+    #Replace any p-values with a value of 0 with the lowest p-value and recalculate the -log10 of the p-value
+    indices <- volcano_df[,'p_val'] == 0
+    replacement <- min(volcano_df$p_val[volcano_df$p_val != 0])
+    volcano_df[indices,'p_val'] <- replacement
+    volcano_df[indices,'nlog10_p'] <- -log(replacement)
+
+
     #Make the plot
     genes_to_label <- GetGeneList(genes_to_label,data_location)
     AVPI <- list(volcano_df,
@@ -118,6 +125,7 @@ MakeVolcanoPlot <- function(data_location,
                  XData='log2_ratio',
                  YData='nlog10_p',
                  filename='volcano.pdf')
+
     vp <- assemble_volcano_plot(AVPI)
 
 

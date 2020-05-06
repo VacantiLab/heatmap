@@ -279,6 +279,7 @@ ArrangeData <- function(ColGroupsScheme,
     #print('searching for and removing rows with zero variance')
     #DATA <- remove_zero_var_rows(DATA)
 
+
     DATA_long <- NULL
     if (visualization=='boxplot' | visualization=='volcanoplot' | visualization=='scatterbar' | visualization=='ScatterLinePlot')
     {
