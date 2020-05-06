@@ -76,6 +76,9 @@ ArrangeData <- function(ColGroupsScheme,
  #     Corrects red or blue streaks across the heat map
 
  #Outputs
+ # The Data frame retunred by this function is the 7th output of the returned list
+ #    Thus in the calll: ADR <- ArrangeData()
+ #        DATA <- ADR[[7]]
 
 
 # This function serves as a central data organization function for MakeVolcanoPlot, MakeBoxPlot, and MakeHeatMap
@@ -119,10 +122,10 @@ ArrangeData <- function(ColGroupsScheme,
 
     #Add the data you want to co-analyze if doing an edge_table for a network analysis
     #This is hardcoded for now
-    if(visualization=='edge_table')
-    {
-        DATA['m3malate',c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone','bt20_control','hcc1419_control','mcf7_control','t47d_control','mdamb157_control')] <- c(0.11458,0.05459,0.09237,0.019732,0.21588,0.061236,0.094963,0.179303,0.065843,0.171299)
-    }
+    # if(visualization=='edge_table')
+    # {
+    #     DATA['m3malate',c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone','bt20_control','hcc1419_control','mcf7_control','t47d_control','mdamb157_control')] <- c(0.11458,0.05459,0.09237,0.019732,0.21588,0.061236,0.094963,0.179303,0.065843,0.171299)
+    # }
 
     #Retrieve the corresponding column groupings and keep only those specified
     #Also take the medians if there is a replicate scheme provided (this will not work if the replicate scheme is the only grouping scheme used)
