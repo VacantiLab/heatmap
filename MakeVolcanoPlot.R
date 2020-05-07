@@ -126,6 +126,8 @@ MakeVolcanoPlot <- function(data_location,
                  YData='nlog10_p',
                  filename='volcano.pdf')
 
+    browser()
+
     vp <- assemble_volcano_plot(AVPI)
 
 
