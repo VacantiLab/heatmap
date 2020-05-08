@@ -12,7 +12,8 @@ MakeScatterLinePlot <- function(data_location,
                                 handle_blanks='remove_row',
                                 transform_after_column_exclusion = FALSE,
                                 plot_width = 15,
-                                plot_height = 5)
+                                plot_height = 5,
+                                xticklabs = TRUE)
 #This function lists samples across the x axis and expression along the y
 #Each gene is treated as a group
 # Inputs:
@@ -44,6 +45,7 @@ MakeScatterLinePlot <- function(data_location,
 #    If it is NULL, all groups in the ColGroupsScheme are plotted
 #    These can be groups outside of ColGroupsScheme, but the scheme must then be specified as the inclusion_grouping_scheme
 #    The spcification of transform_after_column_exclusion determines if this impacts data transformation/normalization
+# xticklabs: If TRUE the x-tick marks will be labeled. If FALSE they will not be labeled.
 
 {
   #Extract the data required to make a scatter plot
@@ -73,7 +75,7 @@ MakeScatterLinePlot <- function(data_location,
   DATA_original <- ArrangeData_return[[11]]
 
   #Make the scatter plot
-  b <- assemble_scatter_line_plot(DATA_long,GroupColorMatrix,output_directory,select_rows,plot_width,plot_height)
+  b <- assemble_scatter_line_plot(DATA_long,GroupColorMatrix,output_directory,select_rows,plot_width,plot_height,xticklabs)
 
   MSLPR <- list(DATA,DATA_original)
   return(MSLPR)

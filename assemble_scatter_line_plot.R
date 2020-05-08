@@ -1,4 +1,4 @@
-assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directory,select_rows,plot_width,plot_height)
+assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directory,select_rows,plot_width,plot_height,xticklabs)
 {
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
     sample_on_x_axis = TRUE
@@ -9,6 +9,9 @@ assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directo
         color_var <- 'gene'
         no_groups_color <- 'grey'
     }
+
+    if(xticklabs){XTickLabels <- NULL}
+    if(!xticklabs){XTickLabels <- theme(axis.text.x=element_blank())}
 
     gene_on_x_axis = FALSE
     if(gene_on_x_axis)
@@ -48,7 +51,8 @@ assemble_scatter_line_plot <- function(DATA_long,GroupColorMatrix,output_directo
       theme(legend.key=element_rect(fill=NA)) +
       theme(legend.text = element_text(colour="black", size = 6)) +
       theme(legend.key.size = unit(0.3, "cm")) + #Space between legend symbols and text, maybe?
-      theme(legend.background = element_rect(fill="transparent",linetype = 0,colour = 'transparent'))
+      theme(legend.background = element_rect(fill="transparent",linetype = 0,colour = 'transparent')) +
+      XTickLabels
 
    ggsave(paste(output_directory,'scatterplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
 }
