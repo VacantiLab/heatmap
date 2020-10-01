@@ -326,7 +326,17 @@ ArrangeData <- function(ColGroupsScheme,
         }
     }
 
-    ArrangeData_return <- list(sig_test_list,output_directory,group_order,gene_name,DATA_long,FillColors,DATA,GroupColorMatrix,groups_corresponding,DATA_transformed_full,DATA_original)
+    ArrangeData_return <- list(sig_test_list,
+                               output_directory,
+                               group_order,
+                               gene_name,
+                               DATA_long,
+                               FillColors,
+                               DATA,
+                               GroupColorMatrix,
+                               groups_corresponding,
+                               DATA_transformed_full,
+                               DATA_original)
     if (visualization == 'volcanoplot')
     {
         ArrangeData_return <- list(sig_test_list,

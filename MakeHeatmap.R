@@ -34,7 +34,7 @@ MakeHeatMap <- function(dl,
 # ColGroupsScheme: the name of the grouping scheme used indicates which column to take from group_key.txt
 #    There can only be one for the MakeBoxPlot() function
 # transformation: This specifies how the rows should be transformed.
-#    Options include: 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform', and others.
+#    Options include: NULL, 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform', and others.
 #    See transform_data.R for a complete list of possible transformations.
 # data: Is a data frame containing the data to be plotted if the data is passed as a data frame
 #       If this is used then the data is not passed through the quantities.txt file in data_location
@@ -103,7 +103,8 @@ MakeHeatMap <- function(dl,
 #     07. DATA:
 #     08. GroupColorMatrix:
 #     09. groups_corresponding:
-#     10. DATA_original:
+#     10. DATA_transformed_full:
+#     11. DATA_original:
 
 # 2. AHR: "Assemble Heatmap Return"; A list of items returned by the function assemble_heatmap()
 #     01. heat_map_colors:
@@ -148,7 +149,6 @@ MakeHeatMap <- function(dl,
                        select_rows_after_transform,
                        transform_after_column_exclusion,
                        FilterRowsForMeanSpread)
-    browser()
 
     sig_test_list <- ADR[[1]]
     output_directory <- ADR[[2]]
