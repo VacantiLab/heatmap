@@ -1,8 +1,8 @@
-MakeScatterLinePlot <- function(data_location,
-                                ColGroupsScheme=NULL,
-                                transformation=NULL,
+MakeScatterLinePlot <- function(data_location,                       #required
+                                ColGroupsScheme=NULL,                #required
+                                transformation=NULL,                 #required - usually 'log2_zrow'
                                 data=NULL,
-                                select_rows=NULL,
+                                select_rows=NULL,                    #required - what is on the plot
                                 select_rows_after_transform = NULL,
                                 select_groups=NULL,
                                 inclusion_grouping_scheme=NULL,

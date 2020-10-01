@@ -1,6 +1,6 @@
-MakeHeatMap <- function(dl,
-                        ColGroupsScheme=NULL,
-                        transformation='log2',
+MakeHeatMap <- function(dl,                               #required
+                        ColGroupsScheme=NULL,             #required
+                        transformation='log2',            #strongly advised
                         break_seq=seq(-2,2,0.5),
                         replicate_scheme=NULL,
                         DistanceMethod='pearson',
@@ -10,7 +10,7 @@ MakeHeatMap <- function(dl,
                         select_groups=NULL,
                         inclusion_grouping_scheme=NULL,
                         label_rows=FALSE,
-                        label_cols=FALSE,
+                        label_cols=TRUE,
                         rev_c_dend=FALSE,
                         ddt=NULL,
                         handle_blanks='remove_row',

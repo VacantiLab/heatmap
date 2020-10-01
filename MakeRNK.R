@@ -1,7 +1,8 @@
 MakeRNK <- function(HMR,item)
 # Inputs:
 #   HMR: is a list of items that is returned from the MakeHeatMap function
-#   item: the name of the item in COR whose correlation with the items in COR will be ranked based upon
+#   item: the name of the gene whose correlation with the other genes is used to rank the other genes
+#   places the .rnk file one directory above the current working directory in a folder named output
 
 {
     #Extract the corrlelation matrix
