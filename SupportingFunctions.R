@@ -13,7 +13,7 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
     if (handle_blanks == 'remove_row')
     {
         has_no_na_row_indices <- apply(DATA,1,NoNA)
-        DATA <- DATA[has_no_na_row_indices,]
+        DATA <- DATA[has_no_na_row_indices,,drop=FALSE]
     }
 
     if (handle_blanks == 'replace_with_rowmin')

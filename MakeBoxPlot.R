@@ -86,7 +86,20 @@ MakeBoxPlot <- function(data_location,
 # zscore_rows: if TRUE, will tranform the rows to z scores AFTER all other transformations and column exclusions
 {
     #Extract the data required to make a box plot
-    ArrangeData_return <- ArrangeData(ColGroupsScheme,replicate_scheme,transformation,data,data_location,select_rows,select_groups,visualization='boxplot',ddt,med_norm,handle_blanks,inclusion_grouping_scheme,ttest,select_rows_after_transform,transform_after_column_exclusion,zscore_rows)
+    ArrangeData_return <- ArrangeData(ColGroupsScheme = ColGroupsScheme,
+                                      replicate_scheme = replicate_scheme,
+                                      transformation = transformation,
+                                      data = data,
+                                      data_location = data_location,
+                                      select_rows = select_rows,
+                                      select_groups = select_groups,
+                                      visualization = 'boxplot',
+                                      ddt = ddt,
+                                      handle_blanks = handle_blanks,
+                                      inclusion_grouping_scheme = inclusion_grouping_scheme,
+                                      ttest = ttest,
+                                      select_rows_after_transform = select_rows_after_transform,
+                                      transform_after_column_exclusion = transform_after_column_exclusion)
     sig_test_list <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
     group_order <- ArrangeData_return[[3]]
