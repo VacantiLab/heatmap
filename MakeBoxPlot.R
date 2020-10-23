@@ -25,7 +25,8 @@ MakeBoxPlot <- function(data_location,
                         ytick=NULL,
                         zscore_rows=FALSE,
                         ErrorBarSize=0.75,
-                        PointSize=3)
+                        PointSize=3,
+                        ErrorFile=NULL)
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
 #    There must also be a group_key.txt file with the sample names down the rows and the grouping schemes across the columns
@@ -84,6 +85,12 @@ MakeBoxPlot <- function(data_location,
 # ytick: sets the division between tick marks on the y-axis. For example it could be 0.1, 1, or whatever other value
 #        if NULLm these values will be calculated automatically
 # zscore_rows: if TRUE, will tranform the rows to z scores AFTER all other transformations and column exclusions
+# ErrorFile is a path to a tab delimited file with error bar magnitudes for each gene for each group
+#     This is only specified if the error bar values are entered separately and not calculated from the data
+#     The format of this file is as follows:
+#     gene   GroupName
+#     Gene1  value
+#     Gene2  value
 {
     #Extract the data required to make a box plot
     ArrangeData_return <- ArrangeData(ColGroupsScheme = ColGroupsScheme,
@@ -116,7 +123,22 @@ MakeBoxPlot <- function(data_location,
     if (output_in_dl){output_directory <- data_location}
 
     #Make the plot
-    if (!violin){b <- assemble_box_plot(DATA_long,FillColors,output_directory,ybounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle,transformation,ytick,ErrorBarSize,PointSize)}
+    if (!violin){b <- assemble_box_plot(DATA_long,
+                                        FillColors,
+                                        output_directory,
+                                        ybounds,
+                                        qc_plot,
+                                        box_plot_type,
+                                        plot_width,
+                                        plot_height,
+                                        bar_width,
+                                        legend_position,
+                                        text_angle,
+                                        transformation,
+                                        ytick,
+                                        ErrorBarSize,
+                                        PointSize,
+                                        ErrorFile)}
     if (violin){b <- assemble_violin_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot)}
 
     #assemble variables to return

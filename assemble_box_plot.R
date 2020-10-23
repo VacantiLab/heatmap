@@ -1,4 +1,19 @@
-assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_plot,box_plot_type,plot_width,plot_height,bar_width,legend_position,text_angle,transformation,ytick,ErrorBarSize=0.75,PointSize=3)
+assemble_box_plot <- function(DATA_long,
+                              FillColors,
+                              output_directory,
+                              ybounds,
+                              qc_plot,
+                              box_plot_type,
+                              plot_width,
+                              plot_height,
+                              bar_width,
+                              legend_position,
+                              text_angle,
+                              transformation,
+                              ytick,
+                              ErrorBarSize=0.75,
+                              PointSize=3,
+                              ErrorFile)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
     #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
@@ -30,7 +45,13 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_p
     if(!is.null(FillColors))
     {
         #box_plot_type='boxplot'
-        gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=NA,lwd=0.2)
+        gbp <- geom_boxplot(aes_string(fill=color_var),
+                            outlier.colour='black',
+                            outlier.size=0.5,
+                            width=bar_width,
+                            position=position_dodge(width=inter_group_spacing),
+                            outlier.shape=NA,
+                            lwd=0.2)
 
         #If you want labeled outliers
         #gbp <- geom_boxplot(aes_string(fill=color_var),outlier.colour='black',outlier.size=0.5,width=bar_width,position=position_dodge(width=inter_group_spacing),outlier.shape=20,lwd=0.2)
@@ -38,7 +59,36 @@ assemble_box_plot <- function(DATA_long,FillColors,output_directory,ybounds,qc_p
         #need this for point-errorbar format
         #If you want a scatter plot with mean and SD
         library(plyr) #this package contains the ddply function which allows for making a data frame with summary statistics
-        DATA_long_summary <- ddply(DATA_long,c(color_var,x_var),summarise,value2=mean(value),sd=sd(value))
+
+        # If a separate file is specified with error values, use them
+        if (is.character(ErrorFile))
+        {
+            ERROR <- read_txt_to_df(ErrorFile)
+            for(row in 1:length(DATA_long[,'value']))
+            {
+              gene <- DATA_long[row,'gene']
+              group <- DATA_long[row,'group']
+              DATA_long[row,'sd'] <- ERROR[gene,group]
+            }
+
+            DATA_long_summary <- ddply(DATA_long,
+                                      c(color_var,x_var),
+                                      summarise,
+                                      value2=mean(value),
+                                      sd=sd)
+        }
+
+        # If no separate file is specified with error values, calculate the error values
+        if (!is.character(ErrorFile))
+        {
+            DATA_long_summary <- ddply(DATA_long,
+                                      c(color_var,x_var),
+                                      summarise,
+                                      value2=mean(value),
+                                      sd=sd(value))
+        }
+
+
         #  if you use 'value' to name the column instead of 'value2', the standard deviations will not calculate
         colnames(DATA_long_summary)[colnames(DATA_long_summary)=='value2']='value'
         #  putting the name, 'value', back as the column name
