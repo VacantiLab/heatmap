@@ -1,24 +1,11 @@
 CreateEdgeTable <- function(Cor_row,DATA)
 {
-    #Filter the genes you want to consider: this must be hardcoded
-    select_samples <- c('bt20_rotenone','hcc1419_rotenone','mcf7_rotenone','t47d_rotenone','mdamb157_rotenone')
-    DATA <- DATA[,select_samples] #this is only used to select genes. All columns are used in the correlation filter (already included in Cor_row)
-    DATA_matrix <- as.matrix(DATA)
-    gene_names <- rownames(Cor_row)
-    n_genes <- length(gene_names)
-
-    #Filter genes
-    selection_criteria <- rep(0,n_genes)
-    for (i in 1:n_genes)
-    {
-        selection_criteria[i] <- (max(DATA_matrix[i,]) > 0.2) & (min(DATA_matrix[i,]) < -0.2)
-    }
-    selection_criteria <- as.logical(selection_criteria)
-
-    gene_names <- gene_names[selection_criteria]
-    Cor_row <- Cor_row[gene_names,gene_names]
-    DATA <- DATA[gene_names,]
-    n_genes <- length(gene_names)
+    #Filter the genes you want to consider: this must be hardcoded in the function below
+    FGR <- FilterGenes(DATA,Cor_row)
+    DATA <- FGR[[1]]
+    Cor_row <- FGR[[2]]
+    gene_names <- FGR[[3]]
+    n_genes <- FGR[[4]]
 
     # Go through the lower left traingle of the correlation matrix and set values equal to TRUE if the meet the correlation threshold
     # Note m3malate data is hardcoded into the DATA matrix by the ArrangeData function if visualization is edge_table
@@ -85,4 +72,35 @@ CreateEdgeTable <- function(Cor_row,DATA)
     write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
 
     browser()
+}
+
+FilterGenes <- function(DATA,Cor_row)
+{
+
+  DATA_matrix <- as.matrix(DATA)
+  gene_names <- rownames(Cor_row)
+  n_genes <- length(gene_names)
+  samples <- colnames(DATA_matrix)
+
+
+  #Filter genes
+  selection_criteria <- rep(0,n_genes)
+  for (i in 1:n_genes)
+  {
+      Difference1 <- abs(DATA_matrix[i,samples[1]]-DATA_matrix[i,samples[2]])
+      Difference2 <- abs(DATA_matrix[i,samples[3]]-DATA_matrix[i,samples[4]])
+      Difference3 <- abs(DATA_matrix[i,samples[5]]-DATA_matrix[i,samples[6]])
+      Difference4 <- abs(DATA_matrix[i,samples[7]]-DATA_matrix[i,samples[8]])
+      Difference5 <- abs(DATA_matrix[i,samples[9]]-DATA_matrix[i,samples[10]])
+      selection_criteria[i] <- (Difference1 >= 0.20) | (Difference2 >= 0.20) | (Difference3 >= 0.20) | (Difference4 >= 0.20) | (Difference5 >= 0.20)
+  }
+  selection_criteria <- as.logical(selection_criteria)
+
+  gene_names <- gene_names[selection_criteria]
+  Cor_row <- Cor_row[gene_names,gene_names]
+  DATA <- DATA[gene_names,]
+  n_genes <- length(gene_names)
+
+  return(DATA,Cor_row,gene_names,n_genes)
+
 }

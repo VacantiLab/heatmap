@@ -213,7 +213,7 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
         transformed = TRUE
     }
-    
+
     if (transformation == 'add_halfnon0min_row_meannorm_log2')
     {
       column_names <- colnames(DATA) #record the column names after the unecessary column is removed
@@ -227,7 +227,7 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
       rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
       transformed = TRUE
     }
-    
+
     if (transformation == 'add_halfnon0min_row_meannorm')
     {
       column_names <- colnames(DATA) #record the column names after the unecessary column is removed
