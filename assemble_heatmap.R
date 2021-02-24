@@ -24,6 +24,8 @@ assemble_heatmap <- function(AHI)
     presentation <- AHI[[15]]
     n_clusters <- AHI[[16]]
     graphics_type <- AHI[[17]]
+    HeatmapWidth <- AHI[[18]]
+    HeatmapHeight <- AHI[[19]]
 
     library(heatmap.plus)
     n_colors = length(break_seq)-1
@@ -33,8 +35,8 @@ assemble_heatmap <- function(AHI)
     heat_map_colors <- colorRampPalette(c('blue','white','red'))(n_colors)
     HeatmapName <- paste(DistanceMethod,'_',ClusterMethod,graphics_type,sep='')
     graphics_file <- paste(output_directory,HeatmapName,sep='')
-    graphics_w = 16
-    graphics_h = 12
+    graphics_w = HeatmapWidth
+    graphics_h = HeatmapHeight
 
     #color the dendrogram
     color_dend <- FALSE

@@ -20,7 +20,9 @@ MakeHeatMap <- function(dl,                               #required
                         transform_after_column_exclusion=FALSE,
                         graphics_type='.png',
                         n_clusters=1,
-                        FilterRowsForMeanSpread=NULL)
+                        FilterRowsForMeanSpread=NULL,
+                        HeatmapWidth = 12,
+                        HeatmapHeight = 16)
 # Inputs:
 # dl: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
@@ -204,7 +206,9 @@ MakeHeatMap <- function(dl,                               #required
                 Cor_row,
                 presentation,
                 n_clusters,
-                graphics_type)
+                graphics_type,
+                HeatmapWidth,
+                HeatmapHeight)
 
     AHR <- assemble_heatmap(AHI)
     heat_map_colors <- AHR[[1]]
