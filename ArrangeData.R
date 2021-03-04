@@ -325,6 +325,16 @@ ArrangeData <- function(ColGroupsScheme,
             sig_test_list <- GetPs(group_order,gene_name,DATA,groups_corresponding,visualization)
         }
     }
+    
+    #only shoule be performed now if rows are not selected because if a gene is listed in select_rows that is not in the database, GetPs currently causes an error (2017-07-12)
+    if (visualization=='CorrelationVolcanoPlot')
+    {
+      GeneToCorrelate = 'GLS2'
+      print(paste('calculating pairwise correlations with ',GeneToCorrelate))
+      {
+        Correlations <- PerformCorrelations(DATA,GeneToCorrelate)
+      }
+    }
 
     ArrangeData_return <- list(sig_test_list,
                                output_directory,
@@ -337,6 +347,7 @@ ArrangeData <- function(ColGroupsScheme,
                                groups_corresponding,
                                DATA_transformed_full,
                                DATA_original)
+    
     if (visualization == 'volcanoplot')
     {
         ArrangeData_return <- list(sig_test_list,
@@ -351,6 +362,13 @@ ArrangeData <- function(ColGroupsScheme,
                                    DATA_transformed_full,
                                    ColGroupsScheme,
                                    DATA_after_filter)
+    }
+    
+    if (visualization == 'CorrelationVolcanoPlot')
+    {
+      ArrangeData_return <- list(Correlations,
+                                 output_directory,
+                                 DATA)
     }
 
     return(ArrangeData_return)

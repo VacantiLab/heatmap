@@ -10,8 +10,11 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
     #Log transform the data if specified to do so
     if (transformation == 'log2')
     {
+        #First replace 0 values with half the row minimum
+        nCols <- ncol(DATA)
+        DATA[1:nCols] <- lapply(DATA[1:nCols], function(x) replace(x, x == 0, min(x[x>0]/2)))
+        #log2 transform
         DATA <- log2(DATA)
-        #DATA[DATA < -3] <- -3
         transformed = TRUE
     }
 
