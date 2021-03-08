@@ -114,7 +114,7 @@ MakeCorrelationVolcanoPlot <- function(data_location,
 
     vp <- assemble_CorrelationVolcanoPlot(AVPI)
 
-    MVPR <- list(AVPI)
+    MVPR <- AVPI
 
     return(MVPR)
 }
