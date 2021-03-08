@@ -166,7 +166,7 @@ ArrangeData <- function(ColGroupsScheme,
 
     #See if all of the specified input groups are actually specified in group_key.txt file
     CheckStop(2,parameters=list(select_groups,groups_corresponding,inclusion_grouping_scheme))
-
+    
     #Filter out rows depending on their distribution around the mean
     DATA_after_filter <- NULL
     if (class(FilterRowsForMeanSpread) == 'numeric')
@@ -329,7 +329,7 @@ ArrangeData <- function(ColGroupsScheme,
     #only shoule be performed now if rows are not selected because if a gene is listed in select_rows that is not in the database, GetPs currently causes an error (2017-07-12)
     if (visualization=='CorrelationVolcanoPlot')
     {
-      GeneToCorrelate = 'GLS2'
+      GeneToCorrelate = 'GLS'
       print(paste('calculating pairwise correlations with ',GeneToCorrelate))
       {
         Correlations <- PerformCorrelations(DATA,GeneToCorrelate)
