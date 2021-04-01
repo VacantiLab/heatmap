@@ -83,7 +83,9 @@ MakeHeatMap <- function(dl,                               #required
 #        ddt would not actually be a group that is presented in the plot but must be a member of the ColGroupsScheme input
 # handle_blanks: Used in OpenDataFile in the SupportingFunctions.R file.
 #                It is a string that specifies what to do when blank values are encountered
-#                Can be 'remove_row' or 'replace_with_rowmin'
+#                Can be 'remove_row', 'replace_with_rowmin', or 'remove_row_after_group_exclusion'
+#                    If it is 'remove_after_group_exclusion', transform_after_column_exclusion will automatically be TRUE
+#                        A transformation cannot occur if there are NAs in the data frame
 # presentation: can be set to 'correlation_matrix' to display the correlation of each row vs. each other row as the matrix visualization
 #    The original clustering of the rows of the input data will determine the visualization dendrograms (along the rows and columns - they're the same)
 #    Right now there is a problem with col_side_colors and it doesn't work

@@ -178,6 +178,8 @@ ArrangeData <- function(ColGroupsScheme,
 
     #transform if specified to do so before excluding groups or samples
     DATA_transformed_full <- NULL
+    if (handle_blanks == 'remove_row_after_group_exclusion'){transform_after_column_exclusion == TRUE}
+    #    You cannot transform data if there are still NAs in the data frame
     if (transform_after_column_exclusion == FALSE)
     {
         print('transforming data if necessary')
@@ -213,6 +215,16 @@ ArrangeData <- function(ColGroupsScheme,
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
+    
+    # Remove rows with NA entries after the specified groups have been excluded
+    #     If it is specified to do so
+    #     Note in this case the transformation must occur after groups have been excluded
+    #         This will be specified automatically
+    if (handle_blanks == 'remove_row_after_group_exclusion')
+    {
+      has_no_na_row_indices <- apply(DATA,1,NoNA)
+      DATA <- DATA[has_no_na_row_indices,,drop=FALSE]
+    }
 
     #remove the inclusion grouping scheme as a category in groups_corresponding if it is not part of the ColGroupsScheme
     #    this means your plot does not consider the inclusion grouping scheme, it was just used to select the data to plot
@@ -372,4 +384,12 @@ ArrangeData <- function(ColGroupsScheme,
     }
 
     return(ArrangeData_return)
+}
+
+###############################################################################
+
+NoNA <- function(vector)
+  #Function to return TRUE if the row does not have any NAs
+{
+  NoNA <- !is.na(sum(vector))
 }
