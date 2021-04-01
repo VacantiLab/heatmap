@@ -7,6 +7,7 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
     #Import the data
     if (is.data.frame(data)) {DATA <- data} #If the input, data, is provided as a data frame, it is the data
     if (is.character(data)) {DATA <- read_txt_to_df(data)} #If the input, data, is provided as a string it is the directory to the text file with the data
+
     DATA_original <- DATA
 
     #handle blank entries
@@ -14,6 +15,12 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
     {
         has_no_na_row_indices <- apply(DATA,1,NoNA)
         DATA <- DATA[has_no_na_row_indices,,drop=FALSE]
+    }
+    
+    if (handle_blanks == 'remove_rows_with_zeros')
+    {
+        has_no_zeros_row_indices <- apply(DATA,1,NoZeros)
+        DATA <- DATA[has_no_zeros_row_indices,,drop=FALSE]
     }
 
     if (handle_blanks == 'replace_with_rowmin')
@@ -146,6 +153,12 @@ NoNA <- function(vector)
 #Function to return TRUE if the row does not have any NAs
 {
     NoNA <- !is.na(sum(vector))
+}
+
+NoZeros <- function(vector)
+#Function to return TRUE if the row does not have any zeros
+{
+    NotZeros <- sum(vector==0) == 0
 }
 
 ###############################################################################
