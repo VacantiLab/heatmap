@@ -189,23 +189,14 @@ ArrangeData <- function(ColGroupsScheme,
         n_gene <- length(gene_name)
     }
 
-
     #Perform the data dependent transformation if specified to do so
     #This is done before any columns are excluded
     #    There may never be a need to do it after columnms are excluded because the values only depend on other values within the group
     #    This should be done before the exclusion and after the transformation. The transformation should be linear because DDT log2 transforms the ratios returned
 
-    #Make sure the trasnformation occurs before column exclusion and the transformation is linear because DDT includes log2 transformation of returned ratios
+    #Make sure the trasnformation occurs before column exclusion (? 20210407 moved ddt to after column exclusion) and the transformation is linear because DDT includes log2 transformation of returned ratios
     CheckStop(8,parameters=list(ddt,transformation,transform_after_column_exclusion))
-
-    if (!is.null(ddt))
-    {
-        PerformDDT_return <- PerformDDT(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
-        DATA <- PerformDDT_return[[1]]
-        groups_corresponding <- PerformDDT_return[[2]]
-        GroupColorMatrix <- PerformDDT_return[[3]]
-    }
-
+  
 
     #Select the groups that are considered for this box plot
     #    This is automatically performed on the first ColGroupsScheme provided
@@ -215,6 +206,7 @@ ArrangeData <- function(ColGroupsScheme,
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
+
     
     # Remove rows with NA entries after the specified groups have been excluded
     #     If it is specified to do so
@@ -225,6 +217,15 @@ ArrangeData <- function(ColGroupsScheme,
       has_no_na_row_indices <- apply(DATA,1,NoNA)
       DATA <- DATA[has_no_na_row_indices,,drop=FALSE]
     }
+    
+    if (!is.null(ddt))
+    {
+      PerformDDT_return <- PerformDDT(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
+      DATA <- PerformDDT_return[[1]]
+      groups_corresponding <- PerformDDT_return[[2]]
+      GroupColorMatrix <- PerformDDT_return[[3]]
+    }
+    
 
     #remove the inclusion grouping scheme as a category in groups_corresponding if it is not part of the ColGroupsScheme
     #    this means your plot does not consider the inclusion grouping scheme, it was just used to select the data to plot
