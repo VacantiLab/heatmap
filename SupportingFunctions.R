@@ -22,9 +22,14 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
         has_no_zeros_row_indices <- apply(DATA,1,NoZeros)
         DATA <- DATA[has_no_zeros_row_indices,,drop=FALSE]
     }
+    
 
     if (handle_blanks == 'replace_with_rowmin')
     {
+        # extract the rows that do not not have a value of NA for every column
+        not_all_na <- apply(DATA,1,NotAllNA)
+        DATA <- DATA[not_all_na,,drop=FALSE]    
+      
         has_no_na_row_indices <- apply(DATA,1,NoNA)
         has_na_indices <- !has_no_na_row_indices
         rows_of_interest <- rownames(DATA)[has_na_indices]
@@ -150,15 +155,21 @@ ClusterData <- function(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
 ###############################################################################
 
 NoNA <- function(vector)
-#Function to return TRUE if the row does not have any NAs
+# Function to return TRUE if the row does not have any NAs
 {
     NoNA <- !is.na(sum(vector))
 }
 
 NoZeros <- function(vector)
-#Function to return TRUE if the row does not have any zeros
+# Function to return TRUE if the row does not have any zeros
 {
     NotZeros <- sum(vector==0) == 0
+}
+
+NotAllNA <- function(vector)
+# Function to return TRUE if the row is not entirely composed of NA
+{
+    NotAllNA <- sum(is.na(vector)) < length(vector)
 }
 
 ###############################################################################
