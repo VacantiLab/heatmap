@@ -1,6 +1,6 @@
 transform_data <- function(DATA,transformation,select_rows_after_transform)
 {
-    transformed = FALSE
+  transformed = FALSE
     if (is.null(transformation))
     {
         transformation <- 'none'
@@ -317,6 +317,16 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
         rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
         transformed = TRUE
+    }
+    
+    if (transformation == 'col_mednorm_log2')
+    {
+      column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+      row_names <- rownames(DATA)
+      DATA <- data.frame(lapply(DATA, median_norm_log2_transform)) #median norm the columns and then log2 transform everything
+      colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+      rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
+      transformed = TRUE
     }
 
     if (transformed==FALSE && !is.null(transformation)){stop('custom message: You have specified a transformation that does not exist.')}

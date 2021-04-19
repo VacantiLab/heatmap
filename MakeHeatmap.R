@@ -68,7 +68,7 @@ MakeHeatMap <- function(dl,                               #required
 #                The result would be the treatment response for each cell line
 #    transform_after_column_exclusion must be FALSE because the transformation would also occur after DDT which doesn't make sense
 #        Sample loading should be accounted for before DDT
-#        The transformation should also be linear because DDT log2 transforms resulting ratios
+#        The transformation should also be linear because DDT normalizes to column medians and log2 transforms resulting ratios
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
