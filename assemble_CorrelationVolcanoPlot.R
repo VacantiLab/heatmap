@@ -10,9 +10,11 @@ YData <- AVPI[[5]]
 filename <- AVPI[[6]]
 
 rp_df <- rp_df[order(rp_df[,'p']),]
-genes_to_label <- rownames(rp_df)[1:10]
-if (!('SLC25A22' %in% genes_to_label)){genes_to_label <- c(genes_to_label,'SLC25A22')}
-
+TopCorrelatingGenes <- rownames(rp_df)[1:10]
+for (TopCorrelatingGene in TopCorrelatingGenes)
+{
+    if (!(TopCorrelatingGene %in% genes_to_label)){genes_to_label <- c(genes_to_label,TopCorrelatingGene)}
+}
 
 
 #set the plot parameters
@@ -48,8 +50,8 @@ ScatterPlot <-  ggplot(rp_df,aes_string(x=XData,y=YData)) +
     #Set the color scale with a named palette, the direction specifying which end of the palette corresponds to high and low
     #scale_fill_distiller(palette= "Spectral", direction=-1, limits = c(1,100)) +
     geom_point(color='black') + #specifying one color may remove the legend, May be necessary to make this a string when considering groups
-    annotate('point',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='purple',size=0.5) + #points to highlight in red on the volcano plot, x-points first, then y-points
-    annotate('text',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='black',label=rownames(rp_df[genes_to_label,]),size=0.20) + #points to highlight in red on the volcano plot, x-points first, then y-points
+    annotate('point',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='purple',size=1) + #points to highlight in red on the volcano plot, x-points first, then y-points
+    annotate('text',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='red',label=rownames(rp_df[genes_to_label,]),size=0.20) + #points to highlight in red on the volcano plot, x-points first, then y-points
     linear_fit +
     coord_cartesian(xlim=XAxisLimits,ylim=YAxisLimits,expand = 0) + #expand=0 removes extra space before and after first and last tick marks
     theme(axis.text.y=element_text(color='black',size=10)) +
