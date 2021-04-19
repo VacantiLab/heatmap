@@ -12,7 +12,8 @@ ArrangeData <- function(ColGroupsScheme,
                        ttest,
                        select_rows_after_transform,
                        transform_after_column_exclusion,
-                       FilterRowsForMeanSpread=FALSE)
+                       FilterRowsForMeanSpread=FALSE,
+                       GeneToCorrelate = NULL)
 
  # Inputs:
  # ColGroupsScheme (required): the name of the grouping scheme used indicates which column to take from group_key.txt
@@ -342,7 +343,6 @@ ArrangeData <- function(ColGroupsScheme,
     #only shoule be performed now if rows are not selected because if a gene is listed in select_rows that is not in the database, GetPs currently causes an error (2017-07-12)
     if (visualization=='CorrelationVolcanoPlot')
     {
-      GeneToCorrelate = 'GLUL'
       print(paste('calculating pairwise correlations with ',GeneToCorrelate))
       {
         Correlations <- PerformCorrelations(DATA,GeneToCorrelate)

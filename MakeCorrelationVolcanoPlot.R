@@ -11,7 +11,8 @@ MakeCorrelationVolcanoPlot <- function(data_location,
                            handle_blanks='remove_row',
                            inclusion_grouping_scheme = NULL,
                            select_rows_after_transform = NULL,
-                           transform_after_column_exclusion = FALSE)
+                           transform_after_column_exclusion = FALSE,
+                           GeneToCorrelate)
 
 # Inputs
 # data_location: a pathway to where the text file containing the data is stored, must have '/' at the end
@@ -88,7 +89,8 @@ MakeCorrelationVolcanoPlot <- function(data_location,
                                       inclusion_grouping_scheme,
                                       ttest = TRUE,
                                       select_rows_after_transform,
-                                      transform_after_column_exclusion)
+                                      transform_after_column_exclusion,
+                                      GeneToCorrelate = GeneToCorrelate)
 
     Correlations <- ArrangeData_return[[1]]
     output_directory <- ArrangeData_return[[2]]
