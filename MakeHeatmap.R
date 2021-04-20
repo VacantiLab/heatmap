@@ -38,6 +38,9 @@ MakeHeatMap <- function(dl,                               #required
 # transformation: This specifies how the rows should be transformed.
 #    Options include: NULL, 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform', and others.
 #    See transform_data.R for a complete list of possible transformations.
+# DistanceMethod:
+# Can be 'euclidian', 'pearson', or 'spearman'
+#     If 'pearson' or 'spearman' will be computed as (1-correlation coefficient)/2
 # data: Is a data frame containing the data to be plotted if the data is passed as a data frame
 #       If this is used then the data is not passed through the quantities.txt file in data_location
 # select_rows: These are the rows that you want to select before transforming - the transformation will be done on these rows
@@ -61,6 +64,7 @@ MakeHeatMap <- function(dl,                               #required
 #    It can remain as the default NULL and the groups will be selected based on the first grouping scheme in ColGroupsScheme if select_groups is specified
 #    It can be outside of the ColGroupsScheme as well
 # ddt: data dependent transformation; this is a grouping scheme that all samples within that group are normalized to its median and then log2 transformed
+#    It normalizes to the median of a group, normalizes to the column median, then log2 transforms
 #    It must be one of the groups specified in the ColGroupsScheme
 #    It is not presented as a ColGroupsScheme, it is just used for normalization purposes
 #        For example, say you have cell lines control and treated

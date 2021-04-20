@@ -83,7 +83,7 @@ assemble_heatmap <- function(AHI)
                                 ColSideColors = GroupColorMatrix,
                                 col=heat_map_colors,
                                 breaks=break_seq,
-                                margins=c(5,10),
+                                margins=c(6,10), #Can fix the column names being cut off at the bottom
                                 scale='none', #This has to be specified to stop the visualization from row scaling (does not impact clustering)
                                 labRow=label_rows,
                                 labCol=label_cols)
@@ -99,7 +99,7 @@ assemble_heatmap <- function(AHI)
                           ColSideColors = GroupColorMatrix,
                           col=heat_map_colors,
                           breaks=break_seq,
-                          #margins=c(5,10),
+                          #margins=c(5,10), #Can fix the column names being cut off at the bottom
                           scale='none', #This has to be specified to stop the visualization from row scaling (does not impact clustering)
                           labRow=label_rows,
                           labCol=label_cols)
@@ -116,7 +116,7 @@ assemble_heatmap <- function(AHI)
                           cexCol=0.5,
                           col=heat_map_colors,
                           breaks=break_seq,
-                          #margins=c(5,10),
+                          #margins=c(5,10), #Can fix the column names being cut off at the bottom
                           scale='none', #This has to be specified to stop the visualization from row scaling (does not impact clustering)
                           labRow=label_rows,
                           labCol=label_cols,
