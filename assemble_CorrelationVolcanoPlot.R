@@ -9,6 +9,12 @@ XData <- AVPI[[4]]
 YData <- AVPI[[5]]
 filename <- AVPI[[6]]
 
+# Open the file containing the gene names that are labeled
+if (grepl('.txt$',genes_to_label))
+{
+    genes_to_label <- scan(genes_to_label, what="", sep="\n")
+}
+
 rp_df <- rp_df[order(rp_df[,'p']),]
 TopCorrelatingGenes <- rownames(rp_df)[1:10]
 for (TopCorrelatingGene in TopCorrelatingGenes)
@@ -22,7 +28,7 @@ XAxisLimits <- 1.1*c(min(rp_df[,XData]),max(rp_df[,XData]))
 if (min(rp_df[,YData])>0){ymin=0}
 if (min(rp_df[,YData])<0){ymin=1.1*min(rp_df[,YData])}
 YAxisLimits <- 1.1*c(ymin,max(rp_df[,YData]))
-XLabel <- 'Log2 Ratio'
+XLabel <- 'Pearson Correlation'
 YLabel <- '-Log10(p-value)'
 
 #The data is standardized if the plot is for ranking the regulated genes
