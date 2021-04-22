@@ -15,6 +15,7 @@ if (grepl('.txt$',genes_to_label))
     genes_to_label <- scan(genes_to_label, what="", sep="\n")
 }
 
+
 rp_df <- rp_df[order(rp_df[,'p']),]
 TopCorrelatingGenes <- rownames(rp_df)[1:10]
 for (TopCorrelatingGene in TopCorrelatingGenes)
@@ -52,10 +53,10 @@ if (filename == 'volcano_regression.pdf'){linear_fit <- geom_smooth(method = "lm
 
 ScatterPlot <-  ggplot(rp_df,aes_string(x=XData,y=YData)) +
     #Make it a density plot with the number of bins specified
-    #geom_hex(bins=100) +
+    geom_hex(bins=100) +
     #Set the color scale with a named palette, the direction specifying which end of the palette corresponds to high and low
-    #scale_fill_distiller(palette= "Spectral", direction=-1, limits = c(1,100)) +
-    geom_point(color='black') + #specifying one color may remove the legend, May be necessary to make this a string when considering groups
+    scale_fill_distiller(palette= "Spectral", direction=-1, limits = c(1,100)) +
+    #geom_point(color='black') + #specifying one color may remove the legend, May be necessary to make this a string when considering groups
     annotate('point',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='purple',size=1) + #points to highlight in red on the volcano plot, x-points first, then y-points
     annotate('text',rp_df[genes_to_label,XData],rp_df[genes_to_label,YData],col='red',label=rownames(rp_df[genes_to_label,]),size=0.20) + #points to highlight in red on the volcano plot, x-points first, then y-points
     linear_fit +
