@@ -253,6 +253,7 @@ ArrangeData <- function(ColGroupsScheme,
     groups_concatonated <- ConcatonateGroups_return[[3]]
     colors_concatonated <- ConcatonateGroups_return[[4]]
     group_concationation <- is.list(group_divisions)
+    
 
     #return median of replicates if specified to do so
     print('aggregating group members if necessary')

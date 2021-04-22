@@ -17,6 +17,7 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
         DATA <- DATA[has_no_na_row_indices,,drop=FALSE]
     }
     
+    
     if (handle_blanks == 'remove_rows_with_zeros')
     {
         has_no_zeros_row_indices <- apply(DATA,1,NoZeros)
@@ -42,6 +43,8 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
             DATA[row,][columns_na] = replacement_value
         }
     }
+    
+    browser()
 
     #Select rows from the data frame
     if (!is.null(select_rows))
@@ -57,6 +60,7 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
     #selecting the rows by name and not position dictates the order of the rows, thus the rows are selected by position here to maintain the order which
     #is important in consitently arranging equivalent positions in the dendrogram below. Equivalent positions are two members linked at the lowest possible level.
     OpenDataFile_return <- list(DATA,select_rows,DATA_original)
+    
     return(OpenDataFile_return)
 }
 
@@ -67,6 +71,12 @@ read_txt_to_df <- function(txt_directory)
 {
     DF <- read.table(file=txt_directory,head=TRUE,check.names=FALSE,sep='\t') #check.names=FALSE prevents an 'X' from being added to the numeric column names
     #Name the rows of the data frame as the genes given in the first column of the data frame
+    
+    # Find the and remove duplicated gene symbols
+    IndicesToRemove <- duplicated(DF[,1])
+    IndicesToKeep <- !IndicesToRemove
+    DF <- DF[IndicesToKeep,]
+    
     RowNames <- as.character(DF[,1])
     rownames(DF) <- RowNames
     DF[,1] <- NULL #remove the first column of the data frame as it is no longer needed
