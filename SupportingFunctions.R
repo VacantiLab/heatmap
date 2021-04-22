@@ -43,8 +43,7 @@ OpenDataFile <- function(data,select_rows,handle_blanks)
             DATA[row,][columns_na] = replacement_value
         }
     }
-    
-    browser()
+  
 
     #Select rows from the data frame
     if (!is.null(select_rows))

@@ -13,13 +13,13 @@ assemble_box_plot <- function(DATA_long,
                               ytick,
                               ErrorBarSize=0.75,
                               PointSize=3,
-                              ErrorFile)
+                              ErrorFile,
+                              x_var,
+                              y_var,
+                              color_var)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
-    #set what is grouped and what is along the x-axis (these can be switched, but then may not be compatible with the rest of the MakeBoxPlot function)
-    x_var <- 'gene'
-    y_var <- 'value'
-    color_var <- 'group'
+
 
     if (qc_plot)
     {
@@ -157,6 +157,18 @@ assemble_box_plot <- function(DATA_long,
     if (text_angle==90 | text_angle==45){hjust_value <- 1; vjust_value <- 1}
     if (text_angle==0){hjust_value <- 0.5; vjust_value <- 0.5}
     text_angle_indicator <- theme(axis.text.x = element_text(angle=text_angle,hjust=hjust_value,vjust=vjust_value))
+    
+    if (color_var == 'group')
+    {
+        ScaleFillDesignation <- scale_fill_manual(values=FillColors)
+        ScaleColorDesignation <- scale_color_manual(values=FillColors)
+    }
+    
+    if (color_var == 'gene')
+    {
+        ScaleFillDesignation <- NULL
+        ScaleColorDesignation <- NULL
+    }
 
     b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var, fill=color_var)) +
          gpp +
@@ -182,8 +194,8 @@ assemble_box_plot <- function(DATA_long,
          theme(legend.text = element_text(colour="black", size=(TextSize))) +
          theme(legend.position=legend_position) +
          theme(plot.margin = margin(10,10,0,0)) +
-         scale_fill_manual(values=FillColors) +
-         scale_color_manual(values=FillColors) +
+         ScaleFillDesignation +
+         ScaleColorDesignation +
          #theme(legend.key.size = unit(0.2, "cm")) +
          labs(x = XLabel) +
          labs(y = YLabel) +
@@ -193,5 +205,6 @@ assemble_box_plot <- function(DATA_long,
          #aes_string() allows the factors to be specified by strings and ensures they are evaluated within the correct environment (aes() causes all sorts of trouble)
 
     ggsave(paste(output_directory,'boxplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
+
     return(b)
 }
