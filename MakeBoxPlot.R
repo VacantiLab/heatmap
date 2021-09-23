@@ -41,6 +41,13 @@ MakeBoxPlot <- function(data_location,
 #    These files must all be tab delimited
 # ColGroupsScheme: the name(s) of the grouping scheme used, indicates which row to take from group_key.txt
 #    There can only be one for the MakeBoxPlot() function
+# box_plot_type
+#     box_plot
+#     bar_plot
+#     scatter_bar_plot
+#     line_plot
+#         The rownames are expected to be numeric values
+
 # transformation: This specifies how the rows should be transformed.
 #    Options include: 'log2', 'median_center_iqr_norm', and 'median_norm_log2_transform', and others
 # data: Is a data frame containing the data to be plotted if the data is passed as a data frame instead of through the quantities.txt file in data_location

@@ -51,6 +51,6 @@ assemble_scatter_plot <- function(DATA,GroupColorMatrix,output_directory,select_
       theme(legend.text = element_text(colour="black", size = 6)) +
       theme(legend.key.size = unit(0.3, "cm")) + #Space between legend symbols and text, maybe?
       theme(legend.background = element_rect(fill="transparent",linetype = 0,colour = 'transparent'))
-
+    
    ggsave(paste(output_directory,'scatterplot.pdf',sep=''), width = pdf_width, height = pdf_height, dpi = 300, limitsize=FALSE)
 }

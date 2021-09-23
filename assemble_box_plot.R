@@ -96,6 +96,10 @@ assemble_box_plot <- function(DATA_long,
         #box_plot_type='scatter_bar_plot'
         gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing))
         gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=PointSize)
+        
+        #box_plot_type='line_plot'
+        glp <- geom_line(aes(color=group),size=0.2)
+        glpp <- geom_point(aes(color=group),size=PointSize)
 
         #box_plot_type='bar_plot'
         grp <- geom_bar(aes(fill=group),position=position_dodge(width=inter_group_spacing),width=bar_width,stat='identity')
@@ -126,11 +130,13 @@ assemble_box_plot <- function(DATA_long,
     y_scale <- NULL # this is a graph property defined below, not the same as ytick, the tick mark definition
     text_angle_indicator <- NULL
 
-    if(box_plot_type=='boxplot'){gpp<-NULL; gep<-NULL; grp<-NULL; DATA_to_plot <- DATA_long}
+    if(box_plot_type=='boxplot'){gpp<-NULL; gep<-NULL; grp<-NULL; DATA_to_plot <- DATA_long; glp <- NULL; glpp <- NULL}
     if(box_plot_type=='scatter_bar_plot')
     {
         grp<-NULL
         gbp<-NULL
+        glp<-NULL
+        glpp<-NULL
         DATA_to_plot <- DATA_long_summary
         if(!is.null(FillColors))
         {
@@ -138,10 +144,30 @@ assemble_box_plot <- function(DATA_long,
         }
 
     }
+    if(box_plot_type=='line_plot')
+    {
+        grp<-NULL
+        gbp<-NULL
+        gpp<-NULL
+        DATA_to_plot <- DATA_long_summary
+        DATA_to_plot[,'gene'] = as.numeric(as.character(DATA_to_plot[,'gene']))
+        
+        x_range <- range(DATA_to_plot[,'gene'])[2] - range(DATA_to_plot[,'gene'])[1]
+        n_x <- length(unique(DATA_to_plot[,'gene']))
+        x_interval_avg <- x_range/(n_x-1)
+        error_bar_width <- x_interval_avg/5
+        if(!is.null(FillColors))
+        {
+            gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=error_bar_width,size=ErrorBarSize)
+        }
+        
+    }
     if(box_plot_type=='bar_plot')
     {
         gpp<-NULL
         gbp<-NULL
+        glp<-NULL
+        glpp<-NULL
         DATA_to_plot <- DATA_long_summary
 
         upper_y_bound <- ceiling(ybounds[2]*10)*0.1 #the ybound as it's calculated from the data or specified and then rounded up to an even tenth
@@ -176,6 +202,8 @@ assemble_box_plot <- function(DATA_long,
          gtp +
          grp +
          gep +
+         glp +
+         glpp +
          theme(axis.text.y=element_text(color='black',size=TextSize)) +
          theme(axis.ticks.y=element_line(colour='black',size=0.5)) +
          theme(axis.ticks.x=element_line(colour='black',size=0.5)) +
