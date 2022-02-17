@@ -42,7 +42,7 @@ MakeBoxPlot <- function(data_location,
 # ColGroupsScheme: the name(s) of the grouping scheme used, indicates which row to take from group_key.txt
 #    There can only be one for the MakeBoxPlot() function
 # box_plot_type
-#     box_plot
+#     boxplot
 #     bar_plot
 #     scatter_bar_plot
 #     line_plot
