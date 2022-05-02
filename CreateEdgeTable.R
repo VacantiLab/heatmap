@@ -1,6 +1,17 @@
 CreateEdgeTable <- function(Cor_row,DATA)
+# This function is run by MakeHeatMap when the visualization is set to 'edge_table'
+#     It creates the edge and node files needed to make a .gdf file readable by Gephi
+#     The .gdf file is made using the node and edge files and is assembled by a separate python funcion in the heatap package
+# The following are hard-coded parameters:
+#     coloring_row: sets the row of DATA which the color of the points in the network are based off
+#     DifferenceThreshold: sets the differential threshold of treatment vs. no treatment for a point to be accepted
+#         This assumes treated vs. not treated are next to each other and there are 10 samples
+#     CorFilterCutOff: This establishes a correlation magnitude with coloring_row above which rows are not subject to the DifferenceThreshold
+
 {
 
+    # The gene/row whose correlation relationship with the others sets the color of the network
+    #     This is hard-coded for now
     coloring_row = 'UglnM5citrate591'
 
     #Filter the genes you want to consider: this must be hardcoded in the function below
@@ -93,8 +104,12 @@ FilterGenes <- function(DATA,Cor_row,coloring_row)
       Difference3 <- abs(DATA_matrix[i,samples[5]]-DATA_matrix[i,samples[6]])
       Difference4 <- abs(DATA_matrix[i,samples[7]]-DATA_matrix[i,samples[8]])
       Difference5 <- abs(DATA_matrix[i,samples[9]]-DATA_matrix[i,samples[10]])
+
+      # Set the differential expression threshold
       DifferenceThreshold <- 0.65
       selection_criteria[i] <- (Difference1 >= DifferenceThreshold) | (Difference2 >= DifferenceThreshold) | (Difference3 >= DifferenceThreshold) | (Difference4 >= DifferenceThreshold) | (Difference5 >= DifferenceThreshold)
+
+      # Keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
       CorFilterCutOff <- 0.93
       if (abs(Cor_row[coloring_row,i]) > CorFilterCutOff)
       {
