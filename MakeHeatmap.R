@@ -93,6 +93,8 @@ MakeHeatMap <- function(dl,                               #required
 # presentation: can be set to 'correlation_matrix' to display the correlation of each row vs. each other row as the matrix visualization
 #    The original clustering of the rows of the input data will determine the visualization dendrograms (along the rows and columns - they're the same)
 #    Right now there is a problem with col_side_colors and it doesn't work
+# visualization: can be 'heatmap' or 'edge_table'
+#     An input of 'edge_table' will create an edge table for analysis with Gephi
 # label_rows: TRUE or FALSE to label all rows, a vector to label rows in the vector, or a text file to label rows stated on each line
 # graphics_type: can be either '.pdf', '.png', or '.jpeg' and dictates the type of file the heatmap will be printed to
 # n_clusters: Specifies the number of clusters on the rows that are identified by different colors

@@ -1,17 +1,20 @@
 CreateEdgeTable <- function(Cor_row,DATA)
 {
+
+    coloring_row = 'UglnM5citrate591'
+
     #Filter the genes you want to consider: this must be hardcoded in the function below
-    FGR <- FilterGenes(DATA,Cor_row)
+    FGR <- FilterGenes(DATA,Cor_row,coloring_row)
     DATA <- FGR[[1]]
     Cor_row <- FGR[[2]]
     gene_names <- FGR[[3]]
     n_genes <- FGR[[4]]
 
     # Go through the lower left traingle of the correlation matrix and set values equal to TRUE if the meet the correlation threshold
-    # Note m3malate data is hardcoded into the DATA matrix by the ArrangeData function if visualization is edge_table
+    # Note coloring_row data is manually added to the quantities.txt file if it is not already there (i.e. m3malate or UglnM5citrate591)
     edgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
     colnames(edgeDF) <- c('source','target')
-    cor_thresh = 0.85
+    cor_thresh = 0.875
     Cor_thresh_logical <- Cor_row
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
@@ -47,7 +50,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
     nodeDF <- data.frame(matrix(0,nrow(DATA),3))
     rownames(nodeDF) <- rownames(DATA)
-    colnames(nodeDF) <- c('ID','m3malcor','color')
+    colnames(nodeDF) <- c('ID',coloring_row,'color')
     colfunc <- colorRampPalette(c('#000055',"#006CFF","white","#FF6B6B",'#4A0000'))
     n_colors <- 20
     custom_palette <- colfunc(n_colors)
@@ -59,8 +62,8 @@ CreateEdgeTable <- function(Cor_row,DATA)
         print(paste('node: ',i,sep=''))
         current_gene <- rownames(DATA)[i]
         nodeDF[current_gene,'ID'] <- current_gene
-        cor_to_m3mal <- Cor_row['m3malate',current_gene]
-        nodeDF[current_gene,'m3malcor'] <- cor_to_m3mal
+        cor_to_m3mal <- Cor_row[coloring_row,current_gene]
+        nodeDF[current_gene,coloring_row] <- cor_to_m3mal
         fraction_up_scale <- (cor_to_m3mal - (-1))/2
         color_index <- round(1 + fraction_up_scale*(n_colors-1))
         nodeDF[current_gene,'color'] <- custom_palette[color_index]
@@ -70,11 +73,9 @@ CreateEdgeTable <- function(Cor_row,DATA)
     write_directory <- '/Users/nate/Desktop/temporary/'
     write.table(edgeDF,file=paste(write_directory,'edges.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
     write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
-
-    browser()
 }
 
-FilterGenes <- function(DATA,Cor_row)
+FilterGenes <- function(DATA,Cor_row,coloring_row)
 {
 
   DATA_matrix <- as.matrix(DATA)
@@ -92,7 +93,13 @@ FilterGenes <- function(DATA,Cor_row)
       Difference3 <- abs(DATA_matrix[i,samples[5]]-DATA_matrix[i,samples[6]])
       Difference4 <- abs(DATA_matrix[i,samples[7]]-DATA_matrix[i,samples[8]])
       Difference5 <- abs(DATA_matrix[i,samples[9]]-DATA_matrix[i,samples[10]])
-      selection_criteria[i] <- (Difference1 >= 0.20) | (Difference2 >= 0.20) | (Difference3 >= 0.20) | (Difference4 >= 0.20) | (Difference5 >= 0.20)
+      DifferenceThreshold <- 0.65
+      selection_criteria[i] <- (Difference1 >= DifferenceThreshold) | (Difference2 >= DifferenceThreshold) | (Difference3 >= DifferenceThreshold) | (Difference4 >= DifferenceThreshold) | (Difference5 >= DifferenceThreshold)
+      CorFilterCutOff <- 0.93
+      if (abs(Cor_row[coloring_row,i]) > CorFilterCutOff)
+      {
+          selection_criteria[i] <- TRUE
+      }
   }
   selection_criteria <- as.logical(selection_criteria)
 
@@ -101,6 +108,11 @@ FilterGenes <- function(DATA,Cor_row)
   DATA <- DATA[gene_names,]
   n_genes <- length(gene_names)
 
-  return(DATA,Cor_row,gene_names,n_genes)
+  FGR <- list(DATA,
+              Cor_row,
+              gene_names,
+              n_genes)
+
+  return(FGR)
 
 }
