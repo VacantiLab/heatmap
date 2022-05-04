@@ -12,10 +12,17 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
     # The gene/row whose correlation relationship with the others sets the color of the network
     #     This is hard-coded for now
-    coloring_row = 'UglnM5citrate591'
+
+    # These are used for filtering purposes
+    #     Genes whose correlation with these rows is above a threshold are kept
+    coloring_row_for_filter_1 = 'UglnM5citrate591'
+    coloring_row_for_filter_2 = 'PCFlux'
+
+    # The gene correlation with this row is used to color the node
+    coloring_row = coloring_row_for_filter_2
 
     #Filter the genes you want to consider: this must be hardcoded in the function below
-    FGR <- FilterGenes(DATA,Cor_row,coloring_row)
+    FGR <- FilterGenes(DATA,Cor_row,coloring_row_for_filter_1,coloring_row_for_filter_2)
     DATA <- FGR[[1]]
     Cor_row <- FGR[[2]]
     gene_names <- FGR[[3]]
@@ -25,7 +32,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     # Note coloring_row data is manually added to the quantities.txt file if it is not already there (i.e. m3malate or UglnM5citrate591)
     edgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
     colnames(edgeDF) <- c('source','target')
-    cor_thresh = 0.875
+    cor_thresh = 0.80
     Cor_thresh_logical <- Cor_row
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
@@ -62,7 +69,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     nodeDF <- data.frame(matrix(0,nrow(DATA),3))
     rownames(nodeDF) <- rownames(DATA)
     colnames(nodeDF) <- c('ID',coloring_row,'color')
-    colfunc <- colorRampPalette(c('#000055',"#006CFF","white","#FF6B6B",'#4A0000'))
+    colfunc <- colorRampPalette(c('#000055',"#006CFF","#75afff","white","#ffc7c7","#FF6B6B",'#4A0000'))
     n_colors <- 20
     custom_palette <- colfunc(n_colors)
     custom_palette <- c(custom_palette)
@@ -86,7 +93,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
 }
 
-FilterGenes <- function(DATA,Cor_row,coloring_row)
+FilterGenes <- function(DATA,Cor_row,coloring_row_for_filter_1,coloring_row_for_filter_2)
 {
 
   DATA_matrix <- as.matrix(DATA)
@@ -106,12 +113,12 @@ FilterGenes <- function(DATA,Cor_row,coloring_row)
       Difference5 <- abs(DATA_matrix[i,samples[9]]-DATA_matrix[i,samples[10]])
 
       # Set the differential expression threshold
-      DifferenceThreshold <- 0.65
+      DifferenceThreshold <- 0.85
       selection_criteria[i] <- (Difference1 >= DifferenceThreshold) | (Difference2 >= DifferenceThreshold) | (Difference3 >= DifferenceThreshold) | (Difference4 >= DifferenceThreshold) | (Difference5 >= DifferenceThreshold)
 
       # Keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
       CorFilterCutOff <- 0.93
-      if (abs(Cor_row[coloring_row,i]) > CorFilterCutOff)
+      if ((abs(Cor_row[coloring_row_for_filter_1,i]) > CorFilterCutOff) | (abs(Cor_row[coloring_row_for_filter_2,i]) > CorFilterCutOff))
       {
           selection_criteria[i] <- TRUE
       }
