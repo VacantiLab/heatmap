@@ -1,0 +1,3 @@
+https://cran.r-project.org/src/contrib/Archive/heatmap.plus/
+
+install.packages("absolute/path/to/file.zip", repos=NULL, type="source")
