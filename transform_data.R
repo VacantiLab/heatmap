@@ -176,10 +176,15 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         transformed = TRUE
     }
 
-    if (transformation == 'row_meannorm_col_mednorm_log2')
+    if (transformation == 'RowMeanNorm_ColMedNorm_Log2')
     {
         column_names <- colnames(DATA) #record the column names after the unecessary column is removed
         row_names <- rownames(DATA)
+        
+        #First replace 0 values with half the row minimum
+        nCols <- ncol(DATA)
+        DATA[1:nCols] <- lapply(DATA[1:nCols], function(x) replace(x, x == 0, min(x[x>0]/2)))
+        
         Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
         DATA <- data.frame(lapply(Transposed_DATA, mean_norm))
         DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
@@ -323,6 +328,11 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
     {
       column_names <- colnames(DATA) #record the column names after the unecessary column is removed
       row_names <- rownames(DATA)
+      
+      #First replace 0 values with half the row minimum
+      nCols <- ncol(DATA)
+      DATA[1:nCols] <- lapply(DATA[1:nCols], function(x) replace(x, x == 0, min(x[x>0]/2)))
+      
       DATA <- data.frame(lapply(DATA, median_norm_log2_transform)) #median norm the columns and then log2 transform everything
       colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
       rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
@@ -445,3 +455,4 @@ zscore <- function(vector)
   transformed <- (vector - mean(vector))/sd(vector)
   return(transformed)
 }
+
