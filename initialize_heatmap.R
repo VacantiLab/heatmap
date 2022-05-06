@@ -3,6 +3,8 @@ cd <- getwd()
 r_scripts <- list.files(cd)
 initialize_fun_index <- match('initialize_heatmap.R',r_scripts)
 r_scripts <- r_scripts[-initialize_fun_index]
+Required_Local_Packages_index <- match('Required_Local_Packages',r_scripts)
+r_scripts <- r_scripts[-Required_Local_Packages_index]
 notes_index <- match('Notes.txt',r_scripts)
 r_scripts <- r_scripts[-notes_index]
 python_fun_index <- match('make_gdf.py',r_scripts)
