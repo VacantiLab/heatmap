@@ -87,7 +87,7 @@ ArrangeData <- function(ColGroupsScheme,
     #if more than one ColGroupsScheme is specified for a volcano plot because of a data dependent transformation (ddt)
     #    that needs to be disguised for the CheckStop
     ColGroupsScheme_holder = ColGroupsScheme
-    if ((visualization == 'volcanoplot' |  visualization == 'boxplot') && !is.null(ddt) && length(ColGroupsScheme)>1)
+    if ((visualization == 'volcanoplot' |  visualization == 'boxplot' | visualization == 'ScatterLinePlot') && !is.null(ddt) && length(ColGroupsScheme)>1)
     {
         ColGroupsScheme = ColGroupsScheme[ColGroupsScheme != ddt]
     }

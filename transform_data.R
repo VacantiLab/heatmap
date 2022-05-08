@@ -10,11 +10,18 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
     #Log transform the data if specified to do so
     if (transformation == 'log2')
     {
+        column_names <- colnames(DATA)
+        row_names <- rownames(DATA)
+        
         #First replace 0 values with half the row minimum
+        DATA <- as.data.frame(t(DATA))
         nCols <- ncol(DATA)
-        DATA[1:nCols] <- lapply(DATA[1:nCols], function(x) replace(x, x == 0, min(x[x>0]/2)))
+        DATA[1:nCols] <- lapply(DATA[1:nCols], function(x) replace(x, x <= 0, min(x[x>0]/2)))
+        DATA <- as.data.frame(t(DATA))
+        
         #log2 transform
         DATA <- log2(DATA)
+        
         transformed = TRUE
     }
 
@@ -290,6 +297,26 @@ transform_data <- function(DATA,transformation,select_rows_after_transform)
         transformed = TRUE
     }
     
+    if (transformation == 'RowMeanNorm_Log2_Zrow')
+    {
+      column_names <- colnames(DATA) #record the column names after the unecessary column is removed
+      row_names <- rownames(DATA)
+      
+      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+      #First replace 0 and negative values with half the non-zero row minimum
+      nCols <- ncol(Transposed_DATA)
+      Transposed_DATA[1:nCols] <- lapply(Transposed_DATA[1:nCols], function(x) replace(x, x <= 0, min(x[x>0]/2)))
+      
+      DATA <- data.frame(lapply(Transposed_DATA, average_norm_log2_transform))
+      DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+      Transposed_DATA <- data.frame(t(DATA)) #transpose because can only scale columns
+      DATA <- data.frame(lapply(Transposed_DATA, zscore)) #zscore transform rows
+      DATA <- data.frame(t(DATA)) #transpose back resulting in scaled rows
+      colnames(DATA) <- column_names #give the column names back because they are lost when converted to a matrix by t() function
+      rownames(DATA) <- row_names #give the row names back because they are lost when converted to a matrix by t() function
+      transformed = TRUE
+  }
+  
     if (transformation == 'row_meannorm_col_mednorm_log2_zrow_zcol')
     {
       column_names <- colnames(DATA) #record the column names after the unecessary column is removed

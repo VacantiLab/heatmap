@@ -12,8 +12,8 @@ MakeScatterLinePlot <- function(data_location,                       #required
                                 handle_blanks='remove_row',
                                 transform_after_column_exclusion = FALSE,
                                 plot_width = 15,
-                                plot_height = 5,
-                                xticklabs = TRUE)
+                                plot_height=5,
+                                xticklabs=TRUE)
 #This function lists samples across the x axis and expression along the y
 #Each gene is treated as a group
 # Inputs:
@@ -57,7 +57,7 @@ MakeScatterLinePlot <- function(data_location,                       #required
                                     select_rows,
                                     select_groups,
                                     visualization='ScatterLinePlot',
-                                    ddt=NULL,
+                                    ddt=ddt,
                                     handle_blanks,
                                     inclusion_grouping_scheme,
                                     ttest=FALSE,
