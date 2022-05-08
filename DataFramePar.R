@@ -259,8 +259,8 @@ med_norm_within_groups <- function(DATA,groups_corresponding,med_norm_scheme)
         DATA[,members] = sweep(DATA[,members],1,median_vector,'/')
     }
 
-    #DATA <- transform_data(DATA,'col_mednorm_log2',NULL)
-    DATA <- transform_data(DATA,'log2',NULL)
+    DATA <- transform_data(DATA,'col_mednorm_log2',NULL)
+    #DATA <- transform_data(DATA,'log2',NULL)
 
     return(DATA)
 }
