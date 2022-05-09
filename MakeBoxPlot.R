@@ -76,11 +76,9 @@ MakeBoxPlot <- function(data_location,
 #    It must be one of the groups specified in the ColGroupsScheme
 #    For any type of boxplot
 #        the ddt becomes the column grouping scheme and the non-control vs. control ratio is presented
-#            You can specify to normalize within cell lines and then use select_groups and inclusion_grouping_scheme to plot only the treated samples
-#                The result would be the treatment response for each cell line
-#    transform_after_column_exclusion must be FALSE because the transformation would also occur after DDT which doesn't make sense
-#        Sample loading should be accounted for before DDT
-#        The transformation should also be linear because DDT log2 transforms resulting ratios
+#    Need to see at what point columns are excluded by the inclusion grouping scheme - should be BEFORE DDT when transform_after_column_exclusion is TRUE (it is before DDT)
+#    Need to be able to specify the type of transformation for DDT
+#        Is hard-coded in med_norm_within_groups within DataFramePar.R
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
