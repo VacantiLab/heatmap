@@ -17,7 +17,9 @@ assemble_box_plot <- function(DATA_long,
                               x_var,
                               y_var,
                               color_var,
-                              ddt)
+                              ddt,
+                              data_bounds=NULL,
+                              custom_y_bounds=NULL)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
   
@@ -40,6 +42,16 @@ assemble_box_plot <- function(DATA_long,
 
     pdf_width <- unit(plot_width,'in')
     pdf_height <- unit(plot_height,'in')
+    
+
+    if (!is.null(data_bounds))
+    {
+      lower <- data_bounds[1]
+      upper <- data_bounds[2]
+      DATA_long[,'value'][DATA_long[,'value']<lower] <- lower
+      DATA_long[,'value'][DATA_long[,'value']>upper] <- upper
+    }
+
 
     #If there are groups, the group color is specified by the color_var
     if(!is.null(FillColors))
@@ -101,7 +113,7 @@ assemble_box_plot <- function(DATA_long,
         #  putting the name, 'value', back as the column name
 
         #box_plot_type='scatter_bar_plot'
-        gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing))
+        gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing),size=ErrorBarSize)
         gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=PointSize)
         
         #box_plot_type='line_plot'
@@ -201,6 +213,13 @@ assemble_box_plot <- function(DATA_long,
     {
         ScaleFillDesignation <- NULL
         ScaleColorDesignation <- NULL
+    }
+    
+    if (!is.null(custom_y_bounds))
+    {
+      axis_limits <- coord_cartesian(ylim=custom_y_bounds[1:2], expand=F) #this must be placed inside coord_cartesian() so points outside of the limits are not discarded in calculating medians and IQRs
+      ytick = custom_y_bounds[3]
+      y_scale <- scale_y_continuous(breaks = seq(custom_y_bounds[1],custom_y_bounds[2], by=ytick)) #scale_y_continuous can be used with coord_cartesian without affecting data calculations
     }
 
     b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var, fill=color_var)) +

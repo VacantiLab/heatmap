@@ -13,7 +13,8 @@ ArrangeData <- function(ColGroupsScheme,
                        select_rows_after_transform,
                        transform_after_column_exclusion,
                        FilterRowsForMeanSpread=FALSE,
-                       GeneToCorrelate = NULL)
+                       GeneToCorrelate=NULL,
+                       ratio_scheme_groups=NULL)
 
  # Inputs:
  # ColGroupsScheme (required): the name of the grouping scheme used indicates which column to take from group_key.txt
@@ -221,7 +222,7 @@ ArrangeData <- function(ColGroupsScheme,
     
     if (!is.null(ddt))
     {
-      PerformDDT_return <- PerformDDT(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
+      PerformDDT_return <- PerformDDT(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt,ratio_scheme_groups=ratio_scheme_groups)
       DATA <- PerformDDT_return[[1]]
       groups_corresponding <- PerformDDT_return[[2]]
       GroupColorMatrix <- PerformDDT_return[[3]]

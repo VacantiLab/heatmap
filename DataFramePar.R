@@ -249,14 +249,36 @@ TransformColumns <- function(DATA,groups_corresponding,GroupColorMatrix,replicat
 }
 
 #medain normalize within groups
-med_norm_within_groups <- function(DATA,groups_corresponding,med_norm_scheme)
+med_norm_within_groups <- function(DATA,groups_corresponding,med_norm_scheme,ratio_scheme_groups=NULL)
 {
     for (group in groups_corresponding[,med_norm_scheme])
     {
+        # find the locations of the current group members
         member_locations = groups_corresponding[,med_norm_scheme] == group
+        
+        # the values associated with these memebers will provide the measurements for the normalization
+        mean_member_locations = member_locations
+        # If the ratio_scheme_group is provided, within each group of the ddt, a custom ratio will be performed
+        if (!is.null(ratio_scheme_groups))
+        {
+          ratio_scheme = ratio_scheme_groups[1]
+          denominator = ratio_scheme_groups[2]
+          
+          # Find the locations of samples for which the mean will be the denominator for the current group
+          mean_member_locations = (groups_corresponding[,med_norm_scheme] == group) & (groups_corresponding[,ratio_scheme] == denominator)
+        }
+        
+        # members of the entire current ddt group
         members = names(member_locations)[member_locations]
-        median_vector <- apply(DATA[,members],1,median)
-        DATA[,members] = sweep(DATA[,members],1,median_vector,'/')
+        
+        # members of that ddt group that will be used as the denominator
+        mean_members = names(mean_member_locations)[mean_member_locations]
+        
+        # the values whose mean will be the denominator
+        mean_vector <- apply(DATA[,mean_members],1,mean)
+        
+        # replace all values of the ddt group with their ratio to the above-specified denominator
+        DATA[,members] = sweep(DATA[,members],1,mean_vector,'/')
     }
 
     #DATA <- transform_data(DATA,'col_mednorm_log2',NULL)

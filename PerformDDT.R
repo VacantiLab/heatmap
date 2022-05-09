@@ -1,4 +1,4 @@
-PerformDDT <- function(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt)
+PerformDDT <- function(DATA,groups_corresponding,GroupColorMatrix,replicate_scheme,ColGroupsScheme,ddt,ratio_scheme_groups)
 {
 
     #transform the columns based on other columns if specified to do so
@@ -18,7 +18,7 @@ PerformDDT <- function(DATA,groups_corresponding,GroupColorMatrix,replicate_sche
         if (class(ddt) == 'character')
         {
             med_norm_scheme = ddt
-            DATA = med_norm_within_groups(DATA,groups_corresponding,med_norm_scheme)
+            DATA = med_norm_within_groups(DATA,groups_corresponding,med_norm_scheme,ratio_scheme_groups=ratio_scheme_groups)
         }
     }
 
