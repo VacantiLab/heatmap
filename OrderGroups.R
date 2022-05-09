@@ -1,13 +1,16 @@
-OrderGroups <- function(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
+OrderGroups <- function(select_groups,group_concationation,groups_corresponding,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long,ddt,visualizaion)
 {
   #specify the order in which the groups will be plotted and ensure they map to their corresponding colors
   #If there is nothing specified in select_groups, the order is by the order of appearance in group_color_key.txt
   group_order = NULL
   FillColors = NULL
+  
+  groups_corresponding_for_order <- groups_corresponding
+  if (!is.null(ddt)){groups_corresponding_for_order <- groups_corresponding[,colnames(groups_corresponding)==ddt,drop=FALSE]}
 
   if (!is.null(groups_corresponding) && !group_concationation)
   {
-      groups_in_plot <- as.character(unique(groups_corresponding))
+      groups_in_plot <- as.character(unique(groups_corresponding_for_order))
       indices_to_keep <- rownames(COLOR_KEY) %in% groups_in_plot
       group_order <- rownames(COLOR_KEY)[indices_to_keep]
       group_order <- matrix(as.character(group_order))
@@ -31,7 +34,16 @@ OrderGroups <- function(select_groups,group_concationation,groups_corresponding,
   }
 
   #Implement the group ordering
-  if (!is.null(groups_corresponding)){DATA_long$group <- factor(DATA_long$group,group_order)} #this sets the order of the groups to match group_order
+  if (is.null(ddt))
+  {
+      if (!is.null(groups_corresponding)){DATA_long$group <- factor(DATA_long$group,group_order)} #this sets the order of the groups to match group_order
+  }
+  
+  if (!is.null(ddt))
+  {
+    if (!is.null(groups_corresponding)){DATA_long$ddt_group <- factor(DATA_long$ddt_group,group_order)} #this sets the order of the groups to match group_order
+  }
+  
   DATA_long$gene <- factor(DATA_long$gene,gene_name) #this sets the order of the genes to match gene_names
 
   #assemble variables to return

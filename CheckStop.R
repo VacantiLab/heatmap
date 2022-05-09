@@ -104,7 +104,7 @@ CheckStop <- function(check_flag,parameters)
 
         if (!is.null(ddt))
         {
-            if (transform_after_column_exclusion == TRUE){stop('Custom Message: When using a ddt, the transform_after_column_exclusion should be FALSE because accounting for loading should be done first.')}
+            #if (transform_after_column_exclusion == TRUE){stop('Custom Message: When using a ddt, the transform_after_column_exclusion should be FALSE because accounting for loading should be done first.')}
             if (!is.null(transformation))
             {
                 if (grepl('log',transformation)){stop('Custom Message: When using a ddt, the initial transformation should be linear because DDT returns log2 transformed ratios.')}

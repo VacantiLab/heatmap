@@ -16,11 +16,11 @@ assemble_box_plot <- function(DATA_long,
                               ErrorFile,
                               x_var,
                               y_var,
-                              color_var)
+                              color_var,
+                              ddt)
 {
     #plot_type: can be 'boxplot', 'scatter_bar_plot', or 'bar_plot'
-
-
+  
     if (qc_plot)
     {
         x_var <- 'sample'
@@ -81,11 +81,18 @@ assemble_box_plot <- function(DATA_long,
         # If no separate file is specified with error values, calculate the error values
         if (!is.character(ErrorFile))
         {
+            if (!is.null(ddt))
+            {
+              rows_to_keep <- DATA_long[,'group'] != 'control'
+              DATA_long <- DATA_long[rows_to_keep,]
+              DATA_long[,'group'] <- DATA_long[,'ddt_group']
+
+            }
             DATA_long_summary <- ddply(DATA_long,
-                                      c(color_var,x_var),
-                                      summarise,
-                                      value2=mean(value),
-                                      sd=sd(value))
+                                 c(color_var,x_var),
+                                 summarise,
+                                 value2=mean(value),
+                                 sd=sd(value))
         }
 
 

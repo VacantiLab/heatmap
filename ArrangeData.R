@@ -303,7 +303,7 @@ ArrangeData <- function(ColGroupsScheme,
     {
         #put the data in long data frame format for plotting
         print('arranging data in long data frame format')
-        DATA_long <- FatToLongDF(DATA,groups_corresponding)
+        DATA_long <- FatToLongDF(DATA,groups_corresponding,ddt)
     }
 
     FillColors = NULL #needs to be designated because it is returned
@@ -318,8 +318,8 @@ ArrangeData <- function(ColGroupsScheme,
         if (!(inclusion_grouping_scheme %in% ColGroupsScheme)){groups_to_order <- NULL}
         groups_corresponding_ForOrder <- groups_corresponding
         #if there is a ddt, it needs to be removed from the groups_corresponding when determining the order of the groups because ddt is not actually a group but a reference for a transformation
-        if (!is.null(ddt)){groups_corresponding_ForOrder <- groups_corresponding[groups_corresponding != ddt]}
-        OrderGroups_return <- OrderGroups(groups_to_order,group_concationation,groups_corresponding_ForOrder,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long)
+        if (!is.null(ddt) & visualization=='heatmap'){groups_corresponding_ForOrder <- groups_corresponding[,colnames(groups_corresponding) != ddt,drop=FALSE]}
+        OrderGroups_return <- OrderGroups(groups_to_order,group_concationation,groups_corresponding_ForOrder,GroupColorMatrix,COLOR_KEY,groups_concatonated,colors_concatonated,gene_name,DATA_long,ddt,visualization)
         DATA_long <- OrderGroups_return[[1]]
         FillColors <- OrderGroups_return[[2]]
         group_order <- OrderGroups_return[[3]]
@@ -349,7 +349,7 @@ ArrangeData <- function(ColGroupsScheme,
         Correlations <- PerformCorrelations(DATA,GeneToCorrelate)
       }
     }
-
+    
     ArrangeData_return <- list(sig_test_list,
                                output_directory,
                                group_order,
@@ -384,7 +384,6 @@ ArrangeData <- function(ColGroupsScheme,
                                  output_directory,
                                  DATA)
     }
-
     return(ArrangeData_return)
 }
 

@@ -74,8 +74,8 @@ MakeBoxPlot <- function(data_location,
 #    It can be outside of the ColGroupsScheme as well
 # ddt: data dependent transformation; this is a grouping scheme that all samples within that group are normalized to its median and then log2 transformed
 #    It must be one of the groups specified in the ColGroupsScheme
-#    It is not presented as a ColGroupsScheme, it is just used for normalization purposes
-#        For example, say you have cell lines control and treated
+#    For any type of boxplot
+#        the ddt becomes the column grouping scheme and the non-control vs. control ratio is presented
 #            You can specify to normalize within cell lines and then use select_groups and inclusion_grouping_scheme to plot only the treated samples
 #                The result would be the treatment response for each cell line
 #    transform_after_column_exclusion must be FALSE because the transformation would also occur after DDT which doesn't make sense
@@ -126,6 +126,7 @@ MakeBoxPlot <- function(data_location,
     DATA_transformed <- ArrangeData_return[[7]]
     DATA_transformed_full <- ArrangeData_return[[10]]
     DATA_original <- ArrangeData_return[[11]]
+  
 
     #Find the y-limits for the boxplot based on the data
     if (is.null(ybounds)){ybounds <- get_y_bounds(group_order,gene_name,DATA_long)}
@@ -151,7 +152,8 @@ MakeBoxPlot <- function(data_location,
                                         ErrorFile,
                                         x_var,
                                         y_var,
-                                        color_var)}
+                                        color_var,
+                                        ddt)}
     if (violin){b <- assemble_violin_plot(DATA_long,FillColors,output_directory,y_bounds,qc_plot)}
 
     #assemble variables to return
