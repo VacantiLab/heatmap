@@ -15,11 +15,14 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
     # These are used for filtering purposes
     #     Genes whose correlation with these rows is above a threshold are kept
-    coloring_rows = c('UglnM5citrate591','PCFlux')
+    coloring_row_for_filter_1 = 'UglnM5citrate591'
+    coloring_row_for_filter_2 = 'PCFlux'
 
+    # The gene correlation with this row is used to color the node
+    coloring_row = coloring_row_for_filter_2
 
     #Filter the genes you want to consider: this must be hardcoded in the function below
-    FGR <- FilterGenes(DATA,Cor_row,coloring_rows)
+    FGR <- FilterGenes(DATA,Cor_row,coloring_row_for_filter_1,coloring_row_for_filter_2)
     DATA <- FGR[[1]]
     Cor_row <- FGR[[2]]
     gene_names <- FGR[[3]]
@@ -65,24 +68,23 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
     nodeDF <- data.frame(matrix(0,nrow(DATA),3))
     rownames(nodeDF) <- rownames(DATA)
-    colnames(nodeDF) <- c('ID',coloring_rows[1],'color')
-
+    colnames(nodeDF) <- c('ID',coloring_row,'color')
+    colfunc <- colorRampPalette(c('#000055',"#006CFF","#75afff","white","#ffc7c7","#FF6B6B",'#4A0000'))
+    n_colors <- 20
+    custom_palette <- colfunc(n_colors)
+    custom_palette <- c(custom_palette)
+    n_colors <- n_colors
     # Make the node file
     for (i in 1:length(rownames(DATA)))
     {
         print(paste('node: ',i,sep=''))
         current_gene <- rownames(DATA)[i]
-        nodeDF[current_gene,'color'] <- 'gray'
         nodeDF[current_gene,'ID'] <- current_gene
-        colors <- c('orange','purple')
-        n_color <- 1
-        for (flux in coloring_rows)
-        {
-          cor_to_gene <- Cor_row[flux,current_gene]
-          if (cor_to_gene >= 0.95){nodeDF[current_gene,'color'] <- colors[n_color]}
-          n_color <- n_color+1
-        }
-        nodeDF[current_gene,coloring_rows[1]] <- cor_to_gene
+        cor_to_m3mal <- Cor_row[coloring_row,current_gene]
+        nodeDF[current_gene,coloring_row] <- cor_to_m3mal
+        fraction_up_scale <- (cor_to_m3mal - (-1))/2
+        color_index <- round(1 + fraction_up_scale*(n_colors-1))
+        nodeDF[current_gene,'color'] <- custom_palette[color_index]
     }
 
     #write the tables required to make the graph file (gdf file) made by make_gdf.py
@@ -91,7 +93,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
 }
 
-FilterGenes <- function(DATA,Cor_row,coloring_rows)
+FilterGenes <- function(DATA,Cor_row,coloring_row_for_filter_1,coloring_row_for_filter_2)
 {
 
   DATA_matrix <- as.matrix(DATA)
@@ -115,9 +117,8 @@ FilterGenes <- function(DATA,Cor_row,coloring_rows)
       selection_criteria[i] <- (Difference1 >= DifferenceThreshold) | (Difference2 >= DifferenceThreshold) | (Difference3 >= DifferenceThreshold) | (Difference4 >= DifferenceThreshold) | (Difference5 >= DifferenceThreshold)
 
       # Keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
-      CorFilterCutOff <- 0.95
-      CriteriaVector <- abs(Cor_row[coloring_rows,i]) > CorFilterCutOff
-      if (sum(CriteriaVector) >= 1)
+      CorFilterCutOff <- 0.93
+      if ((abs(Cor_row[coloring_row_for_filter_1,i]) > CorFilterCutOff) | (abs(Cor_row[coloring_row_for_filter_2,i]) > CorFilterCutOff))
       {
           selection_criteria[i] <- TRUE
       }
