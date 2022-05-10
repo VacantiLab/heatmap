@@ -72,9 +72,16 @@ CreateEdgeTable <- function(Cor_row,DATA)
     {
         print(paste('node: ',i,sep=''))
         current_gene <- rownames(DATA)[i]
+        
+        # initially have all the nodes be gray
         nodeDF[current_gene,'color'] <- 'gray'
         nodeDF[current_gene,'ID'] <- current_gene
+        
+        # specify a color for a correlation with specified rows above threshold 
         colors <- c('orange','purple')
+        
+        # iterate through each flux to determine if the correlation with the current gene is above threshold
+        #     if it is, color the node accordingly
         n_color <- 1
         for (flux in coloring_rows)
         {
@@ -82,6 +89,8 @@ CreateEdgeTable <- function(Cor_row,DATA)
           if (cor_to_gene >= 0.95){nodeDF[current_gene,'color'] <- colors[n_color]}
           n_color <- n_color+1
         }
+        
+        # This is likely extraneous information and not needed to make the gdf file
         nodeDF[current_gene,coloring_rows[1]] <- cor_to_gene
     }
 
@@ -115,6 +124,7 @@ FilterGenes <- function(DATA,Cor_row,coloring_rows)
       selection_criteria[i] <- (Difference1 >= DifferenceThreshold) | (Difference2 >= DifferenceThreshold) | (Difference3 >= DifferenceThreshold) | (Difference4 >= DifferenceThreshold) | (Difference5 >= DifferenceThreshold)
 
       # Keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
+      #     The threshold needs to be met in a correlation with one of the specified fluxes in coloring_rows
       CorFilterCutOff <- 0.95
       CriteriaVector <- abs(Cor_row[coloring_rows,i]) > CorFilterCutOff
       if (sum(CriteriaVector) >= 1)
