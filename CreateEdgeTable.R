@@ -15,7 +15,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
     # These are used for filtering purposes
     #     Genes whose correlation with these rows is above a threshold are kept
-    coloring_rows = c('UglnM5citrate591','PCFlux')
+    coloring_rows = c('PCFlux','UglnM5citrate591','UGlcM3Serine390','UGlcM2Citrate591','UGlnM4Malate419')
 
 
     #Filter the genes you want to consider: this must be hardcoded in the function below
@@ -74,11 +74,11 @@ CreateEdgeTable <- function(Cor_row,DATA)
         current_gene <- rownames(DATA)[i]
         
         # initially have all the nodes be gray
-        nodeDF[current_gene,'color'] <- 'gray'
+        nodeDF[current_gene,'color'] <- 'gray88'
         nodeDF[current_gene,'ID'] <- current_gene
         
         # specify a color for a correlation with specified rows above threshold 
-        colors <- c('orange','purple')
+        colors <- c('firebrick','dodgerblue','goldenrod3','darkslategray3','darkviolet')
         
         # iterate through each flux to determine if the correlation with the current gene is above threshold
         #     if it is, color the node accordingly
@@ -86,7 +86,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
         for (flux in coloring_rows)
         {
           cor_to_gene <- Cor_row[flux,current_gene]
-          if (cor_to_gene >= 0.95){nodeDF[current_gene,'color'] <- colors[n_color]}
+          if (cor_to_gene >= 0.908){nodeDF[current_gene,'color'] <- colors[n_color]}
           n_color <- n_color+1
         }
         
