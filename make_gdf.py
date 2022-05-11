@@ -8,7 +8,7 @@ with open(gdf_file,'w') as file_write:
         node_line = 1
         for line in file_read:
             if node_line == 1:
-                file_write.write('nodedef>name VARCHAR,color VARCHAR\n')
+                file_write.write('nodedef>name VARCHAR,color VARCHAR,z DOUBLE\n')
             node_line = node_line + 1
             if node_line != 1:
                 file_write.write(line)

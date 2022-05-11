@@ -76,6 +76,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
         # initially have all the nodes be gray
         nodeDF[current_gene,'color'] <- 'gray88'
         nodeDF[current_gene,'ID'] <- current_gene
+        nodeDF[current_gene,'z'] <- 1
         
         # specify a color for a correlation with specified rows above threshold 
         colors <- c('firebrick','dodgerblue','goldenrod3','darkslategray3','darkviolet')
@@ -86,18 +87,23 @@ CreateEdgeTable <- function(Cor_row,DATA)
         for (flux in coloring_rows)
         {
           cor_to_gene <- Cor_row[flux,current_gene]
-          if (cor_to_gene >= 0.908){nodeDF[current_gene,'color'] <- colors[n_color]}
+          if (cor_to_gene >= 0.908)
+          {nodeDF[current_gene,'color'] <- colors[n_color]
+           nodeDF[current_gene,'z'] <- 2
+          }
           n_color <- n_color+1
         }
         
-        # This is likely extraneous information and not needed to make the gdf file
-        nodeDF[current_gene,coloring_rows[1]] <- cor_to_gene
     }
-
+    # put the higher z-score nodes at the end of the data frame
+    #     Gephi will draw the nodes in the order in which they appear
+    #     If you want the higher z-scores on top, they need to be drawn last
+    #     The value of z is not interpreted byu Gephi (at least right now)
+    nodeDF <- nodeDF[order(nodeDF$z),]
     #write the tables required to make the graph file (gdf file) made by make_gdf.py
     write_directory <- '/Users/nate/Desktop/temporary/'
     write.table(edgeDF,file=paste(write_directory,'edges.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
-    write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
+    write.table(nodeDF[,c('ID','color','z')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
 }
 
 FilterGenes <- function(DATA,Cor_row,coloring_rows)
