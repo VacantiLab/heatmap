@@ -275,14 +275,23 @@ med_norm_within_groups <- function(DATA,groups_corresponding,med_norm_scheme,rat
         mean_members = names(mean_member_locations)[mean_member_locations]
         
         # the values whose mean will be the denominator
-        mean_vector <- apply(DATA[,mean_members],1,mean)
+        DF_to_apply_mean <- DATA[,mean_members,drop=FALSE]
+        if (dim(DF_to_apply_mean)[2]>1){mean_vector <- apply(DATA[,mean_members],1,mean)}
+        if (dim(DF_to_apply_mean)[2]==1){mean_vector <- DF_to_apply_mean[,1]}
         
         # replace all values of the ddt group with their ratio to the above-specified denominator
         DATA[,members] = sweep(DATA[,members],1,mean_vector,'/')
+        
     }
 
     #DATA <- transform_data(DATA,'col_mednorm_log2',NULL)
+    if (!is.null(ratio_scheme_groups))
+      {
+        denominator_sample_indices <- groups_corresponding[,ratio_scheme]==denominator
+        denominator_samples <- rownames(groups_corresponding)[denominator_sample_indices]
+        DATA <- DATA[,!(colnames(DATA) %in% denominator_samples)]
+      }
+    
     DATA <- transform_data(DATA,'log2',NULL)
-
     return(DATA)
 }

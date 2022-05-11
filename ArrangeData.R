@@ -76,6 +76,10 @@ ArrangeData <- function(ColGroupsScheme,
  # FilterRowsForMeanSpread (can be NULL): If it is a decimal fraction (such as 0.7), rows are filtered out who have more than 70% of their values below or above 0
  #     This is meant for log2 transformed data where there may be a small cluster of columns driving the profile
  #     Corrects red or blue streaks across the heat map
+ # ratio_scheme_groups: Is a list that works with ddt or is NULL
+ #     The first member of the list specifies a column grouping scheme whose members describes how to take the ddt ratio
+ #     The second member of the list is the group of the grouping scheme (the 1st list member) whose mean is in the denominator of the ddt ratio 
+ #         These ratios are performed within each ddt grouping scheme group
 
  #Outputs
  # The Data frame retunred by this function is the 7th output of the returned list
@@ -350,7 +354,7 @@ ArrangeData <- function(ColGroupsScheme,
         Correlations <- PerformCorrelations(DATA,GeneToCorrelate)
       }
     }
-    
+
     ArrangeData_return <- list(sig_test_list,
                                output_directory,
                                group_order,

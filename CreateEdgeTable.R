@@ -29,7 +29,9 @@ CreateEdgeTable <- function(Cor_row,DATA)
     # Note coloring_row data is manually added to the quantities.txt file if it is not already there (i.e. m3malate or UglnM5citrate591)
     edgeDF <- data.frame(matrix(ncol = 2, nrow = 1))
     colnames(edgeDF) <- c('source','target')
-    cor_thresh = 0.80
+    
+    # parameter to set the edge creation criteria
+    cor_thresh = 0.8
     Cor_thresh_logical <- Cor_row
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
@@ -87,7 +89,8 @@ CreateEdgeTable <- function(Cor_row,DATA)
         for (flux in coloring_rows)
         {
           cor_to_gene <- Cor_row[flux,current_gene]
-          if (cor_to_gene >= 0.908)
+          # parameter to color a gene as correlated with a flux
+          if (cor_to_gene >= 0.91)
           {nodeDF[current_gene,'color'] <- colors[n_color]
            nodeDF[current_gene,'z'] <- 2
           }
@@ -119,20 +122,14 @@ FilterGenes <- function(DATA,Cor_row,coloring_rows)
   selection_criteria <- rep(0,n_genes)
   for (i in 1:n_genes)
   {
-      Difference1 <- abs(DATA_matrix[i,samples[1]]-DATA_matrix[i,samples[2]])
-      Difference2 <- abs(DATA_matrix[i,samples[3]]-DATA_matrix[i,samples[4]])
-      Difference3 <- abs(DATA_matrix[i,samples[5]]-DATA_matrix[i,samples[6]])
-      Difference4 <- abs(DATA_matrix[i,samples[7]]-DATA_matrix[i,samples[8]])
-      Difference5 <- abs(DATA_matrix[i,samples[9]]-DATA_matrix[i,samples[10]])
-
-      # Set the differential expression threshold
-      DifferenceThreshold <- 0.85
-      selection_criteria[i] <- (Difference1 >= DifferenceThreshold) | (Difference2 >= DifferenceThreshold) | (Difference3 >= DifferenceThreshold) | (Difference4 >= DifferenceThreshold) | (Difference5 >= DifferenceThreshold)
+     # Set the differential expression threshold
+      DifferenceThreshold <- 0.7
+      selection_criteria[i] <- sum(DATA[i,] >= DifferenceThreshold) >= 1
 
       # Keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
       #     The threshold needs to be met in a correlation with one of the specified fluxes in coloring_rows
-      CorFilterCutOff <- 0.95
-      CriteriaVector <- abs(Cor_row[coloring_rows,i]) > CorFilterCutOff
+      CorFilterCutOff <- 0.99
+      CriteriaVector <- abs(Cor_row[coloring_rows,i]) >= CorFilterCutOff
       if (sum(CriteriaVector) >= 1)
       {
           selection_criteria[i] <- TRUE

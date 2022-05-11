@@ -22,7 +22,8 @@ MakeHeatMap <- function(dl,                               #required
                         n_clusters=1,
                         FilterRowsForMeanSpread=NULL,
                         HeatmapWidth = 12,
-                        HeatmapHeight = 16)
+                        HeatmapHeight = 16,
+                        ratio_scheme_groups=NULL)
 # Inputs:
 # dl: stands for data location, a pathway to where the text file containing the data is stored, must have '/' at the end
 #    The data file must be named quantities.txt with the genes down the rows and sample names across the columns
@@ -73,6 +74,10 @@ MakeHeatMap <- function(dl,                               #required
 #    transform_after_column_exclusion must be FALSE because the transformation would also occur after DDT which doesn't make sense
 #        Sample loading should be accounted for before DDT
 #        The transformation should also be linear because DDT normalizes to column medians and log2 transforms resulting ratios
+# ratio_scheme_groups: Is a list that works with ddt or is NULL
+#     The first member of the list specifies a column grouping scheme whose members describes how to take the ddt ratio
+#     The second member of the list is the group of the grouping scheme (the 1st list member) whose mean is in the denominator of the ddt ratio 
+#         These ratios are performed within each ddt grouping scheme group
 # replicate_scheme: This specifies the grouping scheme that is used to specify groups of replicates
 #    This must NOT be a member of ColGroupsScheme, though it must be a grouping scheme defined in group_key.txt
 #        As such each member of this grouping scheme must also have colors specified in group_color_key.txt
@@ -158,8 +163,8 @@ MakeHeatMap <- function(dl,                               #required
                        ttest=FALSE,
                        select_rows_after_transform,
                        transform_after_column_exclusion,
-                       FilterRowsForMeanSpread)
-
+                       FilterRowsForMeanSpread,
+                       ratio_scheme_groups = ratio_scheme_groups)
     sig_test_list <- ADR[[1]]
     output_directory <- ADR[[2]]
     group_order <- ADR[[3]]
@@ -170,7 +175,7 @@ MakeHeatMap <- function(dl,                               #required
     GroupColorMatrix <- ADR[[8]]
     groups_corresponding <- ADR[[9]]
     DATA_original <- ADR[[11]] #the data before any transformations or exclusions were made
-
+    
     #Retrieve the clusters for creating the dendrograms
     ClusterData_return <- ClusterData(DATA,DistanceMethod,ClusterMethod,rev_c_dend)
     colv <- ClusterData_return[[1]]
