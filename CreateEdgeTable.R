@@ -17,6 +17,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     #     Genes whose correlation with these rows is above a threshold are kept
     coloring_rows = c('PCFlux','UglnM5citrate591','UGlcM3Serine390','UGlcM2Citrate591','UGlnM4Malate419')
     CorrelationThreshold <- 0.85
+    color_mode <- 'negative'
 
     #Filter the genes you want to consider: this must be hardcoded in the function below
     FGR <- FilterGenes(DATA,Cor_row,coloring_rows)
@@ -36,7 +37,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
     {
-        print(paste('check_edge: ',i,sep=''))
+        if (i%%1000==0){print(paste('check_edge: ',i,sep=''))}
         for (j in (1:(i-1)))
         {
             if (Cor_row[i,j] > cor_thresh)
@@ -55,7 +56,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     edge_iterator <- 1
     for (i in 2:n_genes)
     {
-        print(paste('record_edge: ',i,sep=''))
+      if (i%%1000==0){print(paste('record_edge: ',i,sep=''))}
         current_gene_mates <- gene_names[Cor_thresh_logical[i,]==1]
         if (length(current_gene_mates > 0))
         {
@@ -72,7 +73,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     # Make the node file
     for (i in 1:length(rownames(DATA)))
     {
-        print(paste('node: ',i,sep=''))
+      if (i%%1000==0){print(paste('node: ',i,sep=''))}
         current_gene <- rownames(DATA)[i]
         
         # initially have all the nodes be gray
@@ -90,7 +91,8 @@ CreateEdgeTable <- function(Cor_row,DATA)
         {
           cor_to_gene <- Cor_row[flux,current_gene]
           # parameter to color a gene as correlated with a flux
-          if (cor_to_gene >= CorrelationThreshold)
+          Color_Criteria <- ((cor_to_gene>=CorrelationThreshold) & (color_mode=='positive')) | ((cor_to_gene<=-CorrelationThreshold) & (color_mode=='negative'))
+          if (Color_Criteria)
           {nodeDF[current_gene,'color'] <- colors[n_color]
            nodeDF[current_gene,'z'] <- 2
           }
