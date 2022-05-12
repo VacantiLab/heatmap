@@ -16,7 +16,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     # These are used for filtering purposes
     #     Genes whose correlation with these rows is above a threshold are kept
     coloring_rows = c('PCFlux','UglnM5citrate591','UGlcM3Serine390','UGlcM2Citrate591','UGlnM4Malate419')
-
+    CorrelationThreshold <- 0.85
 
     #Filter the genes you want to consider: this must be hardcoded in the function below
     FGR <- FilterGenes(DATA,Cor_row,coloring_rows)
@@ -31,7 +31,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
     colnames(edgeDF) <- c('source','target')
     
     # parameter to set the edge creation criteria
-    cor_thresh = 0.8
+    cor_thresh = CorrelationThreshold
     Cor_thresh_logical <- Cor_row
     Cor_thresh_logical[,] <- FALSE
     for (i in 2:n_genes)
@@ -76,12 +76,12 @@ CreateEdgeTable <- function(Cor_row,DATA)
         current_gene <- rownames(DATA)[i]
         
         # initially have all the nodes be gray
-        nodeDF[current_gene,'color'] <- 'gray88'
+        nodeDF[current_gene,'color'] <- '#FBFBFB'
         nodeDF[current_gene,'ID'] <- current_gene
         nodeDF[current_gene,'z'] <- 1
         
         # specify a color for a correlation with specified rows above threshold 
-        colors <- c('firebrick','dodgerblue','goldenrod3','darkslategray3','darkviolet')
+        colors <- c('#173f5f','#20639b','#3caea3','#B23BFF','#ed553b')
         
         # iterate through each flux to determine if the correlation with the current gene is above threshold
         #     if it is, color the node accordingly
@@ -90,7 +90,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
         {
           cor_to_gene <- Cor_row[flux,current_gene]
           # parameter to color a gene as correlated with a flux
-          if (cor_to_gene >= 0.91)
+          if (cor_to_gene >= CorrelationThreshold)
           {nodeDF[current_gene,'color'] <- colors[n_color]
            nodeDF[current_gene,'z'] <- 2
           }
@@ -103,11 +103,23 @@ CreateEdgeTable <- function(Cor_row,DATA)
     #     If you want the higher z-scores on top, they need to be drawn last
     #     The value of z is not interpreted byu Gephi (at least right now)
     nodeDF <- nodeDF[order(nodeDF$z),]
+    
+    # Remove the nodes and edges containing the metabolic fluxes
+    #     This is a protein-only network, the fluxes are present only for correlation calculations
+    NodeRowsToKeep <- !(rownames(nodeDF) %in% coloring_rows)
+    nodeDF <- nodeDF[NodeRowsToKeep,]
+    
+    EdgeRowsToKeep <- !((edgeDF[,'source'] %in% coloring_rows) | (edgeDF[,'target'] %in% coloring_rows))
+    edgeDF <- edgeDF[EdgeRowsToKeep,]
+    
     #write the tables required to make the graph file (gdf file) made by make_gdf.py
     write_directory <- '/Users/nate/Desktop/temporary/'
     write.table(edgeDF,file=paste(write_directory,'edges.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
-    write.table(nodeDF[,c('ID','color','z')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
+    write.table(nodeDF[,c('ID','color')],file=paste(write_directory,'nodes.csv',sep=''),quote=FALSE,row.names=FALSE,col.names=FALSE,sep=",")
 }
+
+
+
 
 FilterGenes <- function(DATA,Cor_row,coloring_rows)
 {
@@ -123,14 +135,15 @@ FilterGenes <- function(DATA,Cor_row,coloring_rows)
   for (i in 1:n_genes)
   {
      # Set the differential expression threshold
-      DifferenceThreshold <- 0.7
-      selection_criteria[i] <- sum(DATA[i,] >= DifferenceThreshold) >= 1
+      DifferenceThreshold <- 0.1
+      selection_criteria[i] <- (sum(DATA[i,] >= DifferenceThreshold) >= 2) | (gene_names[i] %in% coloring_rows)
 
-      # Keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
+      # If specified, keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
       #     The threshold needs to be met in a correlation with one of the specified fluxes in coloring_rows
-      CorFilterCutOff <- 0.99
+      AdditionalCorrelatingGenesCriteria <- FALSE
+      CorFilterCutOff <- 1
       CriteriaVector <- abs(Cor_row[coloring_rows,i]) >= CorFilterCutOff
-      if (sum(CriteriaVector) >= 1)
+      if (sum(CriteriaVector) >= 1 & AdditionalCorrelatingGenesCriteria)
       {
           selection_criteria[i] <- TRUE
       }
