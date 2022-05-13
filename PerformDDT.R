@@ -19,6 +19,9 @@ PerformDDT <- function(DATA,groups_corresponding,GroupColorMatrix,replicate_sche
         {
             med_norm_scheme = ddt
             DATA = med_norm_within_groups(DATA,groups_corresponding,med_norm_scheme,ratio_scheme_groups=ratio_scheme_groups)
+            
+            # If the intra group transformation specifies the denominator, remove the denominator from the group coloring scheme 
+            if (!is.null(ratio_scheme_groups)){GroupColorMatrix = GroupColorMatrix[colnames(DATA),]}
         }
     }
 

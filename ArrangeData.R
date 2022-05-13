@@ -212,6 +212,7 @@ ArrangeData <- function(ColGroupsScheme,
     #inclusion_grouping_scheme will need to be specified when more than one grouping scheme can be used such as in a heatmap
     DATA <- SelectGroups_return[[1]]
     groups_corresponding <- SelectGroups_return[[2]]
+    GroupColorMatrix <- SelectGroups_return[[3]]
 
     
     # Remove rows with NA entries after the specified groups have been excluded
@@ -236,7 +237,6 @@ ArrangeData <- function(ColGroupsScheme,
     #remove the inclusion grouping scheme as a category in groups_corresponding if it is not part of the ColGroupsScheme
     #    this means your plot does not consider the inclusion grouping scheme, it was just used to select the data to plot
     #    i.e. I only want to plot data of a certain cell type, but I do not want cell type to be a category in my plot
-    GroupColorMatrix <- SelectGroups_return[[3]]
     if (!(inclusion_grouping_scheme %in% ColGroupsScheme) && ((replicate_scheme != inclusion_grouping_scheme) || is.null(replicate_scheme)))
     {
       current_group_categories <- colnames(groups_corresponding)
