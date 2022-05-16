@@ -17,14 +17,34 @@ CreateEdgeTable <- function(Cor_row,DATA)
     #     Genes whose correlation with these rows is above a threshold are kept
     coloring_rows = c('PCFlux','UglnM5citrate591','UGlcM3Serine390','UGlcM2Citrate591','UGlnM4Malate419')
     CorrelationThreshold <- 0.85
+    alpha <- 0.35
     color_mode <- 'negative'
+    
+    # Compute p-values of correlations
+    n_samples <- 5
+    T <- (Cor_row*(n_samples-2)^0.5)/(1-Cor_row^2)^0.5
+    P_lower <- 2*pt(q=T, df=n_samples-1, lower.tail=TRUE)
+    P_upper <- 2*pt(q=T, df=n_samples-1, lower.tail=FALSE)
+    P <- P_lower
+    P_upper_indices <- T>0
+    P[P_upper_indices] <- P_upper[P_upper_indices]
+    
+    P_adjusted <- P
+    #Should make this block not have the fluxes in the list of p-values
+    for (gene in rownames(P))
+    {
+      P_adjusted[gene,] <- p.adjust(P[gene,],method='BH')
+    }
+    
 
     #Filter the genes you want to consider: this must be hardcoded in the function below
-    FGR <- FilterGenes(DATA,Cor_row,coloring_rows)
+    FGR <- FilterGenes(DATA,Cor_row,coloring_rows,P_adjusted)
     DATA <- FGR[[1]]
     Cor_row <- FGR[[2]]
     gene_names <- FGR[[3]]
     n_genes <- FGR[[4]]
+    P_adjusted <- FGR[[5]]
+    
 
     # Go through the lower left traingle of the correlation matrix and set values equal to TRUE if the meet the correlation threshold
     # Note coloring_row data is manually added to the quantities.txt file if it is not already there (i.e. m3malate or UglnM5citrate591)
@@ -40,7 +60,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
         if (i%%1000==0){print(paste('check_edge: ',i,sep=''))}
         for (j in (1:(i-1)))
         {
-            if (Cor_row[i,j] > cor_thresh)
+            if (P_adjusted[i,j] <= alpha)
             {
                 Cor_thresh_logical[i,j] <- TRUE
             }
@@ -90,8 +110,9 @@ CreateEdgeTable <- function(Cor_row,DATA)
         for (flux in coloring_rows)
         {
           cor_to_gene <- Cor_row[flux,current_gene]
+          P_of_correlation <- P_adjusted[flux,current_gene]
           # parameter to color a gene as correlated with a flux
-          Color_Criteria <- ((cor_to_gene>=CorrelationThreshold) & (color_mode=='positive')) | ((cor_to_gene<=-CorrelationThreshold) & (color_mode=='negative'))
+          Color_Criteria <- ((cor_to_gene>=0) & (color_mode=='positive') & (P_of_correlation <= alpha)) | ((cor_to_gene<=0) & (color_mode=='negative') & (P_of_correlation <= alpha))
           if (Color_Criteria)
           {nodeDF[current_gene,'color'] <- colors[n_color]
            nodeDF[current_gene,'z'] <- 2
@@ -123,7 +144,7 @@ CreateEdgeTable <- function(Cor_row,DATA)
 
 
 
-FilterGenes <- function(DATA,Cor_row,coloring_rows)
+FilterGenes <- function(DATA,Cor_row,coloring_rows,P_adjusted)
 {
 
   DATA_matrix <- as.matrix(DATA)
@@ -137,8 +158,8 @@ FilterGenes <- function(DATA,Cor_row,coloring_rows)
   for (i in 1:n_genes)
   {
      # Set the differential expression threshold
-      DifferenceThreshold <- 0.1
-      selection_criteria[i] <- (sum(DATA[i,] >= DifferenceThreshold) >= 2) | (gene_names[i] %in% coloring_rows)
+      DifferenceThreshold <- 0.0
+      selection_criteria[i] <- (sum(abs(DATA[i,]) >= DifferenceThreshold) >= 2) | (gene_names[i] %in% coloring_rows)
 
       # If specified, keep genes whose correlation is above a threshold with the color indicator gene/MID value even if they do not meet the differential expression threshold
       #     The threshold needs to be met in a correlation with one of the specified fluxes in coloring_rows
@@ -156,11 +177,13 @@ FilterGenes <- function(DATA,Cor_row,coloring_rows)
   Cor_row <- Cor_row[gene_names,gene_names]
   DATA <- DATA[gene_names,]
   n_genes <- length(gene_names)
+  P_adjusted <- P_adjusted[gene_names,gene_names]
 
   FGR <- list(DATA,
               Cor_row,
               gene_names,
-              n_genes)
+              n_genes,
+              P_adjusted)
 
   return(FGR)
 
