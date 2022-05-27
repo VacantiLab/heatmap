@@ -28,9 +28,11 @@ assemble_box_plot <- function(DATA_long,
         x_var <- 'sample'
     }
 
-#    x_var <- 'group'
-#    y_var <- 'value'
-#    color_var <- 'gene'
+
+    #x_var <- 'group'
+    #y_var <- 'value'
+    #color_var <- 'gene'
+    #FillColors = c('#ed553b','#20639b','#173f5f','#3caea3','#B23BFF')
 
     no_groups_color <- 'grey'
 
@@ -114,7 +116,7 @@ assemble_box_plot <- function(DATA_long,
 
         #box_plot_type='scatter_bar_plot'
         gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing),size=ErrorBarSize)
-        gpp <- geom_point(aes(color=group),position=position_dodge(width=inter_group_spacing),size=PointSize)
+        gpp <- geom_point(aes_string(color=color_var),position=position_dodge(width=inter_group_spacing),size=PointSize)
         
         #box_plot_type='line_plot'
         glp <- geom_line(aes(color=group),size=0.2)
@@ -159,7 +161,7 @@ assemble_box_plot <- function(DATA_long,
         DATA_to_plot <- DATA_long_summary
         if(!is.null(FillColors))
         {
-            gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing),size=ErrorBarSize)
+            gep <- geom_errorbar(aes_string(ymin='value-sd',ymax='value+sd',color=color_var),width=0.75*bar_width,position=position_dodge(width=inter_group_spacing),size=ErrorBarSize)
         }
 
     }
@@ -177,7 +179,7 @@ assemble_box_plot <- function(DATA_long,
         error_bar_width <- x_interval_avg/5
         if(!is.null(FillColors))
         {
-            gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=group),width=error_bar_width,size=ErrorBarSize)
+            gep <- geom_errorbar(aes(ymin=value-sd,ymax=value+sd,color=color_var),width=error_bar_width,size=ErrorBarSize)
         }
         
     }
@@ -211,8 +213,10 @@ assemble_box_plot <- function(DATA_long,
     
     if (color_var == 'gene')
     {
-        ScaleFillDesignation <- NULL
-        ScaleColorDesignation <- NULL
+        fake_colors = c('blue','brown','burlywood','darkcyan','darkgoldenrod4','dimgrey','darkolivegreen','darkorchid4','deeppink2','forestgreen')
+        fake_colors = FillColors
+        ScaleFillDesignation <- scale_fill_manual(values=fake_colors)
+        ScaleColorDesignation <- scale_color_manual(values=fake_colors)
     }
     
     if (!is.null(custom_y_bounds))
@@ -221,6 +225,7 @@ assemble_box_plot <- function(DATA_long,
       ytick = custom_y_bounds[3]
       y_scale <- scale_y_continuous(breaks = seq(custom_y_bounds[1],custom_y_bounds[2], by=ytick)) #scale_y_continuous can be used with coord_cartesian without affecting data calculations
     }
+    
 
     b <- ggplot(DATA_to_plot,aes_string(x=x_var, y=y_var, fill=color_var)) +
          gpp +
