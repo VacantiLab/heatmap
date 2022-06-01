@@ -73,24 +73,35 @@ assemble_box_plot <- function(DATA_long,
         #need this for point-errorbar format
         #If you want a scatter plot with mean and SD
         library(plyr) #this package contains the ddply function which allows for making a data frame with summary statistics
-
+        
         # If a separate file is specified with error values, use them
         if (is.character(ErrorFile))
         {
+          
+          if (!is.null(ddt))
+          {
+            rows_to_keep <- DATA_long[,'group'] != 'control'
+            DATA_long <- DATA_long[rows_to_keep,]
+            DATA_long[,'group'] <- DATA_long[,'ddt_group']
+          }
+            
             ERROR <- read_txt_to_df(ErrorFile)
+            
+            
             for(row in 1:length(DATA_long[,'value']))
             {
-              gene <- DATA_long[row,'gene']
-              group <- DATA_long[row,'group']
+              gene <- as.character(DATA_long[row,'gene'])
+              group <- as.character(DATA_long[row,'group'])
               DATA_long[row,'sd'] <- ERROR[gene,group]
             }
 
             DATA_long_summary <- ddply(DATA_long,
-                                      c(color_var,x_var),
+                                      c('group','gene'),
                                       summarise,
                                       value2=mean(value),
-                                      sd=sd)
+                                      sd=mean(sd))
         }
+        
 
         # If no separate file is specified with error values, calculate the error values
         if (!is.character(ErrorFile))
